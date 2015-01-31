@@ -1,0 +1,21 @@
+<% 
+##
+## Gabarit principal
+##
+## C'est `app', l'instance de l'application, qui est bindée à la vue
+##
+%>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv='Content-type' content='text/html; charset=utf-8'>
+    <title><%= name %></title>
+    <%= stylesheets %>
+    <%= javascripts %>
+  </head>
+  <body>
+    <%= view 'gabarit/header'   %>
+    <%= view 'gabarit/content'  %>
+    <%= view 'gabarit/footer'   %>
+  </body>
+</html>
