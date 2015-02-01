@@ -2,6 +2,7 @@ body
 	margin:				2em
 	width:				1000px
 	font-size:		17.2pt
+	position:			relative
 	
 	section#header
 		padding:					1em
@@ -15,5 +16,73 @@ body
 			top:						-21px
 			width:					340px
 	
+	// Contenu principal de la page
 	section#content
 		padding:					2em
+		
+		// Titre principal
+		h1
+			font-style:				italic
+			margin-top:				0
+			color:						#7b7b7b
+			text-align:				left
+		
+		// Sous-titre
+		h2
+			background-color: 	#7f7f7f
+			color: 							#ffffff
+			font-variant: 			small-caps
+			font-weight: 				normal
+			padding: 						0.5em 0.7em
+			text-align: 				left
+				
+		// Div contenant le lien vers la table des matières
+		// principale du dossier courant
+		div.link_to_tdm
+			text-align:					right
+			font-size:					13.2pt
+			
+		// Article principal de la page
+		div#main_article
+			width:					28em
+			text-align:			justify
+			
+			> p, > div.p
+				text-align:		justify
+				margin:				1em 0
+			
+		ul.tdm
+			list-style-type: 		none
+			margin-top:					3em
+			
+	// Margin droite
+	section#rmargin
+	
+		position:					absolute
+		right:						0
+		top:							220px
+		width:						200px
+		opacity:					0
+
+		nav#main_buttons
+			width:								auto
+
+			a, form.navlink > div.titre
+				display:			inline-block
+				width:				200px
+				padding:			4px 16px
+				border:				1px solid #a0a0a0
+				margin:				4px 0
+				font-size:		12.3pt
+				text-align:		center
+				background-color:	white
+				color:				tomato
+				cursor:				pointer
+				
+				
+pre#debug
+	background-color:			black
+	color:								white
+	font-family:					courrier
+	font-size:						12pt
+	padding:							1em

@@ -1,0 +1,1 @@
+"undefined"==typeof window.UI&&(window.UI={}),$.extend(window.UI,{unshade_boutons:function(){$("section#rmargin").animate({opacity:1},4e3)}});

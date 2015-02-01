@@ -1,0 +1,33 @@
+<% 
+# encoding: UTF-8
+##
+## Boutons principaux de la marge droite
+##
+%>
+<%
+[
+  ['Accueil', "main/home"],
+  :separator,
+  ['Ni pour ni contre,<br />bien au contraire', "theme/ni_pour_ni_contre/"],
+  ['Tout &agrave; fait contre', "theme/contre/"],
+  ['Le Travail du piano', "technique/travail_piano/"],
+  ['Des essentiels', "technique/aspect/"],
+  :separator,
+  ['Restez inform&eacute;s', "main/rester_informed"],
+  ['Membres du cercle', "main/membres"],
+  ['Postuler au cerle', "main/postuler"]
+].each do |dlink|
+  
+  if dlink == :separator
+%>
+  <hr />
+  <% 
+    else 
+      titre, path = dlink
+  %>
+    <form class='navlink' action="index.rb" method="POST" charset="utf-8" onclick="this.submit()">
+      <input type="hidden" name="article" value="<%= path %>">
+      <div class='titre'><%= titre %></div>
+    </form>
+  <% end %>
+<% end %>
