@@ -107,12 +107,16 @@ class App
   def tdm_dossier_article arr_titres
     c = "<ul class='tdm'>"
     c << arr_titres.collect do |dtitre|
-      '<li>' + link_to( dtitre.first, path_to_article(dtitre.last) ) + '</li>'
+      titre, artname, a_venir = dtitre
+      '<li>' + link_to( titre, path_to_article(artname) ) + (a_venir ? img_a_venir : '') + '</li>'
     end.join("")
     c << "</ul>"
     return c
   end
   def path_to_article rp
     File.join(folder_article, rp)
+  end
+  def img_a_venir
+    @img_a_venir ||= "<img class='avenir' src='./public/page/img/a_venir.png' />"
   end
 end
