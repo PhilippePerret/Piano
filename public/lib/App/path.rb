@@ -9,6 +9,9 @@ class App
     path.sub(/^#{folder}\//, '')
   end
   
+  def pstore_mailing
+    @pstore_mailing ||= File.join(folder, 'data', 'pstore', 'mailing_list.pstore')
+  end
   def folder_module
     @folder_module ||= File.join(folder, 'public', 'lib', 'module')
   end

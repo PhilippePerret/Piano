@@ -5,6 +5,7 @@ Requiert tous les éléments par défaut
 
 =end
 require 'cgi'
+require 'pstore'
 require 'erb'
 
 def require_folder fpath
