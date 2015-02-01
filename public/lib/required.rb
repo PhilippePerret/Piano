@@ -12,4 +12,5 @@ def require_folder fpath
 end
 
 require_folder 'App'
+require_folder 'extensions'
 app = App::new

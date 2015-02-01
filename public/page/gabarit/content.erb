@@ -1,6 +1,8 @@
 <section id="content">
   <div id='main_article'>
     <%= link_offline_to_edit_article %>
-    <%= App::current.load_article %>
+    <% contenu_page = App::current.load_article %>
+    <%= messages                %>
+    <%= contenu_page            %>
   </div>
 </section>

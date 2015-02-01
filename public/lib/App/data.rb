@@ -19,11 +19,9 @@ class App
   end
   
   def offline?
-    @is_offline = !online? if @is_offline === nil
-    @is_offline
+    self.class.offline?
   end
   def online?
-    @is_online = (ENV['HTTP_HOST'] != "localhost") if @is_online === nil
-    @is_online
+    self.class.online?
   end
 end

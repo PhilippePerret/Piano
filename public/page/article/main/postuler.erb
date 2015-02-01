@@ -1,6 +1,15 @@
 <h1>Postuler au <%= short_name %></h1>
 
-<% if param(:operation).to_s == "soumission_requete" %>
+<% 
+if param(:operation).to_s == "soumission_requete"
+
+  require_module 'postuler'
+  postuler
+  
+end 
+%>
+
+<% if param(:operation).to_s == "soumission_requete" && no_error? %>
   
   <p>
   Votre requête a été transmise.
@@ -12,14 +21,14 @@
   Un grand merci pour votre intérêt&nbsp;!
   </p>
   
-<% elsif param( :operation ).to_s == "" %>
+<% else %>
 
 <p>
 Si vous pensez que vous pouvez apporter quelque chose au site du <%= short_name %>, alors vous pouvez tout à fait postuler pour entrer dans la ronde.
 </p>
 
 <p>
-Pour ce faire, utiliser le formulaire ci-dessous, qui sera transmis à l'ensemble des membres courants, qui prendront une décision sous quinzaine, sauf contre indication.
+Pour ce faire, utiliser le formulaire ci-dessous, qui sera transmis à l'ensemble des membres pour une décision prise sous quinzaine, sauf contre ordre.
 </p>
 
 <form id='form_postuler' action="index.rb" method="POST" accept-charset="utf-8">
@@ -30,22 +39,22 @@ Pour ce faire, utiliser le formulaire ci-dessous, qui sera transmis à l'ensembl
   </p>
   <div class='row'>
     <span class="libelle">Vos nom/prénom</span>
-    <span class="value"><input type="text" name='user_patronyme' value='' /></span>
+    <span class="value"><input type="text" name='user_patronyme' value='<%= param(:user_patronyme) || "" %>' /></span>
   </div>
   <div class='row'>
     <span class="libelle">Votre mail</span>
-    <span class="value"><input type="text" name='user_mail' value='' /></span>
+    <span class="value"><input type="text" name='user_mail' value='<%= param(:user_mail) || "" %>' /></span>
   </div>
   <div class='row'>
     <span class="libelle">Confirmation mail</span>
-    <span class="value"><input type="text" name='user_mail_confirmation' value='' /></span>
+    <span class="value"><input type="text" name='user_mail_confirmation' value='<%= param(:user_mail_confirmation) || "" %>' /></span>
   </div>
   
   <p><strong>Présentation</strong> (dans le champ ci-dessous, vous pouvez vous présenter au cercle, indiquer votre parcours, vos aspirations, votre métier actuel, etc. toutes les informations que vous jugerez bon de nous transmettre)</p>
-  <textarea name='user_presentation' style="width:100%;height:340px"></textarea>
+  <textarea name='user_presentation' style="width:100%;height:340px"><%= param(:user_presentation) || "" %></textarea>
 
   <p><strong>Motivation</strong> (dans le champ ci-dessous, merci de nous faire part de vos intentions en rejoignant le cercle, en précisant bien ce que vous pensez pouvoir lui apporter et le rôle que vous pensez pouvoir y jouer)</p>
-  <textarea name='user_motivation' style="width:100%;height:340px"></textarea>
+  <textarea name='user_motivation' style="width:100%;height:340px"><%= param(:user_motivation) || "" %></textarea>
 
   <p>
   Merci&nbsp;! Il ne vous reste plus qu'à soumettre ce formulaire pour déposer votre requête.
@@ -56,8 +65,4 @@ Pour ce faire, utiliser le formulaire ci-dessous, qui sera transmis à l'ensembl
   </div>  
 </form>
 
-<% else %>
-<p>
-L'opération `<%= param(:operation) %>' est inconnue.
-</p>
 <% end %>
