@@ -15,3 +15,10 @@ end
 require_folder 'App'
 require_folder 'extensions'
 app = App::new
+
+##
+## Si on est OFFLINE, on charge toutes les méthodes d'administration
+##
+if App.offline?
+  require_folder 'administration'
+end

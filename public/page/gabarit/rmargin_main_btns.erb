@@ -5,7 +5,7 @@
 ##
 %>
 <%
-[
+arr_menus = [
   ['Accueil', "main/home"],
   ['Restez inform&eacute;s', "main/rester_informed"],
   :separator,
@@ -16,7 +16,14 @@
   :separator,
   ['Membres du cercle', "main/membres"],
   ['Postuler au cerle', "main/postuler"]
-].each do |dlink|
+]
+if App::offline?
+  arr_menus += [
+    :separator,
+    ["Administration", "admin/"]
+  ]
+end
+arr_menus.each do |dlink|
   
   if dlink == :separator
 %>

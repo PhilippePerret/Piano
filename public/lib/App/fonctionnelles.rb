@@ -23,6 +23,26 @@ class App
   end
   
   ##
+  # 
+  # Définit le temps de dernière… opération de clé +key+
+  #
+  def set_last_time key
+    PStore::new(pstore_last_times).transaction do |ps|
+      ps[key] = Time.now.to_i
+    end
+  end
+  
+  ##
+  #
+  # Retourne le temps de dernière opération +key+
+  #
+  def last_time key
+    PStore::new(pstore_last_times).transaction do |ps|
+      ps.fetch key, nil
+    end
+  end
+  
+  ##
   #
   # Exposer le binding
   #

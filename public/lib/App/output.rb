@@ -9,6 +9,7 @@ class App
   #
   def output
     cgi.out{ cgi.html { code_html } }
+    new_connexion
   end
   
   ##

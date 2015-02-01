@@ -9,6 +9,12 @@ class App
     path.sub(/^#{folder}\//, '')
   end
   
+  def pstore_last_times
+    @pstore_last_times ||= File.join(folder, 'data', 'pstore', 'last_times.pstore')
+  end
+  def pstore_connexions
+    @pstore_connexions ||= File.join(folder, 'data', 'pstore', 'connexions.pstore')
+  end
   def pstore_mailing
     @pstore_mailing ||= File.join(folder, 'data', 'pstore', 'mailing_list.pstore')
   end
