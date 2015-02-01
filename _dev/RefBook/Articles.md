@@ -1,7 +1,9 @@
 #Gestion des articles
 
 * [Aperçu général](#apercu_general)
+* [Fonctionnement du chargement des articles (synopsis)](#fonctionnement_chargement_article)
 * [Lien vers un article](#lien_vers_un_article)
+* [Créer un nouveau dossier article](#creer_nouveau_dossier_article)
 
 <a name='apercu_general'></a>
 ##Aperçu général
@@ -14,6 +16,28 @@ Le fonctionnement de base est le suivant&nbsp;: Ça n'est pas l'article qui est 
 
 Exemple pour l'article de path relatif `theme/ni_pour_ni_contre/acoustique_numerique.erb`&nbsp;:
 
+<a name='fonctionnement_chargement_article'></a>
+##Fonctionnement du chargement des articles (synopsis)
+
+Un article est défini par le paramètre `:article` qu'on récupère par `param :article`.
+
+    > Exemple avec l'article "theme/contre/lire_en_jouant.erb"
+      = article = "theme/contre/lire_en_jouant"
+      
+    [1] * L'application cherche le dossier de l'article
+          EX: "theme/contre/"
+    
+    [2] * Elle charge le fichier `_body_.erb` de ce dossier
+        EX: "theme/contre/_body_.erb"
+    
+    [3] * La vue `_body_.erb` charge l'article défini
+        EX: `lire_en_jouant.erb`
+
+Pour la table des matières, on définit l'article sans renseigner le nom de l'article, mais en laissant bien le `/` à la fin du path.
+
+    EX: article = "theme/contre/"
+
+Dans l'étape de chargement ([3]) le programme cherche alors la vue `_tdm_.erb` qui se trouve dans le dossier des articles.
 
 <a name='lien_vers_un_article'></a>
 ##Lien vers un article
@@ -24,7 +48,6 @@ La méthode `link_to` retournera un formulaire pour afficher l'article de path r
 
 Le path relatif est considéré depuis `./public/page/article/`.
 
-* [Créer un nouveau dossier article](#creer_nouveau_dossier_article)
 <a name='creer_nouveau_dossier_article'></a>
 ##Créer un nouveau dossier article
 
