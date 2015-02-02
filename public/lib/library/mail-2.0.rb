@@ -31,6 +31,7 @@ require 'net/smtp'
 class Mail
 
   require File.join('.', 'data', 'secret', 'data_mail.rb')
+  require './data/secret/data_admin'
 
   DEFAUT_CONTENT_TYPE = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>'
 

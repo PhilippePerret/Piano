@@ -7,6 +7,15 @@ Méthode d'instance gérant les articles
 class App
   
   ##
+  ## Raccourcis à utiliser avec la méthode d'helper `link_to'. Par exemple :
+  ## <%= link_to :home %>
+  ##
+  SHORTCUTS = {
+    :home       => {titre: "Accueil", relpath: 'main/home'},
+    :mailing    => {titre: "s'inscrire sur le mailing-list", relpath: 'main/rester_informed'}
+  }
+  
+  ##
   #
   # Méthode principal, appelée par la vue `content.erb', qui retourne
   # le code de l'article.
@@ -39,19 +48,6 @@ class App
     view "article/#{folder_article}/#{article_name}"
   end
   
-  ##
-  #
-  # Méthode d'helper retournant un lien pour rejoindre la table des matières
-  # du dossier d'article courant
-  #
-  def link_to_tdm
-    return "" if article_name == "_tdm_.erb"
-    <<-HTML
-<div class='link_to_tdm'>
-  #{link_to 'Table des mati&egrave;res', "#{folder_article}/"}
-</div>
-    HTML
-  end
   
   ##
   #

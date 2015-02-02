@@ -46,7 +46,15 @@ Dans l'étape de chargement ([3]) le programme cherche alors la vue `_tdm_.erb` 
 
 La méthode `link_to` retournera un formulaire pour afficher l'article de path relatif `path/to/article`.
 
-Le path relatif est considéré depuis `./public/page/article/`.
+Le path relatif est considéré depuis le dossier `./public/page/article/`.
+
+###Raccourcis
+
+On peut aussi utiliser des raccourcis avec `link_to`. Par exemple&nbsp;:
+
+    <%= link_to :home %>
+
+Ces raccourcis sont définis dans le fichier `./public/lib/App/article.rb`, dans la constante `SHORTCUTS`.
 
 <a name='creer_nouveau_dossier_article'></a>
 ##Créer un nouveau dossier article

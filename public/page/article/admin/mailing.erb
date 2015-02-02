@@ -1,0 +1,35 @@
+<% show_mailing_list %>
+
+<h2>Mailing-list</h2>
+
+<p class='italic'>
+Cette partie permet de gérer les mailing-lists, et principalement de transmettre des annonces aux personnes inscrites.<br />
+Note&nbsp;: Les données des followers sont ramenées du serveur distant toutes les heures.
+</p>
+
+
+
+<h3>Liste des followers</h3>
+
+<%= Mailing::show_followers %>
+
+<h3>Formulaire d'annonce à tous les followers</h3>
+<% 
+##
+## Formulaire pour faire une annonce aux followers
+##
+%>
+<form id='form_annonce_followers' action="index.rb" method="POST" accept-charset="utf-8">
+  <%= "admin/mailing".in_hidden(name: 'article') %>
+  <%= "envoyer_annonce".in_hidden(name: 'operation') %>
+  <div class='row'>
+    <span class="libelle">Titre</span>
+    <span class="value"><%= (param(:annonce_titre)||"Nouvel article").in_input_text(name: 'annonce_titre') %></span>
+  </div>
+  <div>Texte de l'annonce&nbsp;:</div>
+  <textarea name="annonce_texte" rows="8"><%= param(:annonce) || "Bonjour,\n\n" %></textarea>
+  <div class='row buttons'>
+    <span class="libelle"></span>
+    <span class="value"><%= "Annoncer".in_submit %></span>
+  </div>
+</form>
