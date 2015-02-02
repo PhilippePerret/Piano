@@ -1,4 +1,4 @@
-<h1>Restez informés</h1>
+<h1>Rester informés</h1>
 
 <% 
 if param(:operation) == 'add_to_mailing_list'
@@ -37,6 +37,12 @@ end
       <span class="libelle">Confirmation mail</span>
       <span class="value"><input type="text" name='user_mail_confirmation' value="" /></span>
     </div>
+    <p>Question anti-robot&nbsp;: comment s'appelle le musicien qui joue l'instrument auquel est consacré ce site (un timbalier&nbsp;? un guitariste&nbsp;? un percussionniste&nbsp;? autre chose&nbsp;?)</p>
+    <div class='row'>
+      <span class="libelle"></span>
+      <span class="value"><input type="text" name='user_reponse' value="<%= param(:user_reponse) || '' %>" /></span>
+    </div>
+    
     <div class='row buttons'>
       <span class="libelle"></span>
       <span class="value"><%= "M'informer des nouveaux articles".in_submit %></span>
