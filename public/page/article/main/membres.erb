@@ -1,4 +1,34 @@
-<h1>Les Membres du cercle</h1>
+<h1><%= name %></h1>
+<h2>Les Membres du cercle</h2>
 
-<%# TODO: %>
-[Section en développement]
+<p class='italic'>
+Le <%= short_name %> est constituée d'une équipe réduite de pianistes amateurs et professionnels qui partagent la même passion pour le piano et qui sont animés par la même envie de partager une information ouverte et vraie.
+</p>
+
+<dl class='air'>
+  <dt>Tilleul</dt>
+  <dd>Pianiste professionnel depuis plus de vingt ans, Tilleul joue et enseigne le piano avec la même passion.</dd>
+  <dd>Après un parcours traditionnel au sein du conservatoire, et quelques prix glanés ici ou là, il s'est frotté à différentes approches, abordant avec le même enthousiasme la composition, l'improvisation, la MAO ou l'arrangement dans différents styles.</dd>
+  <dd>Passionné des nouvelles technologies, Tilleul est le créateur —&nbsp;tout puissant&nbsp;:-)&nbsp;— du <%= short_name %> qu'il a conçu après avoir pris la mesure du tort que pouvait avoir l'Internet sur ses élèves, jeunes ou moins jeunes. Un tort d'autant plus regrettable que l'Internet reste pour lui un outil pédagogique absolument formidable, pour peu qu'on l'utilise avec discernement.</dd>
+  <dd>Pédagogue ouvert et curieux, il se passionne sans dispersion pour toutes les nouvelles approches de la pratique pianistique.</dd>
+  <dd>Tilleul est un passionné de musique de chambre.</dd>
+
+  <dt>Phil-Icare</dt>
+  <dd>Phil-Icare, alias “Phil”, a été musicien professionel pendant 15 ans —&nbsp;en qualité de guitariste, compositeur, arrangeur, chef d'orchestre (de variété) et directeur artistique. Il a enregistré son premier disque à 21 ans chez Barclay.</dd>
+  <dd>Le plus éclectique des membres du cercle, il a embrassé depuis quelques années la carrière de scénariste et possède à son actif, notamment, un roman (mort@vivant chez Anne Carrière), un ouvrage pédagogique sur la rédaction du scénario (Savoir rédiger et présenter son scénario). C'est le pédagogue le plus passionné du cercle.</dd>
+  <dd>Après avoir fréquenté le piano de loin en loin, il s'y consacre sérieusement depuis maintenant <%= Time.now.strftime("%Y").to_i - 2012 %> ans (en 2012).</dd>
+  
+  <dt>JeanMi</dt>
+  <dd>Tout musicien amateur qu'il est, JeanMi est un passionné éclairé. Il aime et pratique les instruments à clavier sous toutes leurs formes.</dd>
+  <dd>Au sein du Cercle, on l'appelle le “fouineur”. C'est lui qui ramène et trie avec pertinence les trolls et autres thèmes récurrents qu'on trouve un peu partout sur le net.</dd>
+
+  <dt>DavidF</dt>
+  <dd>DavidF (prononcez “Davideffe”) est peut-être pianiste amateur, mais il n'en voue pas moins sa vie et toutes ses heures de loisir à l'instrument à clavier depuis plus de vingt-cinq ans.</dd>
+  <dd>DavidF est “un classique” pur et dur qui ne jure que par Jean-Sébastien Bach, Wolfgang Amadeus Mozart ou Joseph Haydn. Dire qu'avec lui, les discussions à ce propos sont houleuses et passionnées serait pour le moins un fade euphémisme&nbsp;! :-)</dd>
+</dl>
+
+<h3>Postuler pour le <%= short_name %></h3>
+
+<div class="p">
+Vous pensez que vous aussi vous pouvez apporter votre pierre à l'édifice de ce cercle&nbsp;? Tant mieux&nbsp;! Alors n'hésitez pas à <%= link_to "postuler pour rejoindre le #{short_name}", 'main/postuler' %>&nbsp;!
+</div>
