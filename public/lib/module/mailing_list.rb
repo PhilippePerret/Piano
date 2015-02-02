@@ -41,11 +41,15 @@ class App
     uname     = param(:user_name).strip
     umail     = param(:user_mail).strip
     umailconf = param(:user_mail_confirmation).strip
+    ureponse  = param(:user_reponse).strip.downcase
     raise "Vous devez fournir un nom ou un pseudo." if uname == ""
     raise "Vous devez fournir votre mail, pour qu'on puisse vous avertir." if umail == ""
     raise "Vous devez fournir la confirmation de votre mail." if umailconf == ""
     raise "Votre confirmation de mail ne correspond pas… Merci de le vérifier." if umail != umailconf
     raise "Ce mail est déjà dans la mailing-list !" if mail_exists_in_mailing?(umail)
+    unless ["un pianiste", "pianiste", "claviériste", "un claviériste", "clavieriste", "un clavieriste"].include? ureponse
+      raise "Êtes-vous un robot ? Dans le cas contraire, merci de répondre correctement à la question anti-robot."
+    end
   rescue Exception => e
     raise e
   end
