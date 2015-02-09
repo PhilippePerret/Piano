@@ -1,7 +1,8 @@
 # encoding: UTF-8
 =begin
 Extension pour les sous-classes de App utilisées par la partie administration
-
+pour que des sous-classes puissent utiliser de façon directe les méthodes
+de l'application.
 
     class App
       current::require_library 'extend_subclass_app'
@@ -25,5 +26,7 @@ class ExtensionSubclassApp
     def short_name;         app.short_name        end
     def online?;            app.online?           end
     def offline?;           app.offline?          end
+    def upload relpath;     app.upload relpath    end
+    def download relpath;   app.download relpath  end
   end
 end
