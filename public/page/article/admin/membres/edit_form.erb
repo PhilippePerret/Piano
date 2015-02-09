@@ -1,0 +1,44 @@
+<% 
+##
+## Formulaire d'édition d'un membre
+##
+%>
+
+
+
+<% 
+##
+## Enregistrement des données
+##
+if param('operation') == "enregistrer"
+  user.get_and_save
+end
+%>
+
+<% 
+##
+## Formulaire d'édition
+##
+%>
+<form id="user_edit_form" action="index.rb" method="POST" accept-charset="utf-8">
+  <%= "admin/membres".in_hidden(name: 'article') %>
+  <%= "enregistrer".in_hidden(name: 'operation') %>
+  <% if offline? %>
+    <%= row("Pseudo",         user.pseudo.in_input_text(name: 'user_pseudo', placeholder: "Pseudo")) %>
+    <%= row("ID",             user.id.to_s.in_input_text(name: 'user_id', placeholder: "ID")) %>
+  <% else %>
+    <%= row("", user.pseudo, {class: 'bold'})   %>
+    <%= user.id.to_s.in_hidden(name: 'user_id') %>
+  <% end %>
+  <%= row("Mail",           user.mail.in_input_text(name: 'user_mail', placeholder: 'Mail'))   %>
+  <% if offline? %>
+    <%= row("Grade",          select_grade) %>
+  <% else %>
+    <%= row( "", user.hgrade ) %>
+  <% end %>
+  <%= row("Blog externe",   user.blog.to_s.in_input_text(name: 'user_blog', placeholder: "Blog")) %>
+  <%= row("Chaine YouTube", user.chaine_yt.to_s.in_input_text(name: 'user_chaine_yt', placeholder: 'Chaine YouTube')) %>
+  <%= row("Site perso",     user.site.to_s.in_input_text(name: 'user_site', placeholder: 'Site')) %>
+  <%= row("Description",    user.description.in_textarea(name: 'user_description', placeholder: 'Description')) %>
+  <%= row("", "Enregistrer".in_submit, {class: 'buttons'}) %>
+</form>

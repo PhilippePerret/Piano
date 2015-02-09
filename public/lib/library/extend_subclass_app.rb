@@ -28,5 +28,6 @@ class ExtensionSubclassApp
     def offline?;           app.offline?          end
     def upload relpath;     app.upload relpath    end
     def download relpath;   app.download relpath  end
+    def row lib, fld, par = nil;  app.row lib, fld, par end
   end
 end

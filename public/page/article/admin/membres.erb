@@ -1,0 +1,11 @@
+<% 
+##
+## Administration des membres
+##
+require_module 'membres'
+my = App::Membres
+%>
+<h2>Administration des membres</h2>
+
+<%= my.view 'edit_form' %>
+<%= my.view 'list' %>

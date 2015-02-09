@@ -1,0 +1,13 @@
+<% 
+##
+## Affichage de la liste des membres
+##
+%>
+<fieldset id="liste_des_membres" class="">
+  <legend>Liste des membres</legend>
+  <ul id="membres_list">
+    <% User::each do |u| %>
+      <%= u.as_li %>
+    <% end %>
+  </ul>
+</fieldset>

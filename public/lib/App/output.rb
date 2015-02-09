@@ -16,11 +16,11 @@ class App
   #
   # @return le code HTML d'une vue (qui doit se trouver dans ./public/page)
   #
-  def view path
+  def view path, bindee = nil
     begin
       path.concat(".erb") unless path.end_with? '.erb'
       real_path = File.join('.', 'public', 'page', path)
-      ERB.new(File.read(real_path).force_encoding('UTF-8')).result(bind)
+      ERB.new(File.read(real_path).force_encoding('UTF-8')).result(bindee || bind)
     rescue Exception => e
       debug "ERREUR FATALE AVEC VUE #{path} : #{e.message}"
       debug e.backtrace.join("\n") if offline?
@@ -80,4 +80,5 @@ class App
       "<script type='text/javascript' src='#{relative_path js}' charset='utf-8'></script>"
     end.join("\n")
   end
+  
 end
