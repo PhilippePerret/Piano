@@ -6,8 +6,21 @@ Data pour l'application
 =end
 class App
   
+  attr_reader :params
+  
   def param pname
-    cgi[pname.to_s]
+    @params ||= {}
+    if pname.class == Hash
+      ##
+      ## => Définition de paramètres
+      ##
+      @params.merge! pname
+    else
+      ##
+      ## => Récupération de paramètres
+      ##
+      @params[pname] ||= cgi[pname.to_s]
+    end
   end
   
   def name

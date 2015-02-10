@@ -183,11 +183,12 @@ class User
       @new_data[key] = nil
     else
       url = url[8..-1] if url.start_with?('https')
-      url = url[7..-1] if url.start_with?('https')
+      url = url[7..-1] if url.start_with?('http')
       @new_data[key] = url
       res = `curl --head http://#{url}`
+      debug "res curl : #{res.inspect}"
       line1 = res.split("\n")[0]
-      return false unless line1.match(/\b200\b/)
+      return false unless line1.to_s.match(/\b200\b/)
     end
     return true
   end

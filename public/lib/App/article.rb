@@ -6,6 +6,8 @@ Méthode d'instance gérant les articles
 =end
 class App
   
+  attr_reader :article_content
+  
   ##
   ## Raccourcis à utiliser avec la méthode d'helper `link_to'. Par exemple :
   ## <%= link_to :home %>
@@ -23,7 +25,7 @@ class App
   # @return le code HTML complet de l'article
   #
   def load_article
-    view "article/#{article_base}"
+    @article_content = view( "article/#{article_base}" )
   end
   
   ##

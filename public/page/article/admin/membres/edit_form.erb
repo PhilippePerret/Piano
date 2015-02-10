@@ -17,10 +17,21 @@ end
 
 <% 
 ##
+## Outil de Synchronisation
+##
+fichier = Fichier.new('data/pstore/membres.pstore')
+%>
+<%= fichier.fieldset_synchro(article: "admin/membres") %>
+
+
+<% 
+##
 ## Formulaire d'édition
 ##
 %>
-<form id="user_edit_form" action="index.rb" method="POST" accept-charset="utf-8">
+<fieldset id="fs_edition_membre">
+  <legend>Édition/création membre</legend>
+  <form id="user_edit_form" action="index.rb" method="POST" accept-charset="utf-8">
   <%= "admin/membres".in_hidden(name: 'article') %>
   <%= "enregistrer".in_hidden(name: 'operation') %>
   <% if offline? %>
@@ -42,3 +53,4 @@ end
   <%= row("Description",    user.description.in_textarea(name: 'user_description', placeholder: 'Description')) %>
   <%= row("", "Enregistrer".in_submit, {class: 'buttons'}) %>
 </form>
+</fieldset>

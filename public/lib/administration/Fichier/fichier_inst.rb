@@ -58,6 +58,8 @@ class Fichier
   #   :show_filename      Si TRUE, affiche le nom du fichier
   #   :message            Si défini, ajoute un message au-dessus du message de 
   #                       synchro
+  #   :article            L'article vers lequel il faut retourner après 
+  #                       l'opération
   def fieldset_synchro options = nil
     options ||= {}
     options[:message] = options[:message].to_s.in_div if options.has_key?(:message)
@@ -79,6 +81,7 @@ class Fichier
   #
   def message_synchro options = nil
     options ||= {}
+    data_form = {o: nil, o1: path, button: nil, article: options[:article]}
     tloc = mtime_local
     tdis = mtime_distant
     if tloc == tdis
@@ -88,11 +91,11 @@ class Fichier
       if tloc > tdis
         # mess << "Le fichier local `#{path}' est plus à jour que le fichier distant".in_div
         if online?
-          ## C'est idiot puisque je ne peux pas vérifier quand je suis online…
+          ## C'est idiot puisque je ne peux pas vérifier QUAND je suis ONLINE…
           mess << "Si vous faites des modifications, des problèmes vont survenir. Il serait plus prudent d'actualiser le fichier distant.".in_div(class: 'warning')
         else
           mess << "Le fichier distant doit être actualisé pour être à jour.".in_div
-          mess << "Actualiser le fichier distant".in_a(href: qs_route('su/update_distant', {filepath: path}), class: 'btn medium').in_div(class: 'right')
+          mess << form_o(data_form.merge(o: "upload", button: "Actualiser le fichier distant")).in_div(class: 'right air')
         end
       else
         if online?
@@ -101,7 +104,7 @@ class Fichier
         else
           mess << "Le fichier distant `#{path}' est plus à jour que le fichier local.".in_div
           mess << "Si vous faites des modifications, des problèmes vont survenir. Il serait plus prudent d'actualiser le fichier local en utilisant le bouton ci-dessous.".in_div(class: 'warning')
-          mess << "Actualiser le fichier local".in_a(href: qs_route('su/update_local', {filepath: path}), class: 'btn medium').in_div(class: 'right air')
+          mess << form_o(data_form.merge(o: "download", button: "Actualiser le fichier local")).in_div(class: 'right air')
         end
       end
       mess.join('')
@@ -203,8 +206,8 @@ class Fichier
   #
   #
   def distant_exists?
-    res = `ssh #{Fichier::serveur} "if [ -f ./www/#{path} ];then echo "1";else echo "0";fi"`
-    return res == "1"
+    res = `ssh #{Fichier::serveur} "if [ -f ./www/#{path} ];then echo \\"1\\";else echo \\"0\\";fi"`
+    return res.strip == "1"
   end
   alias :distant_exist? :distant_exists?
   

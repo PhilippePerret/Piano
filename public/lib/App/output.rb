@@ -10,24 +10,7 @@ class App
   def output
     cgi.out{ cgi.html { code_html } }
     new_connexion
-  end
-  
-  ##
-  #
-  # @return le code HTML d'une vue (qui doit se trouver dans ./public/page)
-  #
-  def view path, bindee = nil
-    begin
-      path.concat(".erb") unless path.end_with? '.erb'
-      real_path = File.join('.', 'public', 'page', path)
-      ERB.new(File.read(real_path).force_encoding('UTF-8')).result(bindee || bind)
-    rescue Exception => e
-      debug "ERREUR FATALE AVEC VUE #{path} : #{e.message}"
-      debug e.backtrace.join("\n") if offline?
-      e.message
-    end
-  end
-  
+  end 
   
   ##
   #
@@ -51,6 +34,7 @@ class App
       debug_str = @debugs.join("\n")
       "<div style='clear:both;'></div><pre id='debug'>#{debug_str}</pre>"
     else
+      # => Ajoute un message de débug
       @debugs ||= []
       @debugs << str
     end
@@ -58,10 +42,29 @@ class App
   
   ##
   #
+  # Ajoute une ou des feuilles de styles CSS
+  #
+  #
+  def add_css stylesheets
+    stylesheets = [stylesheets] unless stylesheets.class == Array
+    @css_added ||= []
+    @css_added += stylesheets
+  end
+  
+  ##
+  #
+  # Retourne les feuilles de style ajoutées
+  #
+  def css_added
+    @css_added ||= []
+  end
+  
+  ##
+  #
   # @return le code HTML pour les feuilles de styles
   #
   def stylesheets
-    Dir["./public/page/css/**/*.css"].collect do |css|
+    ( Dir["./public/page/css/**/*.css"] + css_added ).collect do |css|
       "<link rel='stylesheet' href='./#{relative_path css}' type='text/css' media='screen' charset='utf-8'>"
     end.join("\n")
   end
