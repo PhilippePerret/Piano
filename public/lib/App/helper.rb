@@ -21,7 +21,7 @@ class App
   #   form:       Si TRUE (par défaut), retourne un lien sous forme de 
   #               formulaire (pour adresse "invisible")
   #
-  def link_to titre, relpath_art, options = nil
+  def link_to titre, relpath_art = nil, options = nil
     options ||= {}
     options.merge!(form: true) unless options.has_key?(:form)
     if titre.class == Symbol
@@ -29,12 +29,20 @@ class App
       dshortcut = App::Article::SHORTCUTS[titre]
       titre       = dshortcut[:titre]
       relpath_art = dshortcut[:relpath]
+    elsif relpath_art.class == Symbol
+      # => Un lien par raccourci avec titre donné
+      dshortcut = App::Article::SHORTCUTS[relpath_art]
+      relpath_art = dshortcut[:relpath]
     end
     if options[:form]
       #
       # => Retourne un lien sous forme de formulaire
       #
-      "<form class='alink' action='index.rb' method='POST' onclick='this.submit()'><input type='hidden' name='article' value='#{relpath_art}' />#{titre}</form>"
+      "<form class='alink' action='index.rb' method='POST' onclick='this.submit()'>"+
+        (options[:next_article] || "").in_hidden(name:'na') +
+        relpath_art.in_hidden(name: 'article') +
+        titre +
+        "</form>"
     else
       #
       # => Retourne un lien <a>

@@ -1,0 +1,10 @@
+<% 
+##
+## Édition des articles
+##
+%>
+<ul id='articles'>
+  <% App::Articles.each(sort_by_votes: true) do |art| %>
+    <%= art.as_li(votes: true) %>
+  <% end %>
+</ul>

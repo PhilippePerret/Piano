@@ -1,0 +1,47 @@
+<% 
+##
+## Vue pour "voter" pour les articles, c'est-à-dire définir sa liste
+## préférée.
+##
+%>
+<h2>Articles en projet</h2>
+<h3>Votez pour l'ordre des prochains articles</h3>
+<p class='italic'>
+<strong>Classer les articles</strong> ci-dessous en les déplaçant à la souris dans l'ordre où vous voudriez les voir traités, puis <strong>cliquez sur le bouton</strong> “Voter pour cet ordre” en dessous du listing.
+</p>
+<ul id="articles_list">
+<% App::Article::each(etat: 0) do |article| %>
+  <%= article.as_li %>
+<% end %>
+</ul>
+<p class='right italic small'>
+Vérifiez bien l'ordre avant de voter, car vous n'aurez qu'<strong>un seul essai</strong>.
+</p>
+<%= form_o(
+  button:   "Voter pour cet ordre",
+  article:  'main/articles', 
+  o:        'vote_articles',
+  o1:       '',
+  form_id:  'vote_articles',
+  onclick:  "$.proxy(Articles,'vote')()"
+  ).in_div(class: 'right', style: 'margin-top:2em') %>
+<script type="text/javascript">
+if('undefined'==typeof window.Articles)window.Articles={};
+$.extend(window.Articles,{
+  vote:function(){
+    var ordre = [] ;
+    $('ul#articles_list > li').map(function(){ordre.push($(this).attr('data-id'))})
+    $('form#vote_articles input[name="o1"]').val(ordre.join('-'))
+  }
+})
+$(document).ready(function(){
+  $('ul#articles_list').sortable({
+    containment:  'parent',
+    axis:         'y',
+    cursor:       "move",
+    cursorAt:     { left: 0, top: 0, bottom: -25 },
+    distance:     5,
+    forceHelperSize: true
+  });  
+})
+</script>

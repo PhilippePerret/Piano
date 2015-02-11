@@ -1,0 +1,5 @@
+<h2>Articles en projet</h2>
+
+<% App::Article::each(sort_by_votes: true) do |art| %>
+  <%= art.as_li(votes: true) %>
+<% end %>

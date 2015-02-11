@@ -22,4 +22,14 @@ class App
     (lib.in_span(class: 'libelle')+val.in_span(class: 'value')).in_div(options)
   end
   
+  
+  ##
+  #
+  # @return le code pour embedder une vidéo YouTube
+  #
+  def video_youtube code
+    <<-HTML
+<iframe width="560" height="315" src="https://www.youtube.com/embed/#{code}" frameborder="0" allowfullscreen></iframe>
+    HTML
+  end
 end

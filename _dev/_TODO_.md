@@ -1,9 +1,9 @@
+* Pour le vote sur les articles, tester d'abord si l'user peut le faire et n'afficher la liste (et le bouton que si c'est possible).
 * Page décrivant les grades
-* Faire un pstore pour les articles à venir (pour pouvoir voter, etc.)
 * Identification d'un membre (un article + gestion session)
-* Profil d'un membre retenu
+* Profil éditable d'un membre (penser à le faire changer son mot de passe si possible)
+* Tant que l'article n'est pas achevé (état 9), la propriété :votes permet de déterminer l'ordre de traitement. Quand il est achevé, on met :votes à 0 et la donnée servira pour attribuer une cote à l'article.
 
-* Article à venir : possiblité pour le visiteur de "pusher" l'article pour en faire une priorité
 * Mettre en place une rubrique “Les âneries sur le piano” ou "sur la musique"
   - Visiter HP et relever toutes les bêtises racontées
   - Penser à mettre en garde contre les livres eux-même : cf. Fassina.

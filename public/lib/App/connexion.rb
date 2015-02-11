@@ -10,6 +10,33 @@ class App
     @connexions ||= App::Connexions::new(self)
   end
   
+  ##
+  #
+  # Enregistre l'adresse IP de l'user en indiquant son nombre
+  # de connexion et la date de sa dernière visite
+  #
+  def remember_ip ip
+    PStore::new(pstore_ips).transaction do |ps|
+      unless ps.roots.include? ip
+        ps[ip] = { x: 0, lc: nil, sid: nil }
+      end
+      ##
+      ## Est-ce la première connexion avec cette session ?
+      ## Si c'est le cas, on mémorise l'ID de session et on ajoute
+      ## une connexion à l'utilisateur
+      ##
+      unless ps[ip][:sid] == session.id
+        ps[ip][:sid]  = session.id
+        ps[ip][:x]    += 1
+      end
+      ##
+      ## Dans tous les cas, on indique la date de dernière 
+      ## connexion
+      ##
+      ps[ip][:lc] = Time.now.to_i
+    end
+  end
+  
   # ---------------------------------------------------------------------
   #
   #   App::Connexion

@@ -9,17 +9,33 @@ class App
     path.sub(/^#{folder}\//, '')
   end
   
+  # ---------------------------------------------------------------------
+  #
+  #   Pstores principaux
+  #
+  # ---------------------------------------------------------------------
+  def pstore_ips
+    @pstore_ips ||= File.join(folder_pstore, 'ips.pstore')
+  end
   def pstore_last_times
-    @pstore_last_times ||= File.join(folder, 'data', 'pstore', 'last_times.pstore')
+    @pstore_last_times ||= File.join(folder_pstore, 'last_times.pstore')
   end
   def pstore_connexions
-    @pstore_connexions ||= File.join(folder, 'data', 'pstore', 'connexions.pstore')
+    @pstore_connexions ||= File.join(folder_pstore, 'connexions.pstore')
   end
   def pstore_connexions_courantes
-    @pstore_connexions_courantes ||= File.join(folder, 'data', 'pstore', 'connexions_courantes.pstore')
+    @pstore_connexions_courantes ||= File.join(folder_pstore, 'connexions_courantes.pstore')
   end
   def pstore_mailing
-    @pstore_mailing ||= File.join(folder, 'data', 'pstore', 'mailing_list.pstore')
+    @pstore_mailing ||= File.join(folder_pstore, 'mailing_list.pstore')
+  end
+  # ---------------------------------------------------------------------
+  #
+  #   Dossiers
+  #
+  # ---------------------------------------------------------------------
+  def folder_pstore
+    @folder_pstore ||= File.join(folder, 'data', 'pstore')
   end
   def folder_module
     @folder_module ||= File.join(folder, 'public', 'lib', 'module')

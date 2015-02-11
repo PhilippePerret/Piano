@@ -31,51 +31,24 @@ class User
   #   Méthodes-propriétés volatiles
   #
   # ---------------------------------------------------------------------
+  
+  ##
+  #
+  # Adresse IP de l'user (identifié ou non)
+  #
+  # Consigne aussi cette connexion dans ips.pstore
+  #
   def remote_ip
     @remote_ip ||= begin
       raddr   = ENV['REMOTE_ADDR']
       httpid  = ENV['HTTP_CLIENT_IP']
       httpx   = ENV['HTTP_X_FORWARDED_FOR']
-      raddr || httpid || httpx # TODO: affiner
+      ip = raddr || httpid || httpx # TODO: affiner
+      app.remember_ip ip
+      ip
     end
   end
-  # ---------------------------------------------------------------------
-  #
-  #   Méthode d'helper
-  #
-  # ---------------------------------------------------------------------
-  
-  ##
-  #
-  # @Retourne le nom humain du grade
-  #
-  #
-  def hgrade
-    @hgrade ||= User::GRADES[grade][:hname]
-  end
-  
-  ##
-  #
-  # @return l'user sous forme de LI
-  #
-  #
-  def as_li params = nil
-    (
-      edit_button.in_span(class: 'btn_edit') +
-      pseudo.in_span(class: 'pseudo') +
-      hgrade.in_span(class: 'grade')
-    ).in_li(class: 'membre')
-  end
-  
-  ##
-  #
-  # @return le code d'un bouton pour éditer le membre
-  #
-  def edit_button
-    return "" unless app.offline?
-    "[edit]".in_a(href: "?article=admin/membres&user_id=#{id}")
-  end
-  
+   
   # ---------------------------------------------------------------------
   #
   #   Méthodes de données
@@ -140,7 +113,7 @@ class User
           site:         "",
           chaine_yt:    "",
           description:  "",
-          grade:        :no_grade,
+          grade:        :veilleur,
           password:     nil,
           cpassword:    nil,
           created_at:   Time.now.to_i
@@ -177,8 +150,8 @@ class User
     h[:pseudo] != "" || (errors <<  "Le pseudo est requis.")
     h[:mail]   != "" || (errors << "Le mail est requis.")
     new_data_check_site( :site ) || (errors << "Le site #{h[:site]} ne semble pas exister.")
-    new_data_check_site( :chaine_yt ) || (errors << "La chaine YouTube #{h[:site]} ne semble pas exister.")
-    new_data_check_site( :blog ) || (errors << "Le blog #{h[:site]} ne semble pas exister.")
+    new_data_check_site( :chaine_yt ) || (errors << "La chaine YouTube #{h[:chaine_yt]} ne semble pas exister.")
+    new_data_check_site( :blog ) || (errors << "Le blog #{h[:blog]} ne semble pas exister.")
     h[:grade] != ""   || (errors << "Le grade doit être fourni.")
     @new_data[:grade] = @new_data[:grade].to_sym
     
@@ -202,7 +175,11 @@ class User
       url = url[8..-1] if url.start_with?('https')
       url = url[7..-1] if url.start_with?('http')
       @new_data[key] = url
-      res = `curl --head http://#{url}`
+      res = if key == :chaine_yt
+        `curl --head https://#{url}`
+      else
+        `curl --head http://#{url}`
+      end
       line1 = res.split("\n")[0]
       return false unless line1.to_s.match(/\b200\b/)
     end

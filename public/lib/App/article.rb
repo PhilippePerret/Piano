@@ -12,7 +12,7 @@ class App
   #
   #
   def article
-    @article ||= App::Article::new(cgi["article"])
+    @article ||= App::Article::new(cgi["article"] || cgi["a"])
   end    
     
   ##
@@ -41,8 +41,9 @@ class App
     ## <%= link_to :home %>
     ##
     SHORTCUTS = {
-      :home       => {titre: "Accueil", relpath: 'main/home'},
-      :mailing    => {titre: "s'inscrire sur le mailing-list", relpath: 'main/rester_informed'}
+      :home           => {titre: "Accueil", relpath: 'main/home'},
+      :mailing        => {titre: "s'inscrire sur le mailing-list", relpath: 'main/rester_informed'},
+      :vote_articles  => {titre: "Choisissez l'ordre des prochains articles", relpath: 'main/articles_vote'}
     }
     
     ##
@@ -63,6 +64,47 @@ class App
     #
     # ---------------------------------------------------------------------
     class << self
+      
+      ##
+      #
+      # Boucle sur tous les articles
+      #
+      #
+      def each filtre = nil
+        sort_by_votes = filtre.delete(:sort_by_votes)
+        listarts = articles.dup
+        if sort_by_votes
+          listarts = listarts.sort_by{ |k,v| v.get(:votes) }.reverse
+        end
+        listarts.each do |art_id, art|
+          ok = true
+          filtre.each do |prop, value|
+            if art.get(prop) != value
+              ok = false
+              break
+            end
+          end
+          next unless ok
+          yield art
+        end
+      end
+      
+      ##
+      #
+      # Tous les articles
+      #
+      #
+      def articles
+        @articles ||= begin
+          h = {}
+          PStore::new(pstore).transaction do |ps|
+            keys = ps.roots.dup
+            keys.delete(:last_id)
+            keys.each { |key| h.merge! key => new(key) }
+          end
+          h
+        end
+      end
       
       ##
       #
@@ -145,6 +187,18 @@ class App
       else @path_init = anypath
       end
     end
+    
+    ##
+    #
+    # Retourne la valeur de la propriété +key+
+    #
+    #
+    def get key
+      PStore::new(App::Article::pstore).transaction do |ps|
+        ps[id][key]
+      end
+    end
+    
     
     ##
     #
@@ -289,12 +343,6 @@ class App
       @folder ||= File.dirname(relpath)
     end
   
-    def get key
-      PStore::new(App::Article::pstore).transaction do |ps|
-        ps[id][key]
-      end
-    end
-    
     # ---------------------------------------------------------------------
     #   Lectures
     # ---------------------------------------------------------------------
@@ -332,6 +380,21 @@ class App
     #
     def hduree_lecture
       @hduree_lecture ||= get(:duree_lecture).as_horloge
+    end
+    
+    # ---------------------------------------------------------------------
+    #
+    #   Helpers méthodes
+    #
+    # ---------------------------------------------------------------------
+    def as_li options = nil
+      options ||= {}
+      tit = get(:titre)
+      tit = idpath if tit.to_s == ""
+      (
+        tit +
+        (options[:votes] ? "cote: #{get :votes}" : '')
+      ).in_li('data-id' => id)
     end
     
   end # / App::Article

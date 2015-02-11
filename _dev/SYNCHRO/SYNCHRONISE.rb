@@ -13,7 +13,7 @@ NOTE
       2.  Elle procède à l'actualisation véritable
 =end
 
-SIMPLE_CHECK = false # mettre à faux pour procéder à la synchronisation
+SIMPLE_CHECK = true # mettre à faux pour procéder à la synchronisation
 
 
 require_relative 'class_synchro'

@@ -29,8 +29,8 @@ class User
     # Boucle sur chaque utilisateur
     #
     #
-    def each
-      all.each do |u_id, u|
+    def each type = nil
+      all(type).each do |u_id, u|
         yield u
       end
     end
@@ -39,18 +39,23 @@ class User
     #
     # Retourne un hash de tous les utilisateurs
     #
-    def all
+    def all type = nil
+      type ||= :all
       @all ||= begin
-        h = {}
+        h = {all: {}}
+        GRADES.keys.each do |gid| h.merge! gid => {} end
         PStore::new(pstore).transaction do |ps|
-          user_ids = ps.roots
-          user_ids = user_ids.reject{|e| e == :last_id}
+          user_ids = ps.roots.reject{|e| e == :last_id}
           user_ids.each do |user_id|
-            h.merge! user_id => User::get(user_id)
+            u = User::get(user_id)
+            h[:all].merge! user_id => u
+            h[ps[user_id][:grade]].merge! user_id => u
           end
         end
         h
       end
+      @all[type]
     end
+    
   end
 end

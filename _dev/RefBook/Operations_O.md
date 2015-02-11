@@ -24,6 +24,13 @@ Ces opérations sont définies dans le fichier&nbsp;:
       o1:         '<première argument>',
       ...
       oX:         '<10e argumnet>'
+      --------------
+        optionnel
+      --------------
+      form_id     ID du formulaire
+      onclick:    La méthode javascript à appeler avant de soumettre le
+                  formulaire (pour confirmation, vérification ou préparation
+                  des données)
     )
 
 
