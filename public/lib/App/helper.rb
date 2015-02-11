@@ -15,7 +15,7 @@ class App
   #
   # Si +titre+ est un symbole, c'est un raccouci qui définit le titre et
   # le chemin relatif. Cf. dans le fichier App/article.rb la constante 
-  # SHORTCUTS.
+  # App::Article::SHORTCUTS.
   #
   # +options+
   #   form:       Si TRUE (par défaut), retourne un lien sous forme de 
@@ -26,7 +26,7 @@ class App
     options.merge!(form: true) unless options.has_key?(:form)
     if titre.class == Symbol
       # => Un lien par raccourci
-      dshortcut = SHORTCUTS[titre]
+      dshortcut = App::Article::SHORTCUTS[titre]
       titre       = dshortcut[:titre]
       relpath_art = dshortcut[:relpath]
     end
@@ -50,10 +50,10 @@ class App
   # du dossier d'article courant
   #
   def link_to_tdm
-    return "" if article_name == "_tdm_.erb"
+    return "" if article.name == "_tdm_.erb"
     <<-HTML
 <div class='link_to_tdm'>
-  #{link_to 'Table des mati&egrave;res', "#{folder_article}/"}
+  #{link_to 'Table des mati&egrave;res', "#{article.folder}/"}
 </div>
     HTML
   end
@@ -66,7 +66,7 @@ class App
   #
   def link_offline_to_edit_article
     return "" if online?
-    href  = "txmt://open/?url=file://#{article_full_path}"
+    href  = "txmt://open/?url=file://#{article.fullpath}"
     lk    = "<a href='#{href}'>[edit]</a>"
     "<div class='right small'>#{lk}</div>"
   end

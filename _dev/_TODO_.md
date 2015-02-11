@@ -1,9 +1,9 @@
-* Dans le fichier "./public/lib/administration/Fichier/fichier_ins.rb", il faut définir le lien pour updater le fichier online.
-  La difficulté de cette méthode à trouver est qu'elle doit être indépendante des articles alors que tout fonctionne par article. Peut-être un autre paramètre (operation ?) qui permette d'appeler des méthodes indépendamment des vues et reviennent dans ces vues.
-* Utiliser la méthode sur l'édition des membres pour actualiser le pstore des membres online.
+* Page décrivant les grades
 * Faire un pstore pour les articles à venir (pour pouvoir voter, etc.)
+* Identification d'un membre (un article + gestion session)
+* Profil d'un membre retenu
 
-* Article à venir : possiblité pour le visiteur de "push" l'article pour en faire une priorité
+* Article à venir : possiblité pour le visiteur de "pusher" l'article pour en faire une priorité
 * Mettre en place une rubrique “Les âneries sur le piano” ou "sur la musique"
   - Visiter HP et relever toutes les bêtises racontées
   - Penser à mettre en garde contre les livres eux-même : cf. Fassina.

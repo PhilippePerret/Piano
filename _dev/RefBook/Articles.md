@@ -54,7 +54,7 @@ On peut aussi utiliser des raccourcis avec `link_to`. Par exemple&nbsp;:
 
     <%= link_to :home %>
 
-Ces raccourcis sont définis dans le fichier `./public/lib/App/article.rb`, dans la constante `SHORTCUTS`.
+Ces raccourcis sont définis dans le fichier `./public/lib/App/article.rb`, dans la constante `App::Article::SHORTCUTS`.
 
 <a name='creer_nouveau_dossier_article'></a>
 ##Créer un nouveau dossier article
@@ -64,12 +64,12 @@ Ces raccourcis sont définis dans le fichier `./public/lib/App/article.rb`, dans
 
       <h1>TITRE DE CE DOSSIER</h1>
       <%= link_to_tdm %>
-      <%= article_view %>
+      <%= article.view %>
       <%= link_to_tdm %>
 * Créer le fichier `_tdm_.erb` qui va contenir la table des matières du dossier d'articles. Dans ce fichier, il suffit de coller&nbsp;:
 
     <%=
-      tdm_dossier_article([
+      App::Article::tdm_with([
         ["<titre 1>", "<path/to/article>"],
         ["<titre 2>", "<path/to/article>"],
         etc.

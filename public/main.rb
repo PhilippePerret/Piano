@@ -1,19 +1,48 @@
 # encoding: UTF-8
 
-require './public/lib/required'
+begin
 
-##
-## Une opération "o" est peut-être définie
-##
-app.opere
+  require './public/lib/required'
 
-##
-## On charge l'article avant de concevoir le code de la
-## page pour avoir tous les éléments
-##
-app.load_article
+  ##
+  ## On détruit la dernière session
+  ##
+  app.session.delete_last
 
-##
-## On crée la page finale
-##
-app.output
+  ##
+  ## Une opération "o" est peut-être définie
+  ##
+  app.opere
+
+  ##
+  ## On charge l'article avant de concevoir le code de la
+  ## page pour avoir tous les éléments
+  ##
+  app.article.load
+
+  debug "Article précédent : #{app.session['last_article']}"
+  debug "Article courant : #{app.current_article}"
+  debug "ID Session : #{app.session.id}"
+
+  ##
+  ## On mémorise l'article actuellement affiché
+  ##
+  app.session['last_article'] = app.article.id
+
+  ##
+  ## On crée la page finale
+  ##
+  app.output
+
+rescue Exception => e
+  cgi = CGI::new('html4')
+  cgi.out{ 
+    cgi.head { }
+    cgi.html {
+      '<pre>' + 
+      "ERREUR FATALE : #{e.message.gsub(/</,'&lt;')}\n\n" +
+      e.backtrace.join("\n") +
+      '</pre>'
+    } 
+  }
+end

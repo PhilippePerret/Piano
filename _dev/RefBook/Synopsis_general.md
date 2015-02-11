@@ -10,7 +10,7 @@ De façon très schématique&nbsp;:
       -> app.output
     * La méthode `output` charge la vue `gabarit.erb`
     * `gabarit.erb` charge les éléments de page dont `content.erb`
-    * `content.erb` appelle la méthode `<app>#load_article` qui charge
+    * `content.erb` appelle la méthode `<app>.article.load` qui charge
       l'article demandé.
 
 ##Réflexions

@@ -3,7 +3,7 @@ class User
   
   attr_reader :id
   
-  def initialize user_id
+  def initialize user_id = nil
     @id = if user_id.to_s.strip == ""
       user_id = nil 
     else
@@ -23,7 +23,22 @@ class User
   def chaine_yt;    @chaine_yt    ||= data[:chaine_yt]    end
   def site;         @site         ||= data[:site]         end
   def description;  @description  ||= data[:description]  end
+  def password;     @password     ||= data[:password]     end
+  def cpassword;    @cpassword    ||= data[:cpassword]    end
   
+  # ---------------------------------------------------------------------
+  #
+  #   Méthodes-propriétés volatiles
+  #
+  # ---------------------------------------------------------------------
+  def remote_ip
+    @remote_ip ||= begin
+      raddr   = ENV['REMOTE_ADDR']
+      httpid  = ENV['HTTP_CLIENT_IP']
+      httpx   = ENV['HTTP_X_FORWARDED_FOR']
+      raddr || httpid || httpx # TODO: affiner
+    end
+  end
   # ---------------------------------------------------------------------
   #
   #   Méthode d'helper
@@ -126,6 +141,8 @@ class User
           chaine_yt:    "",
           description:  "",
           grade:        :no_grade,
+          password:     nil,
+          cpassword:    nil,
           created_at:   Time.now.to_i
         }
       end
@@ -186,7 +203,6 @@ class User
       url = url[7..-1] if url.start_with?('http')
       @new_data[key] = url
       res = `curl --head http://#{url}`
-      debug "res curl : #{res.inspect}"
       line1 = res.split("\n")[0]
       return false unless line1.to_s.match(/\b200\b/)
     end

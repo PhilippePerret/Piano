@@ -15,6 +15,9 @@ class App
   def pstore_connexions
     @pstore_connexions ||= File.join(folder, 'data', 'pstore', 'connexions.pstore')
   end
+  def pstore_connexions_courantes
+    @pstore_connexions_courantes ||= File.join(folder, 'data', 'pstore', 'connexions_courantes.pstore')
+  end
   def pstore_mailing
     @pstore_mailing ||= File.join(folder, 'data', 'pstore', 'mailing_list.pstore')
   end

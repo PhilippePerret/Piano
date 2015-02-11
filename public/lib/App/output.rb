@@ -8,8 +8,8 @@ class App
   # Produit le code retourné au client
   #
   def output
+    connexions.add
     cgi.out{ cgi.html { code_html } }
-    new_connexion
   end 
   
   ##

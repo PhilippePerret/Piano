@@ -1,8 +1,17 @@
 # encoding: UTF-8
 class User
   class << self
+    
+    ##
+    ## User courant (on peut utiliser la fonction `cu')
+    ##
     attr_accessor :current
+    
+    ##
+    ## Hash des instances d'user instanciés
+    ##
     attr_reader   :instances
+
     ##
     #
     # Retourne l'utilisateur d'ID +user_id+

@@ -6,115 +6,333 @@ Méthode d'instance gérant les articles
 =end
 class App
   
-  attr_reader :article_content
-  
-  ##
-  ## Raccourcis à utiliser avec la méthode d'helper `link_to'. Par exemple :
-  ## <%= link_to :home %>
-  ##
-  SHORTCUTS = {
-    :home       => {titre: "Accueil", relpath: 'main/home'},
-    :mailing    => {titre: "s'inscrire sur le mailing-list", relpath: 'main/rester_informed'}
-  }
-  
   ##
   #
-  # Méthode principal, appelée par la vue `content.erb', qui retourne
-  # le code de l'article.
+  # Instance App::Article de l'article courant
   #
-  # @return le code HTML complet de l'article
   #
-  def load_article
-    @article_content = view( "article/#{article_base}" )
-  end
-  
+  def article
+    @article ||= App::Article::new(cgi["article"])
+  end    
+    
   ##
   #
-  # @return le path relatif du fichier ERB principal à afficher dans le
-  # dossier ./public/page/article/
+  # ID-Path de l'article courant (raccourci)
   #
-  def article_base
-    if folder_article == "main"
-      "#{relpath_article}"
-    else
-      "#{folder_article}/_body_.erb"
-    end
+  def current_article
+    @current_article ||= article.idpath
   end
   
-  ##
-  #
-  # Méthode appelée par les fichier `_body_.erb' des dossiers d'article
-  # retournant le code de l'article précisément demandé.
-  #
-  def article_view
-    view "article/#{folder_article}/#{article_name}"
-  end
-  
-  
-  ##
-  #
-  # Retourne le chemin complet à l'article demandé
-  # Utilisé seulement pour l'édition de l'article (dans les autres cas,
-  # c'est le fichier _body_.erb qui est chargé et qui charge l'article)
-  #
-  def article_full_path
-    @article_full_path ||= File.expand_path(File.join('.','public','page','article',folder_article, article_name))
-  end
-  
-  ##
-  #
-  # @return le dossier (nom) de l'article courant
-  #
-  def folder_article
-    @folder_article ||= File.dirname(relpath_article)
-  end
-  
-  ##
-  #
-  # @return le chemin relatif à l'article à afficher
-  # 
-  # Il doit être contenu dans le paramètre "article". S'il est non
-  # défini, c'est "main/home"
-  #
-  # Tous les articles se trouvent dans le dossier ./public/page/article/
-  #
-  def relpath_article
-    @relpath_article ||= begin
-      rp = cgi["article"]
-      rp = "main/home" if rp.to_s == ""
-      rp.concat('.erb') unless rp.end_with? '.erb'
-      rp
-    end
-  end
-  
-  def article_name
-    @article_name ||= begin
-      artname = File.basename(relpath_article)
-      artname = "_tdm_.erb" if artname.to_s == ".erb"
-      artname
-    end
-  end
-  
-  ##
-  #
-  # @return le code HTML pour une table des matières d'un dossier
-  # d'article.
-  #
-  # C'est le code à insérer dans le fichier _tdm_.erb
-  #
-  def tdm_dossier_article arr_titres
-    c = "<ul class='tdm'>"
-    c << arr_titres.collect do |dtitre|
-      titre, artname, a_venir = dtitre
-      '<li>' + link_to( titre, path_to_article(artname) ) + (a_venir ? img_a_venir : '') + '</li>'
-    end.join("")
-    c << "</ul>"
-    return c
-  end
-  def path_to_article rp
-    File.join(folder_article, rp)
-  end
   def img_a_venir
     @img_a_venir ||= "<img class='avenir' src='./public/page/img/a_venir.png' />"
   end
+  
+  # ---------------------------------------------------------------------
+  #
+  #   App::Article
+  #
+  # ---------------------------------------------------------------------
+  class Article
+    
+    ##
+    ## Raccourcis pour atteindre des articles courants
+    ##
+    ## À utiliser avec la méthode d'helper `link_to'. Par exemple :
+    ## <%= link_to :home %>
+    ##
+    SHORTCUTS = {
+      :home       => {titre: "Accueil", relpath: 'main/home'},
+      :mailing    => {titre: "s'inscrire sur le mailing-list", relpath: 'main/rester_informed'}
+    }
+    
+    ##
+    ## États que peut avoir l'article
+    ##
+    ETATS = {
+      0 => {hname: "Indéfini",      value: 0},
+      1 => {hname: "En projet",     value: 1},
+      2 => {hname: "Projet",        value: 2},
+      7 => {hname: "Rédaction",     value: 7},
+      8 => {hname: "Finalisation",  value: 8},
+      9 => {hname: "Achevé",        value: 9}
+    }
+    
+    # ---------------------------------------------------------------------
+    #
+    #   Classe App::Article
+    #
+    # ---------------------------------------------------------------------
+    class << self
+      
+      ##
+      #
+      # Retourne le path complet de l'article de chemin relatif +rp+
+      #
+      def path_to rp
+        File.join(folder, rp)
+      end
+      
+      ##
+      #
+      # @return le code HTML de la table des matière avec les titres
+      # d'articles définis dans +arr_titres+
+      #
+      def tdm_with arr_titres
+        c = "<ul class='tdm'>"
+        c << arr_titres.collect do |dtitre|
+          titre, artname, a_venir = dtitre
+          '<li>' + app.link_to( titre, File.join(app.article.folder, artname) ) + (a_venir ? app.img_a_venir : '') + '</li>'
+        end.join("")
+        c << "</ul>"
+        return c
+      end
+      
+      ##
+      #
+      # Dossier contenant tous les articles
+      #
+      #
+      def folder
+        @folder ||= File.join('.', 'public', 'page', 'article')
+      end
+      
+      ##
+      #
+      # Pstore des données des articles
+      #
+      def pstore
+        @pstore ||= File.join('.', 'data', 'pstore', 'articles.pstore')
+      end
+      
+      ##
+      #
+      # PStore contenant la table de correspondance entre l'idpath et
+      # l'ID absolu de l'article
+      #
+      def pstore_idpath_to_id
+        @pstore_idpath_to_id ||= File.join('.', 'data', 'pstore', 'articles_idpath_to_id.pstore')
+      end
+      
+    end
+    # ---------------------------------------------------------------------
+    #
+    #   Instance App::Article
+    #
+    # ---------------------------------------------------------------------
+    
+    ##
+    ## Path fournie en argument
+    ##
+    attr_reader :path_init
+    
+    ##
+    ## Contenu confectionné de l'article
+    ##
+    attr_reader :content
+    
+    ##
+    #
+    # Instanciation
+    #
+    # +anypath+ peut être :
+    #     * L'ID absolu de l'article
+    #     * Une path quelconque, se terminant par "/" pour
+    #       une table des matières, sans ".erb" ou avec, etc.
+    #
+    def initialize anypath
+      case anypath
+      when Fixnum   then @id = anypath
+      else @path_init = anypath
+      end
+    end
+    
+    ##
+    #
+    # Méthode principal, appelée par la vue `content.erb', qui définit
+    # le code de l'article et le place dans @content
+    #
+    def load
+      ##
+      ## Confection du contenu de l'article
+      ##
+      @content = app.view( "article/#{base}" )
+      ##
+      ## On ajoute un chargement de cet article
+      ##
+      add_lecture
+    end
+    
+    ##
+    #
+    # Data par défaut
+    #
+    #
+    def default_data
+      @default_data ||= {
+        id:             @id,
+        idpath:         idpath,
+        titre:          "",       # Titre entré manuellement
+        x:              0,        # Nombre de chargements
+        duree_lecture:  0,        # Durée totale de lecture
+        etat:           0,        # État de l'article (cf. ETATS)
+        votes:          0,        # Valeur de vote pour cet article
+        updated_at:     Time.now.to_i,
+        created_at:     Time.now.to_i
+      }
+    end
+    
+    ##
+    #
+    # ID absolu de l'article (dans la table de correspondance idpath<->id)
+    #
+    # Si l'ID n'est pas encore défini, un nouvel id est défini et
+    # ajouté à la table de correspondance des idpath<->id
+    #
+    def id
+      @id ||= begin
+        id = nil
+        PStore::new(App::Article::pstore_idpath_to_id).transaction do |ps|
+          id = ps.fetch( idpath, nil )
+          if id.nil?
+            # Cet article n'a pas encore été consigné
+            id = ps.fetch(:last_id, 0) + 1
+            ps[:last_id] = id
+            ps[id]      = idpath
+            ps[idpath]  = id
+          end
+        end
+        id
+      end
+    end
+    ##
+    #
+    # Identifiant path de l'article
+    #
+    # C'est le chemin relatif dans ./public/page/article, sans l'extension
+    # Par exemple : 'theme/contre/lire_en_jouant'
+    #
+    def idpath
+      @idpath ||= begin
+        if @id.nil?
+          # => Article instancié par son path
+          rp = path_init.to_s.sub(/\.erb$/,'')
+          if rp.to_s == ""        then rp = "main/home"
+          elsif rp.end_with? "/"  then rp.concat("_tdm_")
+          end
+          rp
+        else
+          # => Article instancié par son ID
+          PStore::new(App::Article::pstore_idpath_to_id).transaction do |ps|
+            ps[id]
+          end
+        end
+      end
+    end
+    
+    ##
+    #
+    # Méthode appelée par les fichier `_body_.erb' des dossiers d'article
+    # retournant le code de l'article précisément demandé.
+    #
+    def view
+      app.view "article/#{folder}/#{name}"
+    end
+    
+    
+    ##
+    #
+    # @return le path relatif du fichier ERB principal à afficher dans le
+    # dossier ./public/page/article/
+    #
+    # Pour un article du dossier 'main', on retourne l'article lui-même
+    # Sinon, on retourne le fichier _body_.erb qui doit charger l'article.
+    #
+    def base
+      if folder == "main"
+        "#{relpath}"
+      else
+        "#{folder}/_body_.erb"
+      end
+    end
+    
+    ##
+    #
+    # Chemin relatif à l'article
+    #
+    def relpath
+      @relpath ||= "#{idpath}.erb"
+    end
+    
+    ##
+    #
+    # Retourne le chemin complet à l'article demandé
+    # Utilisé seulement pour l'édition de l'article (dans les autres cas,
+    # c'est le fichier _body_.erb qui est chargé et qui charge l'article)
+    #
+    def fullpath
+      @fullpath ||= File.expand_path(File.join('.','public','page','article',folder, name))
+    end
+    
+    ##
+    #
+    # Nom du fichier de l'article
+    #
+    def name
+      @name ||= File.basename(relpath)
+    end
+    
+    ##
+    #
+    # @return le dossier (nom) de l'article
+    #
+    def folder
+      @folder ||= File.dirname(relpath)
+    end
+  
+    def get key
+      PStore::new(App::Article::pstore).transaction do |ps|
+        ps[id][key]
+      end
+    end
+    
+    # ---------------------------------------------------------------------
+    #   Lectures
+    # ---------------------------------------------------------------------
+    
+    ##
+    #
+    # Ajoute une lecture de l'article courant
+    #
+    #
+    def add_lecture
+      PStore::new(App::Article::pstore).transaction do |ps|
+        ps[id] = default_data unless ps.roots.include? id
+        ps[id][:x] += 1
+        ps[id][:updated_at] = Time.now.to_i
+      end
+    end
+    
+    ##
+    #
+    # Ajoute une durée de lecture de l'article
+    #
+    #
+    def add_duree_lecture duree
+      PStore::new(App::Article::pstore).transaction do |ps|
+        ps[id][:duree_lecture] += duree
+        ps[id][:updated_at] = Time.now.to_i
+        @hduree_lecture = ps[id][:duree_lecture]
+      end
+    end
+    
+    ##
+    #
+    # Durée de lecture en format humain
+    #
+    #
+    def hduree_lecture
+      @hduree_lecture ||= get(:duree_lecture).as_horloge
+    end
+    
+  end # / App::Article
 end
