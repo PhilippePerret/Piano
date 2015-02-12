@@ -14,18 +14,6 @@
 ##
 edition_membres   = offline? && self.respond_to?(:select_grade)
 user_edite_profil = edition_membres == false
-debug "edition_membres   : #{edition_membres.inspect}"
-debug "user_edite_profil : #{user_edite_profil.inspect}"
-debug "param('user_id') = #{param('user_id')}"
-debug "Réponse à user ? #{self.respond_to?(:select_grade) ? 'OUI' : 'NON'}"
-debug "user : #{user.inspect.gsub(/</, '&lt;')}"
-# if user_edite_profil === true
-#   debug "Je passe ici"
-#   user = cu
-# end
-# debug "user : #{user.inspect.gsub(/</, '&lt;')}"
-debug "user.id : #{user.id}"
-
 %>
 
 <% 
@@ -33,13 +21,17 @@ debug "user.id : #{user.id}"
 ## Mettre une barrière ici pour empêcher d'atteindre cette section
 ## si on n'est pas identifié
 ##
-if user_edite_profil
+if user_edite_profil && false == cu.identified?
 %>
-  <%# TODO %>
+  <% raise "Pirate !" %>
 <% end %>
 
 <form id="user_edit_form" action="index.rb" method="POST" accept-charset="utf-8">
-  <%= "admin/membres".in_hidden(name: 'article') %>
+  <% if edition_membres %>
+    <%= "admin/membres".in_hidden(name: 'article') %>
+  <% else %>
+    <%= "user/profil".in_hidden(name: 'article') %>
+  <% end %>
   <%= "enregistrer".in_hidden(name: 'operation') %>
   <% if edition_membres %>
     <%= row("Pseudo",         user.pseudo.in_input_text(name: 'user_pseudo', placeholder: "Pseudo")) %>
@@ -47,6 +39,7 @@ if user_edite_profil
   <% else %>
     <%= row("", user.pseudo, {class: 'bold'})   %>
     <%= user.id.to_s.in_hidden(name: 'user_id') %>
+    <%= user.pseudo.to_s.in_hidden(name: 'user_pseudo') %>
   <% end %>
   <%= row("Mail",           user.mail.in_input_text(name: 'user_mail', placeholder: 'Mail'))   %>
   <% if edition_membres %>
@@ -56,10 +49,11 @@ if user_edite_profil
     <%= row("Nouveau code", param('new_password').to_s.in_input_text(name: 'user_new_password')) %>
     <%= row("Confirmation code", param('new_password_confirmation').to_s.in_input_text(name: 'user_new_password_confirmation')) %>
     <%= row( "", user.hgrade ) %>
+    <%= user.grade.to_s.in_hidden(name: 'user_grade')%>
   <% end %>
   <%= row("Blog externe",   user.blog.to_s.in_input_text(name: 'user_blog', placeholder: "Blog")) %>
   <%= row("Chaine YouTube", user.chaine_yt.to_s.in_input_text(name: 'user_chaine_yt', placeholder: 'Chaine YouTube')) %>
   <%= row("Site perso",     user.site.to_s.in_input_text(name: 'user_site', placeholder: 'Site')) %>
-  <%= row("Description",    user.description.in_textarea(name: 'user_description', placeholder: 'Description')) %>
+  <%= row("Description",    user.description.in_textarea(name: 'user_description', placeholder: 'Description', style: "height:200px;")) %>
   <%= row("", "Enregistrer".in_submit, {class: 'buttons'}) %>
 </form>

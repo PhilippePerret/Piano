@@ -105,6 +105,7 @@ class String
   def in_tr       attrs = nil;  html_balise 'tr',       attrs end
   def in_td       attrs = nil;  html_balise 'td',       attrs end
   
+  def in_dl       attrs = nil;  html_balise 'dl',       attrs end
   def in_dt       attrs = nil;  html_balise 'dt',       attrs end
   def in_dd       attrs = nil;  html_balise 'dd',       attrs end
 

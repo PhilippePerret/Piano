@@ -60,7 +60,7 @@ class App
   def link_to_tdm
     return "" if article.name == "_tdm_.erb"
     <<-HTML
-<div class='link_to_tdm'>
+<div class='link_to_tdm fright'>
   #{link_to 'Table des mati&egrave;res', "#{article.folder}/"}
 </div>
     HTML

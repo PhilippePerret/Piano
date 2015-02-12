@@ -1,3 +1,7 @@
 <h2>Édition profil</h2>
-
-<%= view('article/admin/membres/profil_form.erb', self.bind) %>
+<% 
+def user
+  @user ||= User::current
+end
+%>
+<%= view('article/user/profil_form.erb') %>

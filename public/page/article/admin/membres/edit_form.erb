@@ -31,5 +31,5 @@ fichier = Fichier.new('data/pstore/membres.pstore')
 %>
 <fieldset id="fs_edition_membre">
   <legend>Édition/création membre</legend>
-  <%= view('profil_form') %>
+  <%= app.view('article/user/profil_form.erb', App::Membres::bind) %>
 </fieldset>

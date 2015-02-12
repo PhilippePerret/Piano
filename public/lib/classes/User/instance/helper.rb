@@ -23,6 +23,12 @@ class User
     end.join("")
   end
   
+  def hdescription
+    description.split("\n").collect do |p|
+      ERB.new(p).result(app.bind).in_p
+    end.join("")
+  end
+  
   def infos_persos_in_dd
     c  = []
     if blog

@@ -1,10 +1,15 @@
 <h2>Votre profil</h2>
 
-[Cette partie est en construction]
-
 <div class='p small right'>
   <%= link_to "Modifier votre profil", :edit_profil %>
 </div>
+
+<%= row( "Pseudo", cu.pseudo ) %>
+<%= row( "Grade",  cu.hgrade)  %>
+<%= row( "Inscription", cu.get(:created_at).as_human_date ) %>
+<%= row( "Mail", cu.mail ) %>
+<%= row( "Description", cu.hdescription ) %>
+
 
 <div class='p small right'>
   <%= link_to "Explication des grades", 'main/grades' %>

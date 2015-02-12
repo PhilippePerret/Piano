@@ -94,14 +94,18 @@ class Synchro
             puts "= #{fpath} UPLOADÉ"
           elsif fdata[:existe_offline] === false || fdata[:older] == :online
             ##
-            ## Download du fichier
+            ## Download / destruction du fichier 
             ##
-            ## TODO: Ici, il faudrait pouvoir avoir le choix de détruire
-            ## le fichier ONLINE
-            ##
-            `if [ ! -d "./#{folder_path}" ];then mkdir -p "./#{folder_path}";fi`
-            `scp -p #{SERVEUR_SSH}:www/#{fpath} ./#{fpath}`
-            puts "= #{fpath} DOWNLOADÉ"
+            unless LONELY_ONLINE_DO_NOTHING
+              if LONELY_ONLINE_REMOVE
+                `ssh #{SERVEUR_SSH} "rm ./www/#{fpath}"`
+                puts "= #{fpath} DÉTRUIT ONLINE"
+              else
+                `if [ ! -d "./#{folder_path}" ];then mkdir -p "./#{folder_path}";fi`
+                `scp -p #{SERVEUR_SSH}:www/#{fpath} ./#{fpath}`
+                puts "= #{fpath} DOWNLOADÉ"
+              end
+            end
           end
         end
       end

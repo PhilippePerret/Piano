@@ -4,12 +4,6 @@
 ## Boutons principaux de la marge droite
 ##
 %>
-<% 
-##
-## Suivant que l'user est identifié ou non
-##
-menu_login_logout = cu.identified? ? ["Se déconnecter", 'user/logout'] : ["S’identifier", 'user/login']
-%>
 <%
 arr_menus = [
   ['Accueil', "main/home"],
@@ -22,9 +16,19 @@ arr_menus = [
   :separator,
   ['Membres du cercle', "main/membres"],
   ['Postuler au cerle', "main/postuler"],
-  :separator,
-  menu_login_logout
+  :separator
 ]
+
+##
+## Suivant que l'user est identifié ou non, on ajoute certains menus
+##
+
+if cu.identified?
+  arr_menus << ["Se déconnecter", 'user/logout']
+  arr_menus << ["Votre profil", 'user/profil']
+else
+  arr_menus << ["S’identifier", 'user/login']
+end
 if App::offline?
   arr_menus += [
     :separator,
