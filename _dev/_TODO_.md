@@ -1,3 +1,13 @@
+* Pouvoir évaluer le code du mail comme une vue ERB
+* Ajout du code secret dans l'édition des membres
+* Procédure de login
+* Ajouter un menu principal "S'identifier"
+* Page sur les grades (pour y renvoyer Serge)
+* Nous avertir quand nouveau vote
+* Avertir Serge
+* Updater tout online
+* Obtenir le titre de l'article tout de suite
+
 * Ajouter l'outil "Init all votes" pour la section administration des articles
 * Page décrivant les grades
 * Identification d'un membre (un article + gestion session)

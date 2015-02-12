@@ -1,0 +1,27 @@
+<p class='italic'>
+Merci de vous identifier à l'aide du formulaire ci-dessous.
+</p>
+
+<form id="login_form" action="index.rb" method="POST" accept-charset="utf-8">
+  <%= "check_login".in_hidden(name: 'o') %>
+  <% 
+  ##
+  ## On mémorise si nécessaire l'article qui devra suivre
+  next_article = param('na')
+  next_article = 'user/profil' if next_article.to_s == ""
+  %>
+  <%= next_article.in_hidden(name: 'na') %>
+  <% 
+  ##
+  ## Les champs pour s'identifier
+  ##
+  %>
+  <%= row("Votre mail", param('user_mail').to_s.in_input_text(name:'user_mail')) %>
+  <%= row("Code secret", "".in_input(type:'password', name: 'user_password')) %>
+  <% 
+  ##
+  ## Bouton pour soumettre le formulaire
+  ##
+  %>
+  <%= row("", "M'identifier".in_submit(class:'btn'), {class: 'buttons'}) %>
+</form>

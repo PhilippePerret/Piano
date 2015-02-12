@@ -14,6 +14,8 @@ class App
     ##
     SHORTCUTS = {
       :home               => {titre: "Accueil", relpath: 'main/home'},
+      :profil             => {titre: "Votre profil", relpath: 'user/profil'},
+      :edit_profil        => {titre: "Édition de votre profil", relpath: 'user/edit_profil'},
       :mailing            => {titre: "s'inscrire sur le mailing-list", relpath: 'main/rester_informed'},
       :vote_articles      => {titre: "Choisissez l'ordre des prochains articles", relpath: 'main/articles_vote'},
       :articles_en_projet => {titre: "Voir la liste des articles en projet", relpath: 'main/articles'}
@@ -26,7 +28,11 @@ class App
   #
   #
   def article
-    @article ||= App::Article::new(cgi["article"] || cgi["a"])
+    @article ||= begin
+      art = param('article')
+      art = param('a') if art.to_s == ""
+      App::Article::new(art)
+    end
   end    
     
   ##

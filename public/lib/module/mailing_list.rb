@@ -29,8 +29,10 @@ class App
         raise "Inaccessible en ONLINE" if online?
         followers.collect do |id, duser|
           htime = Time.at(duser[:created_at]).strftime("%d %m %Y - %H:%M")
-          "#{duser[:name]} - #{duser[:mail]} - depuis #{htime}".in_div
-        end.join("\n")
+          (
+            "&nbsp;&nbsp;#{duser[:name]} - #{duser[:mail]} (#{htime})".in_checkbox(id: "cb-#{id}", name: "cb-#{id}")
+          ).in_li
+        end.join("\n").in_ul(id: 'followers', style: "list-style:none;")
       end
       
       ##
@@ -59,17 +61,26 @@ class App
       def exec_envoyer_annonce
         raise "Inaccessible en ONLINE" if online?
         require_library 'mail'
+        require './data/secret/data_tilleul'
         data_mail = {
           to:             nil,
+          from:           DATA_TILLEUL[:mail],
           subject:        param(:annonce_titre),
           message:        param(:annonce_texte),
           force_offline:  true
         }
+        nombre_envois = 0
         followers.each do |id, duser|
-          data_mail.merge! to: duser[:mail]
-          Mail::new(data_mail).send
+          if param("cb-#{id}") == "on"
+            data_mail.merge! to: duser[:mail]
+            Mail::new(data_mail).send
+            nombre_envois += 1
+            debug "MAIL pour #{duser[:name]}"
+          else
+            debug "PAS DE MAIL pour #{duser[:name]}"
+          end
         end
-        flash "Mail envoyé à #{followers.count} followers"
+        flash "Mail envoyé à #{nombre_envois} followers (cf. le détail dans le débug)"
       end
       
       # ---------------------------------------------------------------------
@@ -155,6 +166,10 @@ class App
         `scp piano@ssh.alwaysdata.com:www/#{relpath_pstore} ./#{relpath_pstore}`
         set_last_time :download_pstore_mailing
         return true
+      end
+
+      def upload_pstore
+        `scp ./#{relpath_pstore} piano@ssh.alwaysdata.com:www/#{relpath_pstore}`
       end
       
       ##

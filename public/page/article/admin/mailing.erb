@@ -11,7 +11,6 @@ Note&nbsp;: Les données des followers sont ramenées du serveur distant toutes 
 
 <h3>Liste des followers</h3>
 
-<%= Mailing::show_followers %>
 
 <h3>Formulaire d'annonce à tous les followers</h3>
 <% 
@@ -20,6 +19,12 @@ Note&nbsp;: Les données des followers sont ramenées du serveur distant toutes 
 ##
 %>
 <form id='form_annonce_followers' action="index.rb" method="POST" accept-charset="utf-8">
+  <div class='right small'>
+    <%= "Décocher tous".in_a(onclick: "$.proxy(Mailing,'decocher_all_followers')()") %>
+    &nbsp;|&nbsp;
+    <%= "Cocher tous".in_a(onclick: "$.proxy(Mailing,'cocher_all_followers')()") %>
+  </div>
+  <%= Mailing::show_followers %>
   <%= "admin/mailing".in_hidden(name: 'article') %>
   <%= "envoyer_annonce".in_hidden(name: 'operation') %>
   <div class='row'>
@@ -27,9 +32,9 @@ Note&nbsp;: Les données des followers sont ramenées du serveur distant toutes 
     <span class="value"><%= (param(:annonce_titre)||"Nouvel article").in_input_text(name: 'annonce_titre') %></span>
   </div>
   <div>Texte de l'annonce&nbsp;:</div>
-  <textarea name="annonce_texte" rows="8"><%= param(:annonce) || "Bonjour,\n\n" %></textarea>
+  <textarea name="annonce_texte" rows="8"><%= param(:annonce_texte) || "Bonjour,\n\n" %></textarea>
   <div class='row buttons'>
     <span class="libelle"></span>
-    <span class="value"><%= "Annoncer".in_submit %></span>
+    <span class="value"><%= "Envoyer".in_submit %></span>
   </div>
 </form>

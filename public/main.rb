@@ -8,7 +8,13 @@ begin
   ## On détruit la dernière session
   ##
   app.session.delete_last
-
+  
+  ##
+  ## On essaie de reconnaitre le visiteur courant s'il
+  ## est loggué
+  ##
+  User::retrieve_current
+  
   ##
   ## Une opération "o" est peut-être définie
   ##
@@ -20,9 +26,9 @@ begin
   ##
   app.article.load
 
-  debug "Article précédent : #{app.session['last_article']}"
-  debug "Article courant : #{app.current_article}"
-  debug "ID Session : #{app.session.id}"
+  # debug "Article précédent : #{app.session['last_article']}"
+  # debug "Article courant : #{app.current_article}"
+  # debug "ID Session : #{app.session.id}"
 
   ##
   ## On mémorise l'article actuellement affiché

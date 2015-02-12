@@ -1,5 +1,18 @@
 <h1>Postuler au <%= short_name %></h1>
 
+
+<% 
+##
+## Si le visiteur est identifié, il est déjà membre, il ne peut
+## donc pas postuler
+##
+%>
+<% if cu.identified? %>
+<p>
+Vous êtes déjà membre du <%= short_name %>, <%= cu.pseudo %>, vous ne pouvez donc pas postuler ;-).
+</p>
+<% else %>
+
 <% 
 if param(:operation).to_s == "soumission_requete"
 
@@ -66,3 +79,6 @@ Pour ce faire, utiliser le formulaire ci-dessous, qui sera transmis à l'ensembl
 </form>
 
 <% end %>
+<% 
+end # si l'user n'est pas identifié
+%>

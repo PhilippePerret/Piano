@@ -26,6 +26,62 @@ class User
     
     ##
     #
+    # Retourne l'user dont le mail est +umail+
+    #
+    def get_with_mail umail
+      user_found = nil
+      PStore::new(table_mail_to_id).transaction do |ps|
+        user_found = ps.fetch(umail, nil)
+      end
+      unless user_found.nil?
+        user_found = User::get( user_found )
+      else
+        ##
+        ## On le cherche dans la table des membres et on
+        ## l'enregistre dans la table de correspondance si on
+        ## l'a trouvé
+        ##
+        PStore::new(pstore).transaction do |ps|
+          user_ids = ps.roots.reject{|e| e == :last_id}
+          user_ids.each do |user_id|
+            if ps[user_id][:mail] == umail
+              user_found = User::get(user_id)
+              break
+            end
+          end
+        end
+        unless user_found.nil?
+          ##
+          ## Il faut l'enregistre dans la table de correspondance
+          ##
+          PStore::new(table_mail_to_id).transaction do |ps|
+            ps[user_found.id]   = user_found.mail
+            ps[user_found.mail] = user_found.id
+          end
+          debug "Donnée ajoutée à la table de correspondance mail<->id (#{user_found.id}&lt;->#{user_found.mail})"
+        end
+      end
+      return user_found
+    end
+    
+    ##
+    #
+    # Essaie, à chaque chargement de page (required), de récupérer
+    # l'utilisateur courant (s'il s'est identifié)
+    #
+    def retrieve_current
+      return if app.session['user_id'].to_s == ""
+      uid = app.session['user_id'].to_i
+      u   = User::get(uid)
+      if u.get(:session_id) == app.session.id
+        User::current = u
+        app.session['user_id'] = uid
+        u.instance_variable_set('@is_identified', true)
+      end
+    end
+    
+    ##
+    #
     # Boucle sur chaque utilisateur
     #
     #

@@ -1,0 +1,65 @@
+<% 
+##
+## Formulaire d'édition du profil
+##
+%>
+
+
+
+<%
+##
+## Cette vue pouvant être utilisée soit pour l'édition des membres
+## soit pour la modification de son profil par le membre, il faut
+## faire la distinction ici.
+##
+edition_membres   = offline? && self.respond_to?(:select_grade)
+user_edite_profil = edition_membres == false
+debug "edition_membres   : #{edition_membres.inspect}"
+debug "user_edite_profil : #{user_edite_profil.inspect}"
+debug "param('user_id') = #{param('user_id')}"
+debug "Réponse à user ? #{self.respond_to?(:select_grade) ? 'OUI' : 'NON'}"
+debug "user : #{user.inspect.gsub(/</, '&lt;')}"
+# if user_edite_profil === true
+#   debug "Je passe ici"
+#   user = cu
+# end
+# debug "user : #{user.inspect.gsub(/</, '&lt;')}"
+debug "user.id : #{user.id}"
+
+%>
+
+<% 
+##
+## Mettre une barrière ici pour empêcher d'atteindre cette section
+## si on n'est pas identifié
+##
+if user_edite_profil
+%>
+  <%# TODO %>
+<% end %>
+
+<form id="user_edit_form" action="index.rb" method="POST" accept-charset="utf-8">
+  <%= "admin/membres".in_hidden(name: 'article') %>
+  <%= "enregistrer".in_hidden(name: 'operation') %>
+  <% if edition_membres %>
+    <%= row("Pseudo",         user.pseudo.in_input_text(name: 'user_pseudo', placeholder: "Pseudo")) %>
+    <%= row("ID",             user.id.to_s.in_input_text(name: 'user_id', placeholder: "ID")) %>
+  <% else %>
+    <%= row("", user.pseudo, {class: 'bold'})   %>
+    <%= user.id.to_s.in_hidden(name: 'user_id') %>
+  <% end %>
+  <%= row("Mail",           user.mail.in_input_text(name: 'user_mail', placeholder: 'Mail'))   %>
+  <% if edition_membres %>
+    <%= row("Grade",          select_grade) %>
+    <%= row("Code secret", user.get(:password).to_s.in_input_text(name: 'user_pwd', placeholder: "Code secret")) %>
+  <% else %>
+    <%= row("Nouveau code", param('new_password').to_s.in_input_text(name: 'user_new_password')) %>
+    <%= row("Confirmation code", param('new_password_confirmation').to_s.in_input_text(name: 'user_new_password_confirmation')) %>
+    <%= row( "", user.hgrade ) %>
+  <% end %>
+  <%= row("Blog externe",   user.blog.to_s.in_input_text(name: 'user_blog', placeholder: "Blog")) %>
+  <%= row("Chaine YouTube", user.chaine_yt.to_s.in_input_text(name: 'user_chaine_yt', placeholder: 'Chaine YouTube')) %>
+  <%= row("Site perso",     user.site.to_s.in_input_text(name: 'user_site', placeholder: 'Site')) %>
+  <%= row("Description",    user.description.in_textarea(name: 'user_description', placeholder: 'Description')) %>
+  <%= row("", "Enregistrer".in_submit, {class: 'buttons'}) %>
+</form>

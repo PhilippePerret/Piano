@@ -27,7 +27,7 @@ class App
       #
       def user
         @user ||= begin
-          User::new(param('user_id'))
+          User::new( param('user_id') )
         end
       end
       

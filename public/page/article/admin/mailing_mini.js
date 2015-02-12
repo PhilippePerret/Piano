@@ -1,0 +1,1 @@
+window.Mailing={decocher_all_followers:function(){$('ul#followers li input[type="checkbox"]').map(function(){$(this)[0].checked=!1})},cocher_all_followers:function(){$('ul#followers li input[type="checkbox"]').map(function(){$(this)[0].checked=!0})}};

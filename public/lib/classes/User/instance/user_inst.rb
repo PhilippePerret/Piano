@@ -57,6 +57,16 @@ class User
  
   ##
   #
+  # Return TRUE si le membre est identifié
+  #
+  #
+  def identified?
+    debug "@is_identified : #{@is_identified.inspect}"
+    @is_identified == true
+  end
+  
+  ##
+  #
   # @return TRUE si l'user peut voter pour les articles
   #
   #
@@ -72,8 +82,23 @@ class User
   #   Méthodes fonctionnelles
   #
   # ---------------------------------------------------------------------
-
-
+  
+  ##
+  #
+  # Identifie l'user
+  #
+  # On enregistre l'ID de session courante dans ses données, on
+  # met son identifiant dans 'user_id' de la session, pour pouvoir
+  # le reconnaitre au prochain chargement de page.
+  #
+  def login
+    User::current = self
+    set :session_id => app.session.id
+    app.session['user_id']  = id
+    @is_identified          = true
+    flash "Bienvenue, #{pseudo} !"
+  end
+  
   def app
     @app ||= App::current
   end

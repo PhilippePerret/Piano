@@ -11,6 +11,28 @@ class App
       
       ##
       #
+      # Check du login
+      #
+      def check_login
+        login_ok = false
+        u = User::get_with_mail param('user_mail')
+        unless u.nil?
+          require 'digest/md5'
+          raise 'user_password est inconnu' if param('user_password').to_s == ""
+          raise 'cpassword est inconnu pour l’user' if u.cpassword.to_s == ""
+          raise 'Le salt de l’user est inconnu' if u.get(:salt).to_s == ""
+          login_ok = u.cpassword == Digest::MD5.hexdigest("#{param('user_password')}#{u.get(:salt)}")
+        end
+        if login_ok
+          u.login
+          param('article' => param('na'))
+        else
+          error "Impossible de vous reconnaitre, merci de ré-essayer."
+          param('article' => "user/login")
+        end
+      end
+      ##
+      #
       # Opération de download du fichier défini dans le paramètre 'o1'
       #
       #      
