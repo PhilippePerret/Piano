@@ -6,12 +6,10 @@ def uptodate? src
   File.stat(src).mtime < File.stat(@dest_path).mtime
 end
 
-[:first_required, :required, :optional].each do |folder_name|
-  dir = File.join('.','public','page','js',"#{folder_name}")
-  
-  Dir.glob("#{dir}/**/*.js").reject{|p| p.end_with?('mini.js')}.each do |path|
-    next if uptodate? path
-    File.open(@dest_path,'wb'){|f| f.write Uglifier.new.compile(File.read(path)) }
-    puts "* TRAITÉ : Fichier #{path}"
-  end
+dir = File.join('.','public','page')
+
+Dir.glob("#{dir}/**/*.js").reject{|p| p.end_with?('mini.js')}.each do |path|
+  next if uptodate? path
+  File.open(@dest_path,'wb'){|f| f.write Uglifier.new.compile(File.read(path)) }
+  puts "* TRAITÉ : Fichier #{path}"
 end

@@ -3,8 +3,30 @@
 ## Édition des articles
 ##
 %>
+<%
+##
+## Charge le module des articles
+##
+app.module_articles
+%>
+
+<% 
+##
+## Fieldset de synchro
+##
+fichier = Fichier::new App::Article::pstore
+%>
+<%# fichier.fieldset_synchro %>
+
 <ul id='articles'>
-  <% App::Articles.each(sort_by_votes: true) do |art| %>
-    <%= art.as_li(votes: true) %>
+  <li>
+    <span class='id'>ID</span>
+    <span class='titre'>Titre</span>
+    <span class='cote'>Cote</span>
+    <span class='etat'>Etat</span>
+  </li>
+  <% App::Article::each(sort_by_votes: true) do |art| %>
+    <% art.define_titre_if_any %>
+    <%= art.as_li %>
   <% end %>
 </ul>

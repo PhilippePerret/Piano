@@ -52,8 +52,8 @@ window.Ajax = {
     */
   before_send:function(data)
   {
-    var route_isnt_defined = (undefined == data.r)
-    if(route_isnt_defined){ return F.error("Les données envoyées par Ajax doivent absolument définir `r', la méthode de router à utliser. Si c'est un champ de formulaire, ajouter le champ hidden de name 'r'.");}
+    // var route_isnt_defined = (undefined == data.r)
+    // if(route_isnt_defined){ return F.error("Les données envoyées par Ajax doivent absolument définir `r', la méthode de router à utliser. Si c'est un champ de formulaire, ajouter le champ hidden de name 'r'.");}
     return true;
   },
   
@@ -84,6 +84,10 @@ window.Ajax = {
     if('undefined' == typeof data){ return }
     if('undefined' != typeof data.message){Flash.message(data.message);delete data.message;}
     if('undefined' != typeof data.error){Flash.error(data.error);delete data.error;}
+		/**
+			* Pour les applications qui n'utilisent pas un flash flottant
+			*/
+		$('section#flash').css({position: 'fixed', top: '8px', left: '30%'}) ;
   },
   
   /**

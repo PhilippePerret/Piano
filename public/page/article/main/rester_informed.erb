@@ -22,30 +22,34 @@ end
   <p>
   Pour être informé des nouvelles publications du site “<%= name %>”, communiquez-nous votre adresse mail ci-dessous. Nous nous ferons un plaisir de vous avertir dès qu'un nouvel article paraitra.
   </p>
-  <form id='form_mailing_list' action="index.rb" method="POST" accept-charset="utf-8">
-    <%= "add_to_mailing_list".in_hidden(name: 'operation') %>
-    <%= "main/rester_informed".in_hidden(name: 'article') %>
-    <div class='row'>
-      <span class="libelle">Votre nom</span>
-      <span class="value"><input type="text" name='user_name' value="<%= param(:user_name) || '' %>" /></span>
-    </div>
-    <div class='row'>
-      <span class="libelle">Votre mail</span>
-      <span class="value"><input type="text" name='user_mail' value="<%= param(:user_mail) || '' %>" /></span>
-    </div>
-    <div class='row'>
-      <span class="libelle">Confirmation mail</span>
-      <span class="value"><input type="text" name='user_mail_confirmation' value="" /></span>
-    </div>
-    <p>Question anti-robot&nbsp;: comment s'appelle le musicien qui joue l'instrument auquel est consacré ce site (un timbalier&nbsp;? un guitariste&nbsp;? un percussionniste&nbsp;? autre chose&nbsp;?)</p>
-    <div class='row'>
-      <span class="libelle"></span>
-      <span class="value"><input type="text" name='user_reponse' value="<%= param(:user_reponse) || '' %>" /></span>
-    </div>
+  <%= link_to(:articles_en_projet).in_div(class: 'right') %>
+  <fieldset id="fs_identite">
+    <legend>Votre identité</legend>
+    <form id='form_mailing_list' action="index.rb" method="POST" accept-charset="utf-8">
+      <%= "add_to_mailing_list".in_hidden(name: 'operation') %>
+      <%= "main/rester_informed".in_hidden(name: 'article') %>
+      <div class='row'>
+        <span class="libelle">Votre nom</span>
+        <span class="value"><input type="text" name='user_name' value="<%= param(:user_name) || '' %>" /></span>
+      </div>
+      <div class='row'>
+        <span class="libelle">Votre mail</span>
+        <span class="value"><input type="text" name='user_mail' value="<%= param(:user_mail) || '' %>" /></span>
+      </div>
+      <div class='row'>
+        <span class="libelle">Confirmation mail</span>
+        <span class="value"><input type="text" name='user_mail_confirmation' value="" /></span>
+      </div>
+      <p>Question anti-robot&nbsp;: comment s'appelle le musicien qui joue l'instrument auquel est consacré ce site (un timbalier&nbsp;? un guitariste&nbsp;? un percussionniste&nbsp;? autre chose&nbsp;?)</p>
+      <div class='row'>
+        <span class="libelle"></span>
+        <span class="value"><input type="text" name='user_reponse' value="<%= param(:user_reponse) || '' %>" /></span>
+      </div>
     
-    <div class='row buttons'>
-      <span class="libelle"></span>
-      <span class="value"><%= "M'informer des nouveaux articles".in_submit %></span>
-    </div>
-  </form>
+      <div class='row buttons'>
+        <span class="libelle"></span>
+        <span class="value"><%= "M'informer des nouveaux articles".in_submit %></span>
+      </div>
+    </form>
+  </fieldset>    
 <% end %>

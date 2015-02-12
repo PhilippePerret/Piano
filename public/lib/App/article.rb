@@ -5,6 +5,20 @@ Méthode d'instance gérant les articles
 
 =end
 class App
+  class Article
+    ##
+    ## Raccourcis pour atteindre des articles courants
+    ##
+    ## À utiliser avec la méthode d'helper `link_to'. Par exemple :
+    ## <%= link_to :home %>
+    ##
+    SHORTCUTS = {
+      :home               => {titre: "Accueil", relpath: 'main/home'},
+      :mailing            => {titre: "s'inscrire sur le mailing-list", relpath: 'main/rester_informed'},
+      :vote_articles      => {titre: "Choisissez l'ordre des prochains articles", relpath: 'main/articles_vote'},
+      :articles_en_projet => {titre: "Voir la liste des articles en projet", relpath: 'main/articles'}
+    }
+  end
   
   ##
   #
@@ -34,17 +48,6 @@ class App
   # ---------------------------------------------------------------------
   class Article
     
-    ##
-    ## Raccourcis pour atteindre des articles courants
-    ##
-    ## À utiliser avec la méthode d'helper `link_to'. Par exemple :
-    ## <%= link_to :home %>
-    ##
-    SHORTCUTS = {
-      :home           => {titre: "Accueil", relpath: 'main/home'},
-      :mailing        => {titre: "s'inscrire sur le mailing-list", relpath: 'main/rester_informed'},
-      :vote_articles  => {titre: "Choisissez l'ordre des prochains articles", relpath: 'main/articles_vote'}
-    }
     
     ##
     ## États que peut avoir l'article
@@ -140,6 +143,15 @@ class App
       
       ##
       #
+      # Pstore pour les votes
+      #
+      #
+      def pstore_votes
+        @pstore_votes ||= File.join(app.folder_pstore, 'votes_articles.pstore')
+      end
+      
+      ##
+      #
       # Pstore des données des articles
       #
       def pstore
@@ -199,6 +211,20 @@ class App
       end
     end
     
+    ##
+    #
+    # Définit des valeurs de l'article dans le pstore
+    # clé: les propriétés
+    # value: Leur valeur
+    #
+    def set hdata
+      PStore::new(App::Article::pstore).transaction do |ps|
+        hdata.each do |prop, value|
+          ps[id][prop] = value
+          self.instance_variable_set("@#{prop}", value)
+        end
+      end
+    end
     
     ##
     #
@@ -392,10 +418,24 @@ class App
       tit = get(:titre)
       tit = idpath if tit.to_s == ""
       (
-        tit +
-        (options[:votes] ? "cote: #{get :votes}" : '')
+        tit.in_span(class: 'titre') +
+        (options[:votes] ? "#{get :votes}" : '').in_span(class: 'cote')
       ).in_li('data-id' => id)
     end
     
-  end # / App::Article
+    ##
+    #
+    # Méthode qui détruit les données de l'article dans le pstore
+    #
+    def remove_data
+      raise "Pirate !" unless offline?
+      removed = false
+      PStore::new(App::Article::pstore).transaction do |ps|
+        ps.delete id
+        removed = ps.fetch(id,nil) === nil
+      end
+      return removed
+    end
+    
+  end # / Instance App::Article
 end

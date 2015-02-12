@@ -8,9 +8,29 @@ class App
   # Produit le code retourné au client
   #
   def output
-    connexions.add
-    cgi.out{ cgi.html { code_html } }
+    if param('ajx') != "1"
+      # => Mode normal
+      connexions.add
+      cgi.out{ cgi.html { code_html } }
+    else
+      # => Mode ajax
+      output_ajax
+    end
   end 
+  
+  ##
+  #
+  # Retour quand on est en mode ajax
+  #
+  attr_accessor :data_ajax
+  def output_ajax
+    require 'json'
+    self.data_ajax ||= {}
+    self.data_ajax.merge!(:message => messages) unless messages == ''
+    # self.data_ajax.merge!(:css => ajouts_css.as_relative_paths) unless ajouts_css.nil? || ajouts_css.empty?
+    STDOUT.write "Content-type: application/json; charset:utf-8;\n\n"
+    STDOUT.write self.data_ajax.to_json
+  end
   
   ##
   #
@@ -53,6 +73,17 @@ class App
   
   ##
   #
+  # Ajoute un ou des scripts javascript
+  #
+  #
+  def add_js jss
+    jss = [jss] unless jss.class == Array
+    @js_added ||= []
+    @js_added += jss
+  end
+  
+  ##
+  #
   # Retourne les feuilles de style ajoutées
   #
   def css_added
@@ -76,12 +107,13 @@ class App
   def javascripts
     [:first_required, :required].collect do |folder_name|
       traite_folder_js("./public/page/js/#{folder_name}")
-    end.join("\n")
+    end.join("\n") +
+    (@js_added.nil? ? "" : @js_added.collect{|p| balise_js(p) }.join(''))
   end
   def traite_folder_js path
-    Dir["#{path}/**/*_mini.js"].collect do |js|
-      "<script type='text/javascript' src='#{relative_path js}' charset='utf-8'></script>"
-    end.join("\n")
+    Dir["#{path}/**/*_mini.js"].collect do |js| balise_js js end.join('')
   end
-  
+  def balise_js pathjs
+    "<script type='text/javascript' src='#{relative_path pathjs}' charset='utf-8'></script>"
+  end
 end

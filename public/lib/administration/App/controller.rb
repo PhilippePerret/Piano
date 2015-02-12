@@ -1,7 +1,7 @@
 # encoding: UTF-8
 =begin
 
-Méthode de contrôleurs utilisés pour les articles (sections) administration
+Méthode de contrôleurs utilisés pour la section administration
 
 =end
 class App
@@ -27,5 +27,13 @@ class App
     end
   end
   
-  
+  ##
+  #
+  # Charge le module admin 'articles' pour la gestion des articles
+  #
+  #
+  def module_articles
+    raise "Opération impossible" unless offline?
+    require_module 'admin/articles'
+  end
 end

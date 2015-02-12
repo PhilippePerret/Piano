@@ -6,11 +6,13 @@
 %>
 <h2>Articles en projet</h2>
 <h3>Votez pour l'ordre des prochains articles</h3>
+
+<% if cu.can_vote_articles? %>
 <p class='italic'>
 <strong>Classer les articles</strong> ci-dessous en les déplaçant à la souris dans l'ordre où vous voudriez les voir traités, puis <strong>cliquez sur le bouton</strong> “Voter pour cet ordre” en dessous du listing.
 </p>
 <ul id="articles_list">
-<% App::Article::each(etat: 0) do |article| %>
+<% App::Article::each(etat: 1, sort_by_votes: true) do |article| %>
   <%= article.as_li %>
 <% end %>
 </ul>
@@ -45,3 +47,16 @@ $(document).ready(function(){
   });  
 })
 </script>
+<% 
+else # si l'use ne peut pas voter
+%>
+<p>
+Vous avez déjà voté pour le classement des articles. Vous ne pourrez voter à nouveau qu'après un délai de deux mois, ou si une actualisation importante des sujets d'article a été effectuée.
+</p>
+<p>
+<%= link_to :articles_en_projet %>
+</p>
+
+<% 
+end
+%>

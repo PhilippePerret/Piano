@@ -1,4 +1,4 @@
-* Pour le vote sur les articles, tester d'abord si l'user peut le faire et n'afficher la liste (et le bouton que si c'est possible).
+* Ajouter l'outil "Init all votes" pour la section administration des articles
 * Page décrivant les grades
 * Identification d'un membre (un article + gestion session)
 * Profil éditable d'un membre (penser à le faire changer son mot de passe si possible)

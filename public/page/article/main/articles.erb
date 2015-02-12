@@ -1,5 +1,25 @@
 <h2>Articles en projet</h2>
-
-<% App::Article::each(sort_by_votes: true) do |art| %>
-  <%= art.as_li(votes: true) %>
+<p class='italic small'>
+La liste ci-dessous présente les titres des articles prochainement traités, dans l'ordre de leur publication en fonction des votes attribués par les visiteurs.
+</p>
+<p class='right'>
+  <% if cu.can_vote_articles? %>
+    <%= link_to :vote_articles %>
+  <% else %>
+  <span class='small italic'>Vous avez déjà voté pour l'ordre de publication de ces articles.</span>
+  <% end %>
+</p>
+<ul id="articles">
+  <li class='head'>
+    <span class='titre'>Titre de l'article</span>
+    <span class='cote'>Votes</span>
+  </li>
+  <% App::Article::each(sort_by_votes: true, etat: 1) do |art| %>
+    <%= art.as_li(votes: true) %>
+  <% end %>
+</ul>
+<% if cu.can_vote_articles? %>
+<p class='right'>
+  <%= link_to :vote_articles %>
+</p>
 <% end %>
