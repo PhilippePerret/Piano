@@ -5,13 +5,16 @@ Class App
 
 =end
 class App
+  
+  HOST_ONLINE =   "piano.alwaysdata.net"
+  FULL_URL    =    "http://#{HOST_ONLINE}/"
+  
   class << self
     
     ##
     ## Instance App courante, qui gère tout le site
     ##
     attr_accessor :current
-    
     
     def offline?
       @is_offline = !online? if @is_offline === nil

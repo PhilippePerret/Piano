@@ -6,7 +6,7 @@
 
 <%= row( "Pseudo", cu.pseudo ) %>
 <%= row( "Grade",  cu.hgrade)  %>
-<%= row( "Inscription", cu.get(:created_at).as_human_date ) %>
+<%= row( "Inscription", cu.created_at.as_human_date ) %>
 <%= row( "Mail", cu.mail ) %>
 <%= row( "Description", cu.hdescription ) %>
 

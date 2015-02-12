@@ -63,6 +63,7 @@ class User
       end
       return user_found
     end
+    alias :get_by_mail :get_with_mail
     
     ##
     #

@@ -7,11 +7,6 @@ Cette partie permet de gérer les mailing-lists, et principalement de transmettr
 Note&nbsp;: Les données des followers sont ramenées du serveur distant toutes les heures.
 </p>
 
-
-
-<h3>Liste des followers</h3>
-
-
 <h3>Formulaire d'annonce à tous les followers</h3>
 <% 
 ##
@@ -19,22 +14,62 @@ Note&nbsp;: Les données des followers sont ramenées du serveur distant toutes 
 ##
 %>
 <form id='form_annonce_followers' action="index.rb" method="POST" accept-charset="utf-8">
+  <% 
+  ##
+  ## Données cachées utiles
+  ##
+  %>
+  <%= "admin/mailing".in_hidden(name: 'article') %>
+  <%= "envoyer_annonce".in_hidden(name: 'operation') %>
+  
+  <% 
+  ##
+  ## Listing des followers, avec des cases à cocher pour les
+  ## choisir ou les retirer
+  ##
+  %>
   <div class='right small'>
     <%= "Décocher tous".in_a(onclick: "$.proxy(Mailing,'decocher_all_followers')()") %>
     &nbsp;|&nbsp;
     <%= "Cocher tous".in_a(onclick: "$.proxy(Mailing,'cocher_all_followers')()") %>
+    &nbsp;|&nbsp;
+    <%= "Cocher les membres".in_a(onclick: "$.proxy(Mailing,'cocher_membres')()") %>
+    &nbsp;|&nbsp;
+    <%= "Cocher les followers".in_a(onclick: "$.proxy(Mailing,'cocher_followers')()") %>
   </div>
+  <%= Mailing::show_membres %>
   <%= Mailing::show_followers %>
-  <%= "admin/mailing".in_hidden(name: 'article') %>
-  <%= "envoyer_annonce".in_hidden(name: 'operation') %>
+  
+  <% 
+  ##
+  ## Définition de l'article
+  ##
+  %>
   <div class='row'>
     <span class="libelle">Titre</span>
     <span class="value"><%= (param(:annonce_titre)||"Nouvel article").in_input_text(name: 'annonce_titre') %></span>
   </div>
   <div>Texte de l'annonce&nbsp;:</div>
   <textarea name="annonce_texte" rows="8"><%= param(:annonce_texte) || "Bonjour,\n\n" %></textarea>
-  <div class='row buttons'>
-    <span class="libelle"></span>
-    <span class="value"><%= "Envoyer".in_submit %></span>
-  </div>
+  
+  <% 
+  ##
+  ## Options (cases à cocher)
+  ##
+  %>
+  <p class='small italic'>
+    <%= "&nbsp;&nbsp;Parser le code comme en ERB".in_checkbox(name: 'parse_erb', class: 'small').in_div %>
+    <%= "&nbsp;&nbsp;Si ERB, message personnalité (l'user est bindé). Plus long <strong>ET SURTOUT</strong> : Seules les propriétés .pseudo et .created_at peuvent être utilisées avec les simples followers).".in_checkbox(name: 'bind_user', class: 'small').in_div %>
+  </p>
+  
+  <% 
+  ##
+  ## Textes explicatifs
+  ##
+  %>
+  <p>
+    <div class='small italic'>Note&nbsp;: Si `link_to' est utilisé dans le code, ce sera forcément un lien qui sera renvoyé, avec une URL complète.</div>
+    <div class='small italic'>Si le User est bindé, il faut utiliser `app.link_to'.</div>
+  </p>
+  <%= row("", "Envoyer".in_submit, {class: 'buttons'} ) %>
 </form>

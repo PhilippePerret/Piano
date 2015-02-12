@@ -13,21 +13,6 @@ class User
   
   # ---------------------------------------------------------------------
   #
-  #   Méthodes propriétés
-  #
-  # ---------------------------------------------------------------------
-  def pseudo;       @pseudo       ||= data[:pseudo]       end
-  def mail;         @mail         ||= data[:mail]         end
-  def grade;        @grade        ||= data[:grade]        end
-  def blog;         @blog         ||= data[:blog]         end
-  def chaine_yt;    @chaine_yt    ||= data[:chaine_yt]    end
-  def site;         @site         ||= data[:site]         end
-  def description;  @description  ||= data[:description]  end
-  def password;     @password     ||= data[:password]     end
-  def cpassword;    @cpassword    ||= data[:cpassword]    end
-  
-  # ---------------------------------------------------------------------
-  #
   #   Méthodes-propriétés volatiles
   #
   # ---------------------------------------------------------------------
@@ -102,5 +87,7 @@ class User
   def app
     @app ||= App::current
   end
+  
+  def bind; binding() end
   
 end

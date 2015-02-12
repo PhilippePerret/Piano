@@ -56,6 +56,11 @@ On peut aussi utiliser des raccourcis avec `link_to`. Par exemple&nbsp;:
 
 Ces raccourcis sont définis dans le fichier `./public/lib/App/article.rb`, dans la constante `App::Article::SHORTCUTS`.
 
+Mettre les options en troisième paramètre.
+
+  :form       Si FALSE retourne un lien au lieu d'un formulaire
+  :full_url   Si TRUE, l'url complète.
+
 <a name='creer_nouveau_dossier_article'></a>
 ##Créer un nouveau dossier article
 

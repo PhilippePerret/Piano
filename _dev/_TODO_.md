@@ -1,3 +1,6 @@
+* Détection automatique du ERB dans mail et alerte si as_erb est faux (mailing)
+ # GROS BUG : L'ID dans le pstore mailing list des users n'est pas le
+   même que celui dans membres.pstore.
 * Pouvoir évaluer le code du mail comme une vue ERB
 * Nous avertir quand nouveau vote
 * Avertir Serge
@@ -6,6 +9,9 @@
   attention quand même à ne pas faire de bêtises.
   Il faut aussi ramener en même temps 'mail_to_id.pstore'
 
+* Supprimer un membre de la mailing-list quand il était follower et qu'il
+  est devenu membre.
+  
 * Ajouter l'outil "Init all votes" pour la section administration des articles
 * Tant que l'article n'est pas achevé (état 9), la propriété :votes permet de déterminer l'ordre de traitement. Quand il est achevé, on met :votes à 0 et la donnée servira pour attribuer une cote à l'article.
 

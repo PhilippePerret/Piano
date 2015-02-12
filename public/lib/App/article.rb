@@ -14,6 +14,7 @@ class App
     ##
     SHORTCUTS = {
       :home               => {titre: "Accueil", relpath: 'main/home'},
+      :login              => {titre: "S'identifier", relpath: 'user/login'},
       :profil             => {titre: "Votre profil", relpath: 'user/profil'},
       :edit_profil        => {titre: "Édition de votre profil", relpath: 'user/edit_profil'},
       :mailing            => {titre: "s'inscrire sur le mailing-list", relpath: 'main/rester_informed'},

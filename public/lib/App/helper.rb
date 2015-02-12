@@ -21,6 +21,8 @@ class App
   #   form:       Si TRUE (par défaut), retourne un lien sous forme de 
   #               formulaire (pour adresse "invisible")
   #
+  attr_accessor :use_full_urls
+  attr_accessor :use_links_a
   def link_to titre, relpath_art = nil, options = nil
     options ||= {}
     options.merge!(form: true) unless options.has_key?(:form)
@@ -34,7 +36,22 @@ class App
       dshortcut = App::Article::SHORTCUTS[relpath_art]
       relpath_art = dshortcut[:relpath]
     end
-    if options[:form]
+    
+    ##
+    ## Constantes qu'on peut utiliser dans certaines procédures
+    ## pour forcer l'utilisation d'un format.
+    ## Pour le moment, utilisé pour les mails pour pouvoir
+    ## utiliser `link_to' sans options
+    ##
+    
+    
+    full_url = if options[:full_url] || use_full_urls
+      App::FULL_URL
+    else
+      ""
+    end
+    
+    if options[:form] && use_links_a.nil?
       #
       # => Retourne un lien sous forme de formulaire
       #
@@ -48,7 +65,7 @@ class App
       # => Retourne un lien <a>
       #
       relpath_art = CGI::escape relpath_art
-      "<a href='?article=#{relpath_art}'>#{titre}</a>"
+      "<a href='#{full_url}?a=#{relpath_art}'>#{titre}</a>"
     end
   end
   

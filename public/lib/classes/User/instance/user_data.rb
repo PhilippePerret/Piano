@@ -26,6 +26,24 @@ class User
     end
   end
   
+  # ---------------------------------------------------------------------
+  #
+  #   Méthodes propriétés
+  #
+  # ---------------------------------------------------------------------
+  def pseudo;       @pseudo       ||= data[:pseudo]       end
+  def mail;         @mail         ||= data[:mail]         end
+  def grade;        @grade        ||= data[:grade]        end
+  def blog;         @blog         ||= data[:blog]         end
+  def chaine_yt;    @chaine_yt    ||= data[:chaine_yt]    end
+  def site;         @site         ||= data[:site]         end
+  def description;  @description  ||= data[:description]  end
+  def password;     @password     ||= data[:password]     end
+  def cpassword;    @cpassword    ||= data[:cpassword]    end
+  def updated_at;   @updated_at   ||= data[:updated_at]   end
+  def created_at;   @created_at   ||= data[:created_at]   end
+  
+  
   ##
   #
   # Méthode qui récupère les données du formulaire et les enregistre

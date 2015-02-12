@@ -20,7 +20,25 @@ class App
   class Mailing < ExtensionSubclassApp
     class << self
       
-      
+      ##
+      #
+      # @return le code de tous les membres
+      #
+      #
+      def show_membres
+        raise "Inaccessible en ONLINE" if online?
+        @all_mails = {}
+        all_li = []
+        User::each do |user|
+          htime = Time.at(user.created_at).strftime("%d %m %Y - %H:%M")
+          cbid = "cb-#{user.id}-membre"
+          all_li << (
+            "&nbsp;&nbsp;#{user.pseudo} - #{user.mail} (#{htime})".in_checkbox(id: cbid, name: cbid, class: 'membre')
+          ).in_li
+          @all_mails.merge! user.mail => true
+        end
+        all_li.join("\n").in_ul(id: 'membres', style: "list-style:none;")
+      end
       ##
       #
       # Procédure qui affiche tous les followers
@@ -28,9 +46,11 @@ class App
       def show_followers
         raise "Inaccessible en ONLINE" if online?
         followers.collect do |id, duser|
+          next if @all_mails.has_key? duser[:mail]
           htime = Time.at(duser[:created_at]).strftime("%d %m %Y - %H:%M")
+          cbid = "cb-#{id}-follower"
           (
-            "&nbsp;&nbsp;#{duser[:name]} - #{duser[:mail]} (#{htime})".in_checkbox(id: "cb-#{id}", name: "cb-#{id}")
+            "&nbsp;&nbsp;#{duser[:name]} - #{duser[:mail]} (#{htime})".in_checkbox(id: cbid, name: cbid, class: 'follower')
           ).in_li
         end.join("\n").in_ul(id: 'followers', style: "list-style:none;")
       end
@@ -62,25 +82,131 @@ class App
         raise "Inaccessible en ONLINE" if online?
         require_library 'mail'
         require './data/secret/data_tilleul'
+        
+        ##
+        ## Pour dire aux méthodes (pour le moment link_to) d'utiliser
+        ## des urls complètes
+        ##
+        app.use_full_urls = true
+        
+        ##
+        ## Pour dire aux méthodes (link_to pour le moment) d'utiliser
+        ## des liens (<a>) plutôt que des formulaires
+        ##
+        app.use_links_a = true
+        
+        as_erb = param('parse_erb') == "on"
+        debug "Le code du message doit être désERBé" if as_erb
+        if as_erb
+          bind_user = param('bind_user') == 'on'
+          debug "L'user doit être bindé" if bind_user
+        else
+          bind_user = false
+        end
+        message = param(:annonce_texte)
+        
+        if as_erb
+          message = ERB::new(message).result(app.bind) if !bind_user
+        else
+          ##
+          ## Il faut vérifier que le texte soit bien un texte
+          ## sans ERB
+          ##
+          if message.index('<%')
+            error "Ce message comporte des balises ERB (&lt;%). Or, la case n'est pas cochée. Merci de supprimer ces codes, qui ne seraient pas traités, ou de cocher la case correspondante."
+            return
+          end
+        end
+        
+        ##
+        ## Les données de base du mail
+        ##
         data_mail = {
           to:             nil,
           from:           DATA_TILLEUL[:mail],
           subject:        param(:annonce_titre),
-          message:        param(:annonce_texte),
+          message:        message,
           force_offline:  true
         }
-        nombre_envois = 0
-        followers.each do |id, duser|
-          if param("cb-#{id}") == "on"
-            data_mail.merge! to: duser[:mail]
-            Mail::new(data_mail).send
-            nombre_envois += 1
-            debug "MAIL pour #{duser[:name]}"
-          else
-            debug "PAS DE MAIL pour #{duser[:name]}"
+        
+        
+        nombre_envois     = 0
+        nombre_followers  = 0
+        nombre_membres    = 0
+        @all_recevers     = {}
+        
+        ##
+        ## Envoi du mail aux membres choisis
+        ##
+        User.each do |user|
+          next unless param("cb-#{user.id}-membre") == "on"
+          data_mail.merge! to: user.mail
+          
+          ##
+          ## Messages personnalités
+          ##
+          if bind_user
+            data_mail.merge! message: ERB::new(message).result(user.bind)
           end
+          
+          ##
+          ## On envoie le mail
+          ##
+          Mail::new(data_mail).send
+          
+          ##
+          ## Résultat
+          ##
+          nombre_envois += 1
+          nombre_membres += 1
+          debug "MAIL pour #{user.pseudo} (membre)"
+          
+          ##
+          ## On mémorise le mail pour ne pas l'envoyer à un membre
+          ## qui serait dans la mailing-list
+          ##
+          @all_recevers.merge! user.mail => true
         end
-        flash "Mail envoyé à #{nombre_envois} followers (cf. le détail dans le débug)"
+        
+        followers.each do |id, duser|
+          next unless param("cb-#{id}-follower") == "on"
+          next if @all_recevers.has_key? duser[:mail]
+          @all_recevers.merge! duser[:mail] => true # on ne sait jamais…
+
+          ##
+          ## Si l'user doit être bindé, on utilise une astuce : on
+          ## crée des instances provisoires (avec un ID commençant à 1000000
+          ## au cas où il y ait un risque) d'user. Mais seules les dates
+          ## de création de le pseudo seront définis.
+          ##
+          ## Mais noter que ça lèvera une erreur si on utilise une donnée
+          ## qui n'est pas définie.
+          ##
+          if bind_user
+            u = User::new
+            u.instance_variable_set('@data', {
+              pseudo:       duser[:name],
+              created_at:   duser[:created_at],
+              id:           (1000000 + id)
+            })
+            data_mail.merge! message: ERB::new(message).result(u.bind)
+          end
+          
+          data_mail.merge! to: duser[:mail]
+
+          ##
+          ## On envoie le mail
+          ##
+          Mail::new(data_mail).send
+          ##
+          ## Résultat
+          ##
+          nombre_envois += 1
+          nombre_followers += 1
+          debug "MAIL pour #{duser[:name]} (follower)"
+        end
+
+        flash "Mail envoyé à #{nombre_envois} followers et membres (followers: #{nombre_followers}, membres:#{nombre_membres} (cf. le détail dans le débug)"
       end
       
       # ---------------------------------------------------------------------
