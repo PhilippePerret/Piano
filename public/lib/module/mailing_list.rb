@@ -205,8 +205,12 @@ class App
           nombre_followers += 1
           debug "MAIL pour #{duser[:name]} (follower)"
         end
-
-        flash "Mail envoyé à #{nombre_envois} followers et membres (followers: #{nombre_followers}, membres:#{nombre_membres} (cf. le détail dans le débug)"
+        
+        
+        ##
+        ## Message de confirmation
+        ##
+        flash "Mail envoyé à #{nombre_envois} followers et membres (followers: #{nombre_followers}, membres: #{nombre_membres}) (cf. le détail dans le débug)"
       end
       
       # ---------------------------------------------------------------------

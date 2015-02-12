@@ -29,13 +29,14 @@ Note&nbsp;: Les données des followers sont ramenées du serveur distant toutes 
   ##
   %>
   <div class='right small'>
-    <%= "Décocher tous".in_a(onclick: "$.proxy(Mailing,'decocher_all_followers')()") %>
+    <%= "Décocher tous".in_a(onclick: "$.proxy(Mailing,'decocher_all')()") %>
     &nbsp;|&nbsp;
-    <%= "Cocher tous".in_a(onclick: "$.proxy(Mailing,'cocher_all_followers')()") %>
+    Cocher&nbsp; : 
+    <%= "Tous".in_a(onclick: "$.proxy(Mailing,'cocher_all')()") %>
     &nbsp;|&nbsp;
-    <%= "Cocher les membres".in_a(onclick: "$.proxy(Mailing,'cocher_membres')()") %>
+    <%= "Membres".in_a(onclick: "$.proxy(Mailing,'cocher_membres')()") %>
     &nbsp;|&nbsp;
-    <%= "Cocher les followers".in_a(onclick: "$.proxy(Mailing,'cocher_followers')()") %>
+    <%= "Followers".in_a(onclick: "$.proxy(Mailing,'cocher_followers')()") %>
   </div>
   <%= Mailing::show_membres %>
   <%= Mailing::show_followers %>

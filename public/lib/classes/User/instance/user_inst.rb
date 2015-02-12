@@ -46,7 +46,6 @@ class User
   #
   #
   def identified?
-    debug "@is_identified : #{@is_identified.inspect}"
     @is_identified == true
   end
   

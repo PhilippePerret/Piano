@@ -94,7 +94,6 @@ class App
     def add_in_all
       PStore::new(pstore_all).transaction do |ps|
         ps[:nombre_connexions] = ps.fetch(:nombre_connexions, 0) + 1
-        debug "= Nombre total de connexions : #{ps[:nombre_connexions]}"
         ps[:times] = [] if ps.fetch(:times, nil).nil?
         ps[:times] << Time.now.to_i
       end
@@ -114,7 +113,6 @@ class App
           article:      app.article.id, 
           ip:           cu.remote_ip 
         }
-        debug "* Ajout Connexion courante : #{ps[app.session.id].inspect}"
       end
     end
     

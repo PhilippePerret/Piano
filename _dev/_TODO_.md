@@ -1,13 +1,8 @@
-* Détection automatique du ERB dans mail et alerte si as_erb est faux (mailing)
- # GROS BUG : L'ID dans le pstore mailing list des users n'est pas le
-   même que celui dans membres.pstore.
-* Pouvoir évaluer le code du mail comme une vue ERB
 * Nous avertir quand nouveau vote
-* Avertir Serge
 * Obtenir le titre de l'article tout de suite
 * Pour le pstore des membres, maintenant, il faut le récupérer online, mais 
   attention quand même à ne pas faire de bêtises.
-  Il faut aussi ramener en même temps 'mail_to_id.pstore'
+  Il faut aussi ramener en même temps 'mail_to_id.pstore', la table de correspondance entre les mails et les IDs
 
 * Supprimer un membre de la mailing-list quand il était follower et qu'il
   est devenu membre.
