@@ -1,7 +1,6 @@
-* Mettre en forme le legend des fieldset
-
-* Lorsqu'un article est marqué achevé, remettre sa propriété :votes (ou autre ?) à 0
-
+* Ajouter une option dans <article>.comments pour ne renvoyer que les articles qui sont validés (ok: true) pour pouvoir indiquer le nombre dans le lien "Lire les commentaires (X)".
+  Penser à modifier l'utilisation de la variable @comments => @comments_valided, @comments_all.
+  
 * Formulaire pour voter pour un article
   - C'est un formulaire contenant l'ID de l'article courant
   - Il contient un radio groupe pour noter l'intérêt de l'article (de 1 à 10)

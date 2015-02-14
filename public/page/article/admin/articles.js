@@ -22,7 +22,6 @@ $.extend(window.Articles,{
 		var new_etat		= $(select).val() ;
 		li_article.attr('data-etat', new_etat) ;
 		Ajax.send({o: 'change_etat_article', o1: article_id, o2: new_etat})
-		console.log("État de l'article "+article_id+ " mis à " + li_article.attr('data-etat'))
 	},
 	
 	/**

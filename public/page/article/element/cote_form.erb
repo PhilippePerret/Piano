@@ -1,0 +1,74 @@
+<% 
+##
+## Formulaire pour coter l'article
+##
+%>
+<a name='coter_article'></a>
+<fieldset id="coter_article_courant">
+  <legend>Coter l’article courant</legend>
+  <form id="form_note_article" action="index.rb" method="POST" accept-charset="utf-8">  
+    <% 
+    ##
+    ## Champs cachés
+    ##
+    %>
+    <%= article.idpath.in_hidden(name: 'article') %>
+    <%= "coter_article".in_hidden(name: 'o') %>
+    
+    <% 
+    ##
+    ## Champs pour la cote
+    ##
+    %>
+    <table border="0" cellpadding="5">
+      <colgroup>
+        <col width="400" />
+        <col width="150" />
+      </colgroup>
+      <tr>
+        <td class='small'>
+          Au niveau de l’<strong>intérêt</strong>, cet article vous semble
+        </td>
+        <td>
+          <select name="note_interet" class='small'>
+            <option value="4">Indispensable</option>
+            <option value="3">Très intéressant</option>
+            <option value="2">Intéressant</option>
+            <option value="1">Sans plus…</option>
+            <option value="0">Sans intérêt</option>
+          </select>
+        </td>
+      </tr>
+      
+      <tr>
+        <td class='small'>
+          Au niveau de la <strong>clarté</strong>, cet article vous a semblé
+        </td><td>
+          <select name="note_clarte" id="note_clarte" class='small'>
+            <option value="4">Limpide</option>
+            <option value="3">Clair</option>
+            <option value="2">compréhensible</option>
+            <option value="1">Confus</option>
+            <option value="0">Du chinois</option>
+          </select>
+        </td>
+      </tr>
+      
+      <tr>
+        <td class='small'>
+          Votre niveau en matière de théorie musicale est
+        </td><td>
+          <select name="niveau_user" id="niveau_user" class='small'>
+            <option value="4">Expert</option>
+            <option value="3">Professionnel</option>
+            <option value="2">Moyen</option>
+            <option value="1">Basique</option>
+            <option value="0">Au plus bas…</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+    <%= "Coter".in_submit(class: '', style:'font-size:14px;padding:5px 12px 4px').in_div(class: 'right')%>
+  </form>
+  
+</fieldset>

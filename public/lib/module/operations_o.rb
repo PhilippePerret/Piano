@@ -83,8 +83,20 @@ class App
         raise "Pirate !" unless offline?
         article_id  = param('o1').to_i
         new_etat    = param('o2').to_i
-        App::Article::new(article_id).set(:etat => new_etat)
-        flash "Article #{article_id} mis à l'état #{new_etat}."
+        new_data = {:etat => new_etat}
+        article_complete = new_etat == 9
+        if article_complete
+          ##
+          ## Article marqué achevé
+          ## On ré-initialise ses votes pour pouvoir voter
+          ## vraiment pour l'article.
+          ##
+          new_data.merge! votes: nil
+        end
+        App::Article::new(article_id).set(new_data)
+        mess = "Article #{article_id} mis à l'état #{new_etat}."
+        mess << " Les votes de l'article ont été réinitialisés." if article_complete
+        flash mess
       end
       
       ##

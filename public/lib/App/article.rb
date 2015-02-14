@@ -412,9 +412,17 @@ class App
       c << titre.in_h1
       c << view
       unless tdm? || en_projet?
-        c << app.link_to_tdm
+        c << (
+          app.link_to_tdm +
+          (
+            "Noter l'article".in_a(href: "#coter_article") + "&nbsp;.&nbsp;" +
+            "Laisser un commentaire".in_a(href: "#comment_article") + "&nbsp;.&nbsp;" +
+            "Lire les commentaires".in_a(href: "#lire_comments")
+          ).in_div(class: 'small')
+        ).in_div(style: 'margin-top:4em')
         c << section_comments
       end
+      return c
     end
     
     def tdm?
@@ -423,7 +431,6 @@ class App
     
     def en_projet?
       @en_projet = get(:etat) == 1 if @en_projet === nil
-      debug "@en_projet : #{@en_projet.inspect} (etat : #{get(:etat)})"
       @en_projet
     end
     
@@ -605,18 +612,21 @@ class App
     # commentaire ainsi que tous les commentaires déjà déposés
     #
     def section_comments
+      '<div style="clear:both;margin-top:2em;border:1px solid #ccc;"></div>' +
+      app.view('article/element/cote_form') +
       app.view('article/element/comments_form') +
       list_comments.in_fieldset(legend: "Commentaires")
     end
     def list_comments
       hc = comments.collect do |dcom|
-        # next unless dcom[:ok]
+        next unless dcom[:ok]
         (
           (dcom[:ps] + ', le ' + dcom[:at].as_human_date).in_div(class: 'c_info') +
           dcom[:c].in_div(class: 'c_content')
         ).in_div(class: 'comment')
       end.join('')
       hc = "Soyez le premier à laisser un commentaire.".in_div(class: 'italic small') if hc == ""
+      hc.prepend('<a name="lire_comments"></a>')
       return hc
     end
     
