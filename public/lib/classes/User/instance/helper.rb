@@ -31,27 +31,38 @@ class User
   
   def infos_persos_in_dd
     c  = []
-    if blog
-      url = "http://#{blog}"
-      c << "Blog".in_a(target: '_blank', href: url)
-    else
-      c << "Blog".in_span(class: 'discret')
-    end
-    if site
-      url = "http://#{site}"
-      c << "Site".in_a(target: '_blank', href: url)
-    else
-      c << "Site".in_span(class: 'discret')
-    end
-    if chaine_yt
-      url = "http://#{chaine_yt}"
-      c << "YouTube".in_a(target: '_blank', href: url)
-    else
-      c << "YouTube".in_span(class: 'discret')
-    end
+    c << ( blog ? blog_as_link("Blog") : "Blog".in_span(class: 'discret') )
+    c << ( site ? site_as_link("Site") : "Site".in_span(class: 'discret') )
+    c << ( chaine_yt ? chaine_yt_as_link("YouTube") : "YouTube".in_span(class: 'discret') )
     return c.join(' - ').in_dd(class: 'site')
   end
   
+  ##
+  #
+  # @return un lien vers le site (ou "" si aucun site)
+  #
+  def site_as_link titre = nil
+    return "" unless site
+    (titre || site.to_s).in_a(target: '_blank', href: "http://#{site}")
+  end
+  
+  ##
+  #
+  # @return un lien vers le blog (ou "" si aucun blog)
+  #
+  def blog_as_link titre = nil
+    return "" unless blog
+    (titre || blog.to_s).in_a(target: '_blank', href: "http://#{blog}")
+  end
+  
+  ##
+  #
+  # @return un lien vers la chaine youtube (ou "")
+  #
+  def chaine_yt_as_link titre = nil
+    return "" unless chaine_yt
+    (titre || chaine_yt.to_s).in_a(target: '_blank', href: "http://#{chaine_yt}")
+  end
   
   ##
   #

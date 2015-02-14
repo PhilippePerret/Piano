@@ -76,6 +76,73 @@ class App
       
       ##
       #
+      # @return TRUE si le follower de mail +umail+ existe
+      #
+      def follower_exists? umail
+        found = false
+        PStore::new(pstore_mailing).transaction do |ps|
+          keys = ps.roots.reject{|e| e == :last_id}
+          keys.each do |key|
+            if ps[key][:mail] == umail
+              found = true
+              break
+            end
+          end
+        end
+        found
+      end
+      
+      ##
+      #
+      # @return un follower d'après son mail
+      def follower umail
+        foll = nil
+        PStore::new(pstore_mailing).transaction do |ps|
+          keys = ps.roots.reject{|e| e == :last_id}
+          keys.each do |key|
+            if ps[key][:mail] == umail
+              foll = ps[key]
+              break
+            end
+          end
+        end
+        foll
+      end
+      
+      ##
+      #
+      # Retourne le message pré-formaté pour annoncer un
+      # nouvel article.
+      #
+      # Note : la procédure vérifie aussi que l'article se trouve
+      # bien à jour sur le site
+      #
+      #
+      def message_new_article
+        art = App::Article::new( param('article_id').to_i )
+        fichier = Fichier::new( art.fullpath )
+        unless fichier.uptodate?
+          fichier.upload
+          flash "L'article “#{art.titre}” a été actualisé online."
+        end
+        flash "Penser à <ol><li>indiquer que l'article n'est plus en projet dans la section administration</li><li>Enlever le “true” dans la table des matières du dossier contenant l'article.</li></ol>"
+        <<-HTML
+Bonjour <%= pseudo %>,
+
+J'ai le plaisir de vous annoncer la publication d'un nouvel article&nbsp;:
+
+<%= link_to_article(#{art.id}) %>
+
+Bonne lecture à vous&nbsp;!
+
+Pianistiquement vôtre,
+
+LCP
+        HTML
+      end
+      
+      ##
+      #
       # Procédure procédant à l'envoi d'une annonce aux followers
       #
       def exec_envoyer_annonce
@@ -95,18 +162,41 @@ class App
         ##
         app.use_links_a = true
         
-        as_erb = param('parse_erb') == "on"
-        debug "Le code du message doit être désERBé" if as_erb
-        if as_erb
-          bind_user = param('bind_user') == 'on'
-          debug "L'user doit être bindé" if bind_user
+        ##
+        ## Message préformaté ?
+        ##
+        if param('annonce_new_article') == "on"
+          ##
+          ## Annonce d'article
+          ##
+          as_erb    = true
+          bind_user = true
+          message   = message_new_article
+          param(:annonce_titre => "Publication d'un nouvel article")
         else
-          bind_user = false
+          ##
+          ## Message non préformaté
+          ##
+          as_erb = param('parse_erb') == "on"
+          debug "Le code du message doit être désERBé" if as_erb
+          if as_erb
+            bind_user = param('bind_user') == 'on'
+            debug "L'user doit être bindé" if bind_user
+          else
+            bind_user = false
+          end
+          message = param(:annonce_texte)
         end
-        message = param(:annonce_texte)
         
+        ##
+        ## Traitement du message
+        ##
         if as_erb
-          message = ERB::new(message).result(app.bind) if !bind_user
+          begin
+            message = ERB::new(message).result(app.bind) if !bind_user
+          rescue Exception => e
+            raise e
+          end          
         else
           ##
           ## Il faut vérifier que le texte soit bien un texte
@@ -129,7 +219,6 @@ class App
           force_offline:  true
         }
         
-        
         nombre_envois     = 0
         nombre_followers  = 0
         nombre_membres    = 0
@@ -146,7 +235,11 @@ class App
           ## Messages personnalités
           ##
           if bind_user
-            data_mail.merge! message: ERB::new(message).result(user.bind)
+            begin
+              data_mail.merge! message: ERB::new(message).result(user.bind)
+            rescue Exception => e
+              raise e
+            end
           end
           
           ##
@@ -171,6 +264,7 @@ class App
         followers.each do |id, duser|
           next unless param("cb-#{id}-follower") == "on"
           next if @all_recevers.has_key? duser[:mail]
+          
           @all_recevers.merge! duser[:mail] => true # on ne sait jamais…
 
           ##
@@ -189,7 +283,11 @@ class App
               created_at:   duser[:created_at],
               id:           (1000000 + id)
             })
-            data_mail.merge! message: ERB::new(message).result(u.bind)
+            begin
+              data_mail.merge! message: ERB::new(message).result(u.bind)
+            rescue Exception => e
+              raise e
+            end
           end
           
           data_mail.merge! to: duser[:mail]
@@ -211,6 +309,11 @@ class App
         ## Message de confirmation
         ##
         flash "Mail envoyé à #{nombre_envois} followers et membres (followers: #{nombre_followers}, membres: #{nombre_membres}) (cf. le détail dans le débug)"
+      rescue Exception => e
+        err_mess = e.message.gsub(/</, '&lt;')
+        error("Une erreur est survenue en désERBant le message : #{err_mess} (voir le backtrace dans le débug)")
+        bt = e.backtrace.join("\n")
+        debug "### ERREUR : #{err_mess}\n\n#{bt}"
       end
       
       # ---------------------------------------------------------------------

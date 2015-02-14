@@ -3,6 +3,8 @@ data/pstore/
 .gitignore
 .sass-cache/
 
+xtrash/
+
 data/pstore/connexions.pstore
 
 data/pstore/last_times.pstore

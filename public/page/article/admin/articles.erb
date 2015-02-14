@@ -16,8 +16,32 @@ app.module_articles
 ##
 fichier = Fichier::new App::Article::pstore
 %>
-<%= fichier.fieldset_synchro %>
+<%= fichier.fieldset_synchro(no_check: true, article: 'admin/articles') %>
+<% 
+##
+## Fieldset pour filtre les articles
+##
+%>
+<fieldset id="filtrage_articles">
+  <legend>Filtrage articles</legend>
+  <form action="index.rb" method="POST" accept-charset="utf-8">
+    <%= "admin/articles".in_hidden(name: 'article') %>
+    <%= "Tous les articles".in_checkbox(name: 'tous') %>
+    <%= "États indéfinis".in_checkbox(name: 'indefinis') %>
+    <%= "En projet".in_checkbox(name: 'en_projet') %>
+    <%= "Achevés".in_checkbox(name: 'complete') %>
+    <%= "Fonctionnels".in_checkbox(name: 'fonctionnels') %>
+    <%= "Administration".in_checkbox(name: 'adminis') %>
+    <%= row("", "Filtrer".in_submit(class:'btn'), {class: 'buttons'})%>
+  </form>
+</fieldset>
 
+
+<% 
+##
+## Liste des articles
+##
+%>
 <ul id='articles'>
   <li>
     <span class='id'>ID</span>
@@ -25,8 +49,43 @@ fichier = Fichier::new App::Article::pstore
     <span class='cote'>Cote</span>
     <span class='etat'>Etat</span>
   </li>
-  <% App::Article::each(sort_by_votes: true) do |art| %>
+  <% 
+  # @all_data = {}
+  %>
+  <% 
+  tous      = param('tous')         == "on"
+  indefinis = param('indefinis')    == "on"
+  en_projet = param('en_projet')    == "on"
+  acheved   = param('complete')     == "on"
+  fctionnel = param('fonctionnels') == 'on'
+  adminis   = param('adminis')      == 'on'
+  tous = true if !indefinis && !en_projet && !acheved && !fctionnel && !adminis
+  
+  App::Article::each(sort_by_votes: true) do |art| 
+    unless tous
+      case art.get(:etat) || 0
+      when 0 then ok = indefinis
+      when 1 then ok = en_projet
+      when 2 then ok = fctionnel
+      when 3 then ok = adminis
+      when 9 then ok = acheved 
+      else
+        ok = false
+      end
+      next unless ok
+    end
+    %>
     <% art.define_titre_if_any %>
     <%= art.as_li %>
+    <% unless File.exist? art.fullpath %>
+      <%= "Cet article est introuvable (#{art.idpath})"%>
+    <% end %>
+    <%# @all_data.merge! art.id => art.data %>
   <% end %>
 </ul>
+
+<% 
+#@all_data.each do |art_id, dart|
+%>
+  <%#= dart.collect{|k,v| "#{k.inspect} => #{v.inspect}".in_div }.join('').in_div(class: 'air') %>
+<%# end %>

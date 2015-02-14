@@ -49,19 +49,17 @@ class App
     # été défini
     #
     # Cette méthode est appelée quand on arrive sur la section
-    # d'administration des articles
+    # d'administration des articles.
+    #
+    # Normalement, maintenant le titre de l'article est automatiquement
+    # défini quand on se connecte à un article pas encore enregistré
     #
     def define_titre_if_any
       return unless get(:titre).to_s == ""
-      if File.exist? fullpath
-        code = File.read(fullpath).force_encoding('utf-8')
-        tit = code.match(/<h2>(.*?)<\/h2>/).to_a[1].to_s.strip
-        if tit != ""
-          set :titre => tit
-          flash "Titre de #{idpath} mis à “#{tit}”"
-        end
-      else
-        debug "= Fichier #{fullpath} introuvable. Impossible de récupérer son titre"
+      tit = titre_in_file
+      if tit != ""
+        set :titre => tit
+        flash "Titre de #{idpath} mis à “#{tit}”"
       end
     end
   end

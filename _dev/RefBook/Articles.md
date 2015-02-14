@@ -4,6 +4,9 @@
 * [Fonctionnement du chargement des articles (synopsis)](#fonctionnement_chargement_article)
 * [Lien vers un article](#lien_vers_un_article)
 * [Créer un nouveau dossier article](#creer_nouveau_dossier_article)
+* [Méthodes “raccourcis” pour les vues](#methode_raccourcis)
+
+
 
 <a name='apercu_general'></a>
 ##Aperçu général
@@ -86,3 +89,8 @@ Mettre les options en troisième paramètre.
       # Ne pas oublier le "/" à la fin du path
       # noter que `theme` peut être remplacé par autre chose si le dossier ne
       # se trouve pas dans ./public/page/article/theme/
+      
+<a name='methode_raccourcis'></a>
+##Méthodes “raccourcis” pour les vues
+
+cf. le fichier "Article_redaction.md"

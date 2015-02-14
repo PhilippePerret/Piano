@@ -17,7 +17,16 @@ class App
       # à la vue principale 'membres.erb' qui a pour self l'app (instance App)
       #
       def view vname
-        app.view(File.join('article', 'admin', 'membres', vname), bind)
+        begin
+          app.view(File.join('article', 'admin', 'membres', vname), bind)
+        rescue RedirectError => e
+          ##
+          ## En cas de redirection par exemple
+          ##
+          ""
+        rescue Exception => e
+          raise e
+        end
       end      
       
       ##

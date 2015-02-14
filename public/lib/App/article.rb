@@ -4,6 +4,8 @@
 Méthode d'instance gérant les articles
 
 =end
+class RedirectError < StandardError; end
+
 class App
   class Article
     ##
@@ -17,7 +19,7 @@ class App
       :login              => {titre: "S'identifier", relpath: 'user/login'},
       :profil             => {titre: "Votre profil", relpath: 'user/profil'},
       :edit_profil        => {titre: "Édition de votre profil", relpath: 'user/edit_profil'},
-      :mailing            => {titre: "s'inscrire sur le mailing-list", relpath: 'main/rester_informed'},
+      :mailing            => {titre: "S'inscrire dans le mailing-list", relpath: 'main/rester_informed'},
       :vote_articles      => {titre: "Choisissez l'ordre des prochains articles", relpath: 'main/articles_vote'},
       :articles_en_projet => {titre: "Voir la liste des articles en projet", relpath: 'main/articles'}
     }
@@ -34,7 +36,11 @@ class App
       art = param('a') if art.to_s == ""
       App::Article::new(art)
     end
-  end    
+  end
+  def article= pathart
+    @article = App::Article::new(pathart)
+    @current_article = nil
+  end
     
   ##
   #
@@ -62,7 +68,8 @@ class App
     ETATS = {
       0 => {hname: "Indéfini",      value: 0},
       1 => {hname: "En projet",     value: 1},
-      2 => {hname: "Projet",        value: 2},
+      2 => {hname: "Fonctionnel",   value: 2},
+      3 => {hname: "Administration",value: 3},
       7 => {hname: "Rédaction",     value: 7},
       8 => {hname: "Finalisation",  value: 8},
       9 => {hname: "Achevé",        value: 9}
@@ -74,6 +81,28 @@ class App
     #
     # ---------------------------------------------------------------------
     class << self
+      
+      ##
+      ## {Hash} des instances d'articles déjà instanciées
+      ##
+      attr_reader :instances
+      
+      ##
+      #
+      # @Return l'instance App::Article de l'article défini par
+      # son ID ou son idpath +fooid+
+      #
+      def get fooid
+        @instances ||= {}
+        unless @instances.has_key? fooid
+          art = App::Article::new fooid
+          @instances.merge!(
+            art.id      => art,
+            art.idpath  => art
+          )
+        end
+        @instances[fooid]
+      end
       
       ##
       #
@@ -129,6 +158,9 @@ class App
       # @return le code HTML de la table des matière avec les titres
       # d'articles définis dans +arr_titres+
       #
+      # Ajoute aussi un lien pour voter pour l'ordre des articles en
+      # projet.
+      #
       def tdm_with arr_titres
         c = "<ul class='tdm'>"
         c << arr_titres.collect do |dtitre|
@@ -136,6 +168,10 @@ class App
           '<li>' + app.link_to( titre, File.join(app.article.folder, artname) ) + (a_venir ? app.img_a_venir : '') + '</li>'
         end.join("")
         c << "</ul>"
+        ##
+        ## Lien article en projet
+        ##
+        c << link_to(:vote_articles).in_div(class: 'right air')
         return c
       end
       
@@ -165,6 +201,13 @@ class App
         @pstore ||= File.join('.', 'data', 'pstore', 'articles.pstore')
       end
       
+      ##
+      #
+      # PStore des commentaires des articles
+      #
+      def pstore_comments
+        @pstore_comments ||= File.join(app.folder_pstore, 'articles_comments.pstore')
+      end
       ##
       #
       # PStore contenant la table de correspondance entre l'idpath et
@@ -214,7 +257,24 @@ class App
     #
     def get key
       PStore::new(App::Article::pstore).transaction do |ps|
-        ps[id][key]
+        dart = ps.fetch(id, nil)
+        unless dart.nil?
+          dart[key]
+        else
+          nil
+        end
+      end
+    end
+    
+    ##
+    #
+    # Retourne toutes les données pstore de l'article
+    #
+    def data
+      @data ||= begin
+        PStore::new(App::Article::pstore).transaction do |ps|
+          dart = ps.fetch(id, nil)
+        end
       end
     end
     
@@ -258,7 +318,7 @@ class App
       @default_data ||= {
         id:             @id,
         idpath:         idpath,
-        titre:          "",       # Titre entré manuellement
+        titre:          titre_in_file,       
         x:              0,        # Nombre de chargements
         duree_lecture:  0,        # Durée totale de lecture
         etat:           0,        # État de l'article (cf. ETATS)
@@ -266,6 +326,21 @@ class App
         updated_at:     Time.now.to_i,
         created_at:     Time.now.to_i
       }
+    end
+    
+    ##
+    #
+    # Retourne le titre de l'article dans le fichier
+    #
+    #
+    def titre_in_file
+      if File.exist? fullpath
+        code = File.read(fullpath).force_encoding('utf-8')
+        @titre = code.match(/<h2>(.*?)<\/h2>/).to_a[1].to_s.strip
+      else
+        debug "= Fichier ID #{id} introuvable (#{fullpath}). Impossible de récupérer son titre"
+        ""
+      end
     end
     
     ##
@@ -291,6 +366,7 @@ class App
         id
       end
     end
+    
     ##
     #
     # Identifiant path de l'article
@@ -318,11 +394,55 @@ class App
     
     ##
     #
-    # Méthode appelée par les fichier `_body_.erb' des dossiers d'article
+    # Titre de l'article
+    #
+    def titre
+      @titre ||= ( get(:titre) || titre_in_file )
+    end
+    
+    ##
+    #
+    # Méthode définissant le code du _body_.erb, appelée depuis un
+    # fichier _body_.erb
+    #
+    #
+    def body_content titre, options = nil
+      c = ""
+      c << app.link_to_tdm unless tdm?
+      c << titre.in_h1
+      c << view
+      unless tdm? || en_projet?
+        c << app.link_to_tdm
+        c << section_comments
+      end
+    end
+    
+    def tdm?
+      @is_tdm ||= name == '_tdm_.erb'
+    end
+    
+    def en_projet?
+      @en_projet = get(:etat) == 1 if @en_projet === nil
+      debug "@en_projet : #{@en_projet.inspect} (etat : #{get(:etat)})"
+      @en_projet
+    end
+    
+    ##
+    #
+    # Méthode appelée par les fichiers `_body_.erb' des dossiers d'article
     # retournant le code de l'article précisément demandé.
     #
     def view
-      app.view "article/#{folder}/#{name}"
+      begin
+        app.view "article/#{folder}/#{name}"
+      rescue RedirectError => e
+        ##
+        ## En cas de redirection par exemple
+        ##
+        ""
+      rescue Exception => e
+        raise e
+      end
     end
     
     
@@ -415,6 +535,53 @@ class App
       @hduree_lecture ||= get(:duree_lecture).as_horloge
     end
     
+    ##
+    #
+    # @return les commentaires courants
+    #
+    #
+    def comments
+      @comments ||= begin
+        PStore::new(self.class.pstore_comments).transaction do |ps|
+          lescomments = ps.fetch(id, nil)
+          if lescomments.nil?
+            ps[id] = []
+            []
+          else
+            lescomments
+          end
+        end
+      end
+    end
+    
+    ##
+    #
+    # Ajouter une commentaire (non validé) pour l'article
+    #
+    # Note : L'annonce à l'administration doit être faite ailleurs
+    # car la méthode ne s'occupe que de l'ajout du commentaire dans
+    # la table.
+    #
+    def add_comments new_comment, user_data
+      data_comment = user_data.merge(id: comments.count, ok: false, c: new_comment, at: Time.now.to_i)
+      PStore::new(self.class.pstore_comments).transaction do |ps|
+        ps[id] << data_comment
+      end
+    end
+    
+    ##
+    #
+    # Validation d'un commentaire par l'administration
+    #
+    # Noter que comments_id correspond simplement à l'index des données
+    # du commentaire dans la liste des commentaires.
+    #
+    def valider_comments comments_id
+      PStore::new(self.class.pstore_comments).transaction do |ps|
+        ps[id][comments_id][:ok] = true
+      end
+    end
+    
     # ---------------------------------------------------------------------
     #
     #   Helpers méthodes
@@ -428,6 +595,29 @@ class App
         tit.in_span(class: 'titre') +
         (options[:votes] ? "#{get :votes}" : '').in_span(class: 'cote')
       ).in_li('data-id' => id)
+    end
+    
+    ##
+    #
+    # Retourne la section des commentaires
+    #
+    # Cette section contient le formulaire pour laisser un 
+    # commentaire ainsi que tous les commentaires déjà déposés
+    #
+    def section_comments
+      app.view('article/element/comments_form') +
+      list_comments.in_fieldset(legend: "Commentaires")
+    end
+    def list_comments
+      hc = comments.collect do |dcom|
+        # next unless dcom[:ok]
+        (
+          (dcom[:ps] + ', le ' + dcom[:at].as_human_date).in_div(class: 'c_info') +
+          dcom[:c].in_div(class: 'c_content')
+        ).in_div(class: 'comment')
+      end.join('')
+      hc = "Soyez le premier à laisser un commentaire.".in_div(class: 'italic small') if hc == ""
+      return hc
     end
     
     ##

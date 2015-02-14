@@ -35,6 +35,9 @@ ul
 	
 .right
 	text-align:			right !important
+
+.center
+	text-align:			center !important
 	
 .small, .small *
 	font-size:				0.85em
@@ -47,7 +50,22 @@ ul
 
 .discret
 	color:		#ccc
+
+.air
+	margin:				2em !important
 	
+.grand_air
+	margin:				4em !important
+	
+.inline
+	display:					inline
+
+// Pour chassse fixe
+.mono, .pre
+	font-family: 	-moz-fixed
+	font-size: 		13pt
+	white-space: 	pre
+
 fieldset
 	margin-top:				1em
 	margin-bottom:		1em
@@ -67,3 +85,17 @@ div.row
 		vertical-align:		top
 		width:						60%
 	
+select
+	font-family: 		inherit
+	font-size:			inherit
+	
+// Cadre pour une image avec légende obtenu par la méthode
+// in_image(... legend: "légende")
+div.img_cadre
+	text-align:						center
+	
+div.img_legend
+	font-size:						0.9em
+	font-style:						italic
+	text-align:						center
+	padding:							0 24%

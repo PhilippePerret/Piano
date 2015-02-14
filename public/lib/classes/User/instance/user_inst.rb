@@ -83,6 +83,18 @@ class User
     flash "Bienvenue, #{pseudo} !"
   end
   
+  ##
+  #
+  # Déconnexion du membre
+  #
+  #
+  def logout
+    User::current           = nil
+    set :session_id        => nil
+    app.session['user_id']  = nil
+    @is_identified          = false
+  end
+  
   def app
     @app ||= App::current
   end

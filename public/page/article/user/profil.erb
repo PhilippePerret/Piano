@@ -1,19 +1,33 @@
 <h2>Votre profil</h2>
 
+<% 
+##
+## Enregistrement des données
+##
+## On doit le mettre là car quand on appelle l'enregistrement 
+## du profil (en tant que membre), l'article suivant est celui-ci
+##
+if param('operation') == "enregistrer"
+  cu.get_and_save
+end
+%>
+
+
 <div class='p small right'>
   <%= link_to "Modifier votre profil", :edit_profil %>
 </div>
 
 <%= row( "Pseudo", cu.pseudo ) %>
 <%= row( "Grade",  cu.hgrade)  %>
+<%= row "", link_to( "Explication des grades", 'main/grades') %>
 <%= row( "Inscription", cu.created_at.as_human_date ) %>
 <%= row( "Mail", cu.mail ) %>
+<%= row( "Site", cu.site_as_link) %>
+<%= row( "Blog", cu.blog_as_link) %>
+<%= row( "Chaine Youtube", cu.chaine_yt_as_link("www.youtube.com/channel/...")) %>
 <%= row( "Description", cu.hdescription ) %>
 
 
-<div class='p small right'>
-  <%= link_to "Explication des grades", 'main/grades' %>
-</div>
 <div class='p small right'>
   <%= link_to :articles_en_projet %>
 </div>

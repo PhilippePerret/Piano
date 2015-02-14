@@ -1,0 +1,36 @@
+<% 
+##
+## Formulaire pour laisser un commentaire sur l'article
+##
+%>
+<fieldset id="laisser_un_commentaire">
+  <legend>Laisser un commentaire</legend>
+  <form id="comments_form" action="index.rb" method="POST" accept-charset="utf-8">
+    <%
+    ##
+    ## Champs hidden
+    ##
+    %>
+    <%= "deposer_commentaire".in_hidden(name: 'o') %>
+    <%= article.idpath.in_hidden(name: 'a') %>
+    <%= article.id.to_s.in_hidden(name: 'aid')%>
+    
+    <% 
+    ##
+    ## Mail et explication
+    ##
+    %>
+    <% unless cu.identified? %>
+      <div class='italic small'>Noter que pour laisser un commentaire vous devez impérativement être inscrit dans la mailing-list (cf. le lien ci-dessous) ou être identifié en tant que membre du cercle.</div>
+      <%= row("Votre mail", param('user_mail').to_s.in_input_text(name: 'user_mail')) %>
+    <% end %>
+    <% 
+    ##
+    ## Champ pour entrer et soumettre le commentaire
+    ##
+    %>
+    <%= row("Commentaire", param('user_comments').to_s.in_textarea(name: 'user_comments', style: 'height:100px')) %>
+    <%= row("", "Envoyer".in_submit(class: 'btn'), {class: 'buttons'}) %>
+  </form>
+  <%= link_to "S'inscrire dans la mailing-list", :mailing %>
+</fieldset>

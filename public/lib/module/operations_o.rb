@@ -4,8 +4,8 @@
 Module des opération “O”
 
 =end
+class CommentsError < StandardError; end
 class App
-  
   class Operation
     class << self
       
@@ -21,7 +21,15 @@ class App
           raise 'user_password est inconnu' if param('user_password').to_s == ""
           raise 'cpassword est inconnu pour l’user' if u.cpassword.to_s == ""
           raise 'Le salt de l’user est inconnu' if u.get(:salt).to_s == ""
-          login_ok = u.cpassword == Digest::MD5.hexdigest("#{param('user_password')}#{u.get(:salt)}")
+          cpwd = Digest::MD5.hexdigest("#{u.get(:password)}#{u.get(:salt)}")
+          cpwd_checked = Digest::MD5.hexdigest("#{param('user_password')}#{u.get(:salt)}")
+          # debug "[check_login] password : #{u.get(:password)} (dans pstore)"
+          # debug "[check_login] password : #{param('user_password')} (donné)"
+          # debug "[check_login] salt     : #{u.get(:salt)}"
+          # debug "[check_login] cpassword: #{u.cpassword} (dans pstore)"
+          # debug "[check_login] cpassword: #{cpwd} (recalculé avec donnée pstore)"
+          # debug "[check_login] cpassword: #{cpwd_checked} (avec données fournies)"
+          login_ok = cpwd == cpwd_checked
         end
         if login_ok
           u.login
@@ -156,6 +164,57 @@ class App
         
         flash "Votre vote a bien été enregistré. Merci à vous."
       end
-    end
-  end
-end
+      
+      def deposer_commentaire
+        ##
+        ## Si l'user est identifié
+        ##
+        if cu.identified?
+          udata = {id: cu.id, ps: cu.pseudo, membre: true, follower: false}
+        else
+          ##
+          ## On doit vérifier que l'user est bien inscrit dans la mailing-list
+          ##
+          umail = param('user_mail').to_s.strip
+          raise CommentsError, "Vous devez fournir le mail de votre inscription sur la mailing-list." if umail == ""
+          app.require_module 'mailing_list'
+          data_follower = App::Mailing::follower umail
+          if data_follower.nil?
+            raise CommentsError, "Désolé, mais je ne connais aucun follower du cercle avec l'adresse fournie."
+          end
+          udata = {mail: umail, ps: data_follower[:name], follower: true, membre: false}
+        end
+        
+        ##
+        ## Le commentaire
+        ##
+        comments = param('user_comments').to_s.strip
+        raise CommentsError, "Un commentaire vide n'est pas un commentaire…" if comments == ""
+
+        ##
+        ## L'article visé par le commentaire
+        ##
+        art = App::Article::get( param('aid').to_i )
+        
+        ##
+        ## Tout est OK, on peut enregistrer provisoirement ce commentaire
+        ##
+        art.add_comments comments, udata
+        
+        ##
+        ## On avertit l'administration
+        ##
+        
+        flash "Merci pour votre commentaire ! Il apparaitra dès validation par l'administration."
+        
+      rescue CommentsError => e
+        return error e.message
+      rescue Exception => e
+        debug e.message
+        debug e.backtrace.join("\n")
+        error e.message
+      end
+      
+    end # << self App::Operation
+  end # Operation
+end # App

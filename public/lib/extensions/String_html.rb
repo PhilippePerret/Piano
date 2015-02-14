@@ -139,6 +139,71 @@ class String
     attrs = attrs.merge( :value => self ) unless self == "" || attrs.has_key?(:value)
     self.class.opened_tag('input', attrs)[0..-2] + " />"
   end
+  
+  ##
+  #
+  # @return code pour une image
+  #
+  # +self+ est le path
+  # +attrs+
+  #   :center => true
+  #       L'image sera placée dans un div centré. La classe .center doit être
+  #       définie dans les CSS.
+  #   :float  => 'left'/'rigth'
+  #       L'image sera placée dans un div flottant à droite ou à gauche.
+  #       Noter que la class 'div.air' sera ajoutée, qui doit définir l'air
+  #       à laisser autour de l'image.
+  #       Les classes 'fleft' et 'fright' doivent être définies.
+  #   :legend => "<texte de la légende>"
+  #       Si :legend est défini dans les attributs, l'image est retournée
+  #       dans un cadre (non visible) avec une légende.
+  #       Le style par défaut est 'img_legend' pour le DIV contenant la légende
+  #       Le style par défaut pour le div contenant l'image et la légende
+  #       est .img_cadre.
+  #       On peut sur définir ces valeurs avec les propriétés attrs suivantes :
+  #         legend_class:     Nouvelle class CSS pour le div légend
+  #         div_class:        Nouvelle class CSS pour le div général
+  #
+  def in_image attrs = nil
+    attrs ||= {}
+    attrs.merge!( src: self ) unless self == "" || attrs.has_key?(:src)
+    legend        = attrs.delete(:legend)
+    if legend
+      legend_class  = attrs.delete(:legend_class) || 'img_legend'
+      div_class     = attrs.delete(:div_class)    || 'img_cadre'
+    end
+    centrer_image   = attrs.delete(:center)
+    image_flottante = attrs.delete(:float)
+    
+    ##
+    ## Le tag IMG
+    ##
+    tag_img = self.class.opened_tag('img', attrs)[0..-2] + ' />'
+    
+    ##
+    ## S'il y a une légende
+    ##
+    tag = if legend
+      div_legend = legend.in_div(class: legend_class)
+      div_image  = tag_img.in_div
+      (div_image + div_legend).in_div(class: div_class)
+    else
+      tag_img
+    end
+    
+    ##
+    ## Si l'image doit être centrée ou floattant
+    ##
+    if centrer_image
+      tag.in_div(class: 'center')
+    elsif image_flottante != nil
+      tag.in_div(class: "air f#{image_flottante}")
+    else
+      tag
+    end
+  end
+  alias :in_img :in_image
+  
   def in_input_text attrs = nil
     attrs = attrs.merge(type: 'text')
     in_input attrs

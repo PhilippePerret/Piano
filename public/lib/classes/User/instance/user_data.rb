@@ -53,8 +53,9 @@ class User
     get_form_data
     check_data_or_raise
     @data = data.merge @new_data
+    debug "@data après merge : {\n"+ @data.collect{|k,v| "#{k.inspect} => #{v.inspect}"}.join("\n") +"\n}"
     save
-    # debug "New data : {\n"+ data.collect{|k,v| "#{k.inspect} => #{v.inspect}"}.join("\n") +"\n}"
+    debug "New data : {\n"+ data.collect{|k,v| "#{k.inspect} => #{v.inspect}"}.join("\n") +"\n}"
   rescue Exception => e
     app.error e.message
   end
@@ -66,8 +67,7 @@ class User
   #
   def save
     now = Time.now.to_i
-    @data.merge!(:created_at => now) unless data.has_key? :created_at
-    @data.merge!(:updated_at => now)
+    data.merge!(:updated_at => now)
     PStore.new(User::pstore).transaction do |ps|
       ##
       ## Affecter une nouvelle ID s'il n'est pas défini
@@ -77,6 +77,7 @@ class User
         ps[:last_id]  = new_id
         @data[:id]    = new_id
         @id           = new_id
+        @data.merge! created_at: Time.now.to_i
       end
       ps[id] = data
     end
@@ -106,7 +107,7 @@ class User
           password:     nil,
           salt:         Time.now.to_i,
           cpassword:    nil,
-          created_at:   Time.now.to_i
+          created_at:   nil
         }
       end
     end
@@ -146,33 +147,38 @@ class User
     new_password_getted = false
     new_pwd = h.delete(:new_password)
     if new_pwd.to_s != ""
+      ##
+      ## Un changement de mot de passe
+      ##
       new_pwd.length <= 40 || (errors << "Votre code doit faire 40 signes au plus.")
       new_pwd_conf = h.delete(:new_password_confirmation).to_s
       new_pwd == new_pwd_conf || (errors << "La confirmation du nouveau mot de passe ne correspond pas.")
       ## Tout est OK
       if errors.empty?
+        @new_data.merge! :password => new_pwd
+        debug "Nouveau mot de passe : #{@new_data[:password]}"
         new_password_getted = true
-        @new_data[:password] = new_pwd
       end
-    else
-      h.delete(:new_password_confirmation)
-    end
-    
-    ##
-    ## Si c'est l'édition des membres qui modifie le mot de passe
-    ##
-    if h[:pwd].to_s != get(:password).to_s
+    elsif h[:pwd].to_s != get(:password).to_s
       h.merge! :password => h[:pwd]
       new_password_getted = true
     end
+    
+    h.delete(:new_password_confirmation)
     h.delete(:pwd)
     
     ##
     ## Si le mot de passe a été modifié
     ##
     if new_password_getted && errors.empty?
-      @new_data[:salt]      = Time.now.to_i
-      @new_data[:cpassword] = Digest::MD5.hexdigest("#{@new_data[:password]}#{@new_data[:salt]}")
+      new_salt = Time.now.to_i
+      @new_data.merge!( 
+        :salt      => new_salt,
+        :cpassword => Digest::MD5.hexdigest("#{@new_data[:password]}#{new_salt}")
+        )
+      # debug "Nouveau code : #{@new_data[:password]}"
+      # debug "Nouveau salt mis à #{@new_data[:salt]}"
+      # debug "Nouveau cpassword : #{@new_data[:cpassword]}"
     end    
     
     ##

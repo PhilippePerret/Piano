@@ -7,5 +7,37 @@ my = App::Membres
 %>
 <h2>Administration des membres</h2>
 
+<% 
+if param('operation') == 'check_synchro'
+##
+## Fieldset de synchro
+##
+ps_membres  = Fichier::new './data/pstore/membres.pstore'
+ps_table    = Fichier::new './data/pstore/table_mail_to_id.pstore'
+%>
+<%= ps_membres.fieldset_synchro(no_check: true, message: "Fichier membres", article: 'admin/membres' ) %>
+<%= ps_table.fieldset_synchro(no_check: true, message: "Table Mail&lt;->ID", article: 'admin/membres')%>
+<% 
+end # si l'opération est "check_synchro"
+%>
+
+<% 
+##
+## Demande de check de la synchro
+##
+%>
+<%= link_to( "Vérifier la synchro", 'admin/membres', {operation: 'check_synchro'} ).in_div(class: 'right') %>
+
+<% 
+##
+## Formulaire d'édition du membre
+##
+%>
 <%= my.view 'edit_form' %>
+
+<% 
+##
+## Liste de tous les membres
+##
+%>
 <%= my.view 'list' %>

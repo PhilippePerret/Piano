@@ -28,35 +28,49 @@ body
 			color:						#7b7b7b
 			text-align:				left
 		
-		// Sous-titre
-		h2
-			background-color: 	#7f7f7f
-			color: 							#ffffff
-			font-variant: 			small-caps
-			font-weight: 				normal
-			padding: 						0.5em 0.7em
-			text-align: 				left
-
-		// Titre dans le texte
-		h3
-			border-bottom:			1px solid
-			margin-top:					2em
-		
-		// Div contenant le lien vers la table des matières
-		// principale du dossier courant
-		div.link_to_tdm
-			text-align:					right
-			font-size:					13.2pt
-			// margin:							3em 0
-			
-		// Article principal de la page
 		div#main_article
 			width:					28em
 			text-align:			justify
-			
+		
 			> p, > div.p
 				text-align:		justify
 				margin:				1em 0
+
+			// Sous-titre = titre article
+			h2
+				background-color: 	#7f7f7f
+				color: 							#ffffff
+				font-variant: 			small-caps
+				font-weight: 				normal
+				padding: 						0.5em 0.7em
+				text-align: 				left
+
+			// Grand titre dans le texte
+			> h3, div.included > h2
+				background-color:		inherit
+				color:							inherit
+				font-size:					26.8px
+				font-variant:				normal
+				font-weight:				normal
+				padding: 						0
+				border-bottom:			1px solid
+				margin-top:					2em
+		
+			> h4, div.included > h3
+				font-size:					22.3px
+				font-weight:				bold
+		
+			div.include > h4
+				font-size:					18.1px
+				font-weight:				normal
+		
+			// Div contenant le lien vers la table des matières
+			// principale du dossier courant
+			div.link_to_tdm
+				text-align:					right
+				font-size:					13.2pt
+				// margin:							3em 0
+			
 			
 		ul.tdm
 			list-style-type: 		none
@@ -100,3 +114,27 @@ pre#debug
 img.avenir
 	height:					16px
 	margin-left:		8px
+
+img
+	vertical-align:			top
+	
+div.comment
+	padding:						12px 3em 0 3em
+
+	div.c_info
+		color:						#888
+		font-style:				italic
+		font-size:				0.75em
+		margin-bottom:		12px
+		
+	div.c_content
+		font-size:				0.95em
+		padding-bottom:			18px
+		border-bottom:			1px solid #ccc
+
+fieldset
+	legend
+		font-family:				Helvetica
+		color:							#606060
+		font-size:					15.6px
+		padding:						0 15px

@@ -20,7 +20,7 @@ SIMPLE_CHECK = true # mettre à faux pour procéder à la synchronisation
 ## serveurs qui n'existent pas en offline. Et les traiter dans un
 ## second temps
 ##
-LONELY_ONLINE_DO_NOTHING = false
+LONELY_ONLINE_DO_NOTHING = true
 
 ##
 ## Si true, détruit les fichiers serveurs qui n'existent pas

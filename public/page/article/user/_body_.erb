@@ -1,3 +1,12 @@
+<% 
+##
+## Barrière membre non identifié
+##
+unless cu.identified? || app.current_article == 'user/login'
+  redirect_to :login, app.article.idpath
+  raise RedirectError
+end
+%>
 <%= link_to_tdm unless article.idpath == 'user/login' %>
 <h1>Section membre</h1>
 <%= article.view %>

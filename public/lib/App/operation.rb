@@ -26,9 +26,19 @@ class App
       break unless args.has_key? k_sym
       ox << args[k_sym].in_hidden(name: k)
     end
+    
+    # Classe CSS du formulaire
+    if args.has_key? :class
+      args[:class] = [args[:class]] unless args[:class].class == Array
+    else
+      args[:class] ||= []
+    end
+    args[:class] << 'form_o'
+    args[:class] = args[:class].join(' ')
+    
     art = args.delete(:article).to_s.in_hidden(name: 'article')
     btn = (args.delete(:button) || args.delete(:titre)).in_submit(class: 'btn', onclick: args[:onclick])
-    (o.in_hidden(name: 'o') + ox.join("") + art + btn).in_form(class: 'form_o', id: args[:form_id])
+    (o.in_hidden(name: 'o') + ox.join("") + art + btn).in_form(class: args[:class], id: args[:form_id])
   end
 
 end

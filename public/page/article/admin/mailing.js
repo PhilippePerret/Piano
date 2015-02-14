@@ -29,5 +29,15 @@ window.Mailing = {
 		$('ul#followers li input[type="checkbox"]').map(function(){
 			$(this)[0].checked = true ;
 		})
+	},
+	
+	/*
+	 * Méthode appelée quand on définit un ID d'article dont il faut annoncer
+	 * la publication
+	 *  
+	 */
+	on_define_id_new_article:function(inputtext){
+		// On s'assure que la case à cocher est bien cocher
+		$('input#cb_annonce_new_article')[0].checked = true
 	}
 }

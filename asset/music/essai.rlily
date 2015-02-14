@@ -1,0 +1,20 @@
+SCORE::titre        = "Essai"
+SCORE::compositeur  = "Phil"
+SCORE::armure       = "C"
+SCORE::metrique     = "4/4"
+
+MD << hide([:rest, :bar])
+MD << chord("ges' bes des", duree: '2')
+MD << chord("ges beses des")
+
+MG << hide(:all)
+MG << "r1 r"
+
+
+# MD << chord('d f a', {duree: 2}) + "r"
+# MG << "d2 r"
+
+
+
+# MD << chord('d f# a') + "r"
+# MG << "d2 r"

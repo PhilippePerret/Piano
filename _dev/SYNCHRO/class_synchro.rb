@@ -27,6 +27,8 @@ class Synchro
     #
     def check params = nil
       params ||= {}
+      @files_offline  = nil
+      @files_online   = nil
       init
       get_hierarchie_offline  || return
       get_hierarchie_online   || return

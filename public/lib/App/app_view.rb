@@ -15,6 +15,11 @@ class App
   def view path, bindee = nil
     begin
       View::new(path, bindee).output
+    rescue RedirectError => e
+      ##
+      ## En cas de redirection dans la vue
+      ##
+      ""
     rescue Exception => e
       debug "ERREUR FATALE AVEC VUE #{path} : #{e.message}"
       debug e.backtrace.join("\n") if offline?

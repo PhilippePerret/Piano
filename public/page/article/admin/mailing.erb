@@ -41,9 +41,38 @@ Note&nbsp;: Les données des followers sont ramenées du serveur distant toutes 
   <%= Mailing::show_membres %>
   <%= Mailing::show_followers %>
   
+  <%
+  ##
+  ## Messages préformatés
+  ##
+  %>
+  <fieldset id="messages_preformatés" class="">
+    <legend onclick="$('div#messages_preformated').toggle()">Messages préformatés</legend>
+    <div id="messages_preformated" style="display:none">
+    
+      <% 
+      ##
+      ## Annonce de la publication d'un nouvel article
+      ##
+      %>
+      <div id="div_annonce_new_article">
+        <%= "&nbsp;&nbsp;Annonce publication d'un nouvel article".in_checkbox(name: 'annonce_new_article', id: 'cb_annonce_new_article') %>
+        <%= param('article_id').to_s.in_input_text(name: 'article_id', style: 'width:40px', onchange: "$.proxy(Mailing,'on_define_id_new_article', this)()") %>
+        <div class='italic small'>
+          Mettre ci-dessus l'ID du nouvel article en le relevant dans la partie administration. Note&nbsp;: le programme vérifiera automatiquement que l'article a bien été uploadé sur le site.
+        </div>
+      </div>
+      
+      <%= row("", "Envoyer".in_submit, {class: 'buttons'} ) %>
+    </div>
+  </fieldset>
+  
+  
+  <fieldset id="message_personnalised">
+    <legend>Message personnalisé</legend>
   <% 
   ##
-  ## Définition de l'article
+  ## Définition du message (si autre que pré-formaté)
   ##
   %>
   <div class='row'>
@@ -72,5 +101,6 @@ Note&nbsp;: Les données des followers sont ramenées du serveur distant toutes 
     <div class='small italic'>Note&nbsp;: Si `link_to' est utilisé dans le code, ce sera forcément un lien qui sera renvoyé, avec une URL complète.</div>
     <div class='small italic'>Si le User est bindé, il faut utiliser `app.link_to'.</div>
   </p>
+  </fieldset>
   <%= row("", "Envoyer".in_submit, {class: 'buttons'} ) %>
 </form>

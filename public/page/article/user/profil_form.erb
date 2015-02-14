@@ -18,21 +18,25 @@ user_edite_profil = edition_membres == false
 
 <% 
 ##
-## Mettre une barrière ici pour empêcher d'atteindre cette section
-## si on n'est pas identifié
+## Enregistrement des données
 ##
-if user_edite_profil && false == cu.identified?
+## L'enregistrement se fait ici quand c'est l'édition des membres
+## depuis l'administration. Mais lorsque c'est un membre qui édite
+## son profil, comme l'article suivant est le profil, c'est dans
+## profil.erb qu'est placé ce code.
+##
+if param('operation') == "enregistrer"
+  user.get_and_save
+end
 %>
-  <% raise "Pirate !" %>
-<% end %>
 
 <form id="user_edit_form" action="index.rb" method="POST" accept-charset="utf-8">
+  <%= "enregistrer".in_hidden(name: 'operation') %>
   <% if edition_membres %>
     <%= "admin/membres".in_hidden(name: 'article') %>
   <% else %>
     <%= "user/profil".in_hidden(name: 'article') %>
   <% end %>
-  <%= "enregistrer".in_hidden(name: 'operation') %>
   <% if edition_membres %>
     <%= row("Pseudo",         user.pseudo.in_input_text(name: 'user_pseudo', placeholder: "Pseudo")) %>
     <%= row("ID",             user.id.to_s.in_input_text(name: 'user_id', placeholder: "ID")) %>

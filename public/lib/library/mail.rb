@@ -18,6 +18,7 @@ padding: 0;
 margin: 2em;
 font-family:serif;
 font-size:17pt;
+width: 680px;
       EOC
     end
     def styles_css
@@ -37,6 +38,8 @@ section#footer{
   border-top:1px solid;
   padding-top:24px;
 }
+.center{text-align: center}
+.bold{font-weight: bold}
       EOC
     end
     def before_subject

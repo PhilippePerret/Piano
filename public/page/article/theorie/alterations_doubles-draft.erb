@@ -1,0 +1,278 @@
+<h2>Le mystère des double-dièses et double-bémols</h2>
+
+<% rep_img = File.join('music', 'alterations_doubles') %>
+<p>
+On entend régulièrement posée la question de la raison d'être de ces signes spéciaux qu'on appelle double-dièses…
+</p>
+
+<%= image("#{rep_img}/Ax.png", center: true) %>
+
+<p>
+… et double-bémols.
+</p>
+
+<%= image("#{rep_img}/Abb.png", center: true) %>
+
+<p>
+Pour rappel, puisque qu'un dièse ré-hausse d'un demi-ton une note, le double-dièse ré-hausse de deux demi-tons la note, donc d'un ton. De la même manière, puisqu'un bémol abaisse la note naturelle d'un demi-ton, le double-bémol la descend de 2 demi-tons.
+</p>
+
+<p>
+Par exemple, un <strong>LA double-dièses</strong> —&nbsp;donc un LA ré-haussé de 2 demi-tons&nbsp;— produit le même son qu'un SI. Ces deux notes sont équivalentes —&nbsp;on dit qu'elles sont “enharmoniques” ou qu'elles sont “égales par enharmonie”&nbsp;:
+</p>
+
+<%= image("#{rep_img}/Ax-B.png", center: true) %>
+
+<p>
+… tandis qu'un <strong>LA double-bémols</strong> —&nbsp;donc un LA baissé de 2 demi-tons&nbsp;— produit la même hauteur de son qu'un SOL. Par enharmonie, ces deux notes sont égales&nbsp;:
+</p>
+
+<%= image("#{rep_img}/Abb-G.png", center: true) %>
+
+<p>
+La question naturelle qui en découle est&nbsp;: mais alors, pourquoi donc utiliser ces signes compliqués que sont les altérations doubles alors qu'il est possible d'écrire une autre note plus simple, sans altération&nbsp;?… Mystère…
+</p>
+
+<p>
+Mystère&nbsp;?… Pas vraiment, à vrai dire. Vous allez voir comment, par quelques simples exemples tout s'explique très facilement et comment, même, ce qui parait être une formulation plus compliquée peut devenir en réalité une écriture plus simple.
+</p>
+
+<h3>Il est plus compliqué parfois de faire simple…</h3>
+
+<p>
+Prenons un premier exemple où vous allez voir que l'écriture avec un double-dièse ou un double-bémol est plus simple que sans, plus simple que l'utilisation de la note naturelle correspondante.
+</p>
+
+<p>
+Imaginons que nous voulions jouer à la suite les notes mélodiques <strong>FA&nbsp;dièse</strong>, <strong>SOL</strong>, <strong>SOL&nbsp;dièse</strong>. Nous pouvons les écrire simplement&nbsp;:
+</p>
+
+<%= image("#{rep_img}/Fd-G-Gd.png", center: true) %>
+
+<p>
+Aucune raison, ici, de l'écrire autrement.
+</p>
+<p>
+Mais imaginons maintenant que nous soyons dans une tonalité de LA majeur, c'est-à-dire une tonalité où sont diésés le FA, le DO et le SOL (vous trouverez dans une autre partie l'explication sur les tonalités).
+</p>
+
+<%= image("#{rep_img}/tonalite-A.png", legend: "Tonalité de LA majeur avec son armure.") %>
+
+<p>
+Si nous reprenons notre mélodie dans cette tonalité, nous voyons que le FA (première note) et le SOL (3e note) sont déjà diésés par l'armure, donc inutile de mettre leur altération sur nos notes.
+</p>
+
+<%= image("#{rep_img}/Fd-r-Gd.png", center: true) %>
+
+<p>
+Mais un problème se pose ensuite&nbsp;: comment allons-nous écrire notre SOL naturel, le SOL sans altération&nbsp;?
+</p>
+
+<p>
+Le plus simple, <em>a priori</em>, serait tout simplement d'écrire un SOL naturel. Voilà ce que ça donnerait&nbsp;:
+</p>
+
+<%= image("#{rep_img}/Fd-Gbec-Gd.png", center: true) %>
+
+<p>
+Pas mal… sauf que nous sommes obligés, puisque nous avons baissé le SOL, de le ré-hausser pour obtenir notre troisième note SOL dièse. Car vous le savez, une altération accidentelle —&nbsp;comme le bécarre du SOL ici&nbsp;— affecte toutes les notes de même nom de la mesure et donc, même si la note SOL est diésée par l'armure de LA majeur, il convient d'ajouter le dièse sur la 3e note.
+</p>
+
+<p>
+Voilà où le <em>double-truc</em> (sic) peut entrer en action de façon efficace&nbsp;: et si, au lieu d'être obligé de baisser notre SOL pour le remonter ensuite, nous rehaussions notre FA dièse&nbsp;?
+</p>
+
+<p>
+Ce FA étant diésé, le sur-élever consiste donc à le double-diéser. Le passage devient alors&nbsp;:
+</p>
+
+<%= image("#{rep_img}/Fd-Fx-Gd.png", center: true) %>
+
+<p>
+Comparer les deux écritures&nbsp;: laquelle est la plus simple&nbsp;?…
+</p>
+
+<%= (
+image("#{rep_img}/Fd-Gbec-Gd.png", {style: "width:220px;vertical-align:middle"}) +
+image("#{rep_img}/Fd-Fx-Gd.png", {style: "width:220px;vertical-align:middle"})
+).in_div(class: 'center air') %>
+
+<p>
+La seconde, bien sûr, celle avec un double-dièse évidemment, puisqu'elle ne nous oblige qu'à ajouter un seul signe pour obtenir notre mélodie, contre deux signes dans l'autre cas. Si vous êtes familier du déchiffrage, vous devriez également être sensible à la plus grande facilité de lecture de la seconde solution. La première est plus brouillonne.
+</p>
+
+<p>
+Voilà donc un premier exemple ou contrairement à ce que l'on aurait pu imaginer, un double-dièse est plus simple à utiliser que sa note naturelle correspondante. Ici, il nous a été plus simple d'écrire FA double-dièse plutôt que SOL naturel.
+</p>
+
+<p>
+On trouve également le même cas en descendant, avec le double-bémol. Par exemple dans cette mélodie chromatique <strong>SI&nbsp;bémol</strong>, <strong>LA&nbsp;naturel</strong>, <strong>LA&nbsp;bémol</strong> (notez que les SI et les LA sont naturellement bémols à cause de l'armure)&nbsp;:
+</p>
+
+
+<%= (
+image("#{rep_img}/Bb-Abec-Ab.png", {style: "width:220px;vertical-align:middle"}) +
+image("#{rep_img}/Bb-Bbb-Ab.png", {style: "width:220px;vertical-align:middle"})
+).in_div(class: 'center air') %>
+
+<p>
+Ici aussi, vous pouvez constater que la seconde solution est plus simple et plus facile à lire que la première.
+</p>
+
+
+<h3>Des raisons qui sonnent aux oreilles</h3>
+
+<p>
+Au-delà des raisons de simplicité que nous venons d'évoquer, notons quand même que d'un pur point de vue <em>sonore</em>, il semble également plus logique dans nos deux cas précédents d'utiliser les altérations-doubles.</p>
+
+<p>
+Dans le premier cas, si vous écoutez bien, vous noterez qu'on n'entend pas le SOL être rabaissé pour être ensuite ré-élevé. On entend plutôt le FA dièse être poussé un cran plus haut —&nbsp;un demi-ton plus haut&nbsp;— avant d'aboutir finalement sur le SOL dièse.
+</p>
+
+<p>
+Le double-dièse correspond donc plus justement dans ce cas-là, c'est-à-dire hors de tout contexte, à ce que l'on entend.
+</p>
+
+<p>
+Idem pour le second cas évoqué. On entend plutôt le SI bémol être descendu encore d'un cran —&nbsp;d'un demi-ton&nbsp;— avant d'arriver sur le LA bémol, plutôt que le LA bémol être ré-haussé d'un cran pour retrouver sa position bémol initial.
+</p>
+
+<p>
+Là aussi, donc, hors de tout contexte, le double-bémol correspond plus justement à ce que l'on entend.
+</p>
+
+<h3>Les raisons harmoniques</h3>
+
+<p>
+Mais dans la plupart des cas, les altérations doubles ont une raison harmonique. Une raison incontournable si l'on veut comprendre ce que l'on joue, et donc une raison où l'alternative de la note naturelle est impossible, serait une hérésie harmonique.
+</p>
+
+<p>
+Mais avant d'abord cette partie un tout petit plus complexe, nous devons rappeler quelques notions de base, même si vous pensez les connaitre.
+</p>
+
+<h4>Notion importante concernant les intervalles</h4>
+
+<p>
+Si vous avez du mal avec les intervalles, ou que vous répondez mal à la question suivante, alors lisez l'article suivant qui sera inséré dans la page. Si vous pensez que deux notes séparées par un ton et demi forment un intervalle de tierce mineure et que deux notes séparées par deux tons forment un intervalle de tierce majeure, alors vous devez impérativement lire cet article pour comprendre la suite.
+</p>
+
+<p>
+<%= "Insérer l'article sur les intervalles".in_a(onclick:"$('div#article_intervalles').toggle()") %>
+</p>
+<%= include_article 'technique/essentiels/intervalles', {id: 'article_intervalles', display: false} %>  
+
+<h3>Retour au sujet</h3>
+
+<p>
+Si vous avez lu le long article sur les intervalles, il peut être utile de rappeler que cet article traite de la raison d'être des altérations doubles, double-dièses et double-bémols.
+</p>
+
+<h3>Constitution des accords</h3>
+
+<p>
+Pour poursuivre, après les intervalles, nous devons également rappeler quelques notions concernant les accords et leur constitution. Rassurez-vous, ce rafraichissement sera beaucoup plus court.
+</p>
+
+<p>
+Il consiste simplement à rappeler que outre quelques exceptions (comme la sixte augmentée justement que nous avons vue dans le rappel sur les intervalles), un accord est dans son état de repos un EMPILAGE de TIERCES.
+</p>
+
+<p>
+“État de repos” ne signifie pas “état fondamental”, même si l'état de repos est aussi un état fondamental, c'est-à-dire un état de présentation de l'accord où sa fondamentale est à la basse, est la note la plus grave.
+</p>
+
+<p>
+Il est “au repos” lorsqu'il présente son empilage de tierces le plus resserré possible, contrairement à l'état fondamental qui, lui, peut présenter les notes étalées sur plusieurs octaves, pourvu que la basse —&nbsp;la note la plus grave&nbsp;— reste la fondamentale de l'accord.
+</p>
+
+<h3>Altération-double à la majorité</h3>
+
+<p>
+D'abord, passons par un cas simple, sans altération-double.
+</p>
+
+<p>
+Nous avons un accord de RÉ mineur (mineur puisque la tierce RÉ-FA compte un ton et demi).
+</p>
+
+<%= image('music/alterations_doubles/Dm.png', center: true) %>
+
+<p>
+Si nous voulons majorer cet accord, par exemple pour moduler dans le ton majeur ou encore faire un emprunt au ton de la sous-dominante, nous altérons la tierce pour qu'elle devienne une tierce majeure. Un accord est mineur si sa tierce fondamentale-tierce est mineure, un accord est majeure si sa tierce fondamentale-tierce est majeure. 
+</p>
+
+<p>
+Ici, donc, le FA naturel va devenir un FA dièse. Le RÉ mineur va devenir RÉ majeur.
+</p>
+
+<%= image('music/alterations_doubles/Dm-DM.png', center: true, legend: "Accord mineur (RÉ mineur) devenant majeur (RÉ majeur)") %>
+
+<p>
+Imaginons maintenant qu'au lieu d'avoir un accord de départ de RÉ mineur nous ayons un accord de RÉ# mineur. Pour passer de l'un à l'autre, il suffit de rehausser toutes les notes d'un demi-ton, c'est-à-dire ici de les diéser puisqu'elles sont toutes naturelles.
+</p>
+
+<%= image('music/alterations_doubles/Ddm.png', center: true) %>
+
+<p>
+Nous allons faire la même opération que précédemment, nous allons majorer cet accord, le faire passer de l'état d'accord mineur à accord majeur.
+</p>
+
+<p>
+Comme nous l'avons vu, pour ce faire, il faut rehausser la tierce de l'accord, c'est-à-dire ici le FA dièse. FA dièse + 1/2 ton, nous obtenons donc un SOL naturel.
+</p>
+
+<%= image('music/alterations_doubles/Ddm-bad-DdM.png', center: true) %>
+
+<p>
+Parfait, sauf… que c'est parfait seulement au niveau des <em>sons</em> mais pas des <em>accords</em>. Car nous n'avons plus, ici, d'accord de RÉ#. Car nous n'avons plus d'empilage de tierces&nbsp;: entre un RÉ et un SOL, comme nous l'avons vu dans le rappel des intervalles, nous ne pouvons pas avoir une TIERCE. Nous avons une QUARTE.
+</p>
+
+  <table border="0" cellspacing="5" cellpadding="5" style="text-align:center">
+    <tr>
+      <td></td><td colspan="4" style="border-width:1px 1px 0 1px;border-style:solid;border-color:blue;"></td><td colspan="5"></td>
+    </tr>
+    <tr>      <td>DO</td><td><strong>RÉ</strong></td><td>MI</td><td>FA</td><td><strong>SOL</strong></td><td>LA</td><td>SI</td><td>DO</td><td>RÉ</td><td>MI</td>
+    </tr>
+    <tr>
+      <td></td><td><strong>1</strong></td><td>2</td><td>3</td><td>4</td><tdcolspan="5"></td>
+    </tr>
+    <tr>
+      <td colspan="4"></td><td>4</td><td colspan="5" style="text-align:left;">=> QUARTE</td>
+    </tr>
+  </table>
+
+<p>
+Pour conserver l'accord de RÉ#, nous devons impérativement conserver la note FA.
+</p>
+<p>
+Et donc rehausser le FA#, tierce mineure de l'accord de RÉ# mineur, sans changer son nom. Nous obtenons alors… un FA double-dièse.
+</p>
+
+<%= image('music/alterations_doubles/Ddm-DdM.png', center: true) %>
+
+<p>
+On voit alors, même visuellement, que nous conservons parfaitement notre empilage de tierces, et que notre accord est bien un accord de RÉ#, ici majeur.
+</p>
+
+<p>
+Il en va bien entendu de même avec les bémols. Imaginons que nous ayons un accord de SOL bémol majeur&nbsp;:
+</p>
+
+<%= image('music/alterations_doubles/Gb.png', center: true) %>
+
+<p>
+Si nous voulons minorer cet accord, nous devons baisser sa tierce (SI, ici bémol), sans changer son nom. Donc baisser le SI bémol d'un demi-ton sans jamais son nom. Nous obtenons alors un SI double-bémol&nbsp;:
+</p>
+
+<%= image('music/alterations_doubles/Gb-Gbm.png', center: true) %>
+
+<h3>Conclusion</h3>
+
+<p>
+Il existe bien entendu d'autres cas qui peuvent justifier le recours naturel à des altérations-doubles, mais ces exemples présentent les principales situations qui illustrent de façon relativement simple cet usage.
+</p>
+
+<p>
+Nous espérons qu'à présent, ces altérations-doubles n'ont plus aucun secret pour vous&nbsp;! Si c'est le cas, n'oubliez pas de coter cet article grâce aux boutons ci-dessous et de le partager autour de vous grâce au lien permanent présenté également ci-dessous.
+</p>

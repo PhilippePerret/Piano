@@ -4,26 +4,6 @@
 ##
 %>
 
-
-
-<% 
-##
-## Enregistrement des données
-##
-if param('operation') == "enregistrer"
-  user.get_and_save
-end
-%>
-
-<% 
-##
-## Outil de Synchronisation
-##
-fichier = Fichier.new('data/pstore/membres.pstore')
-%>
-<%= fichier.fieldset_synchro(article: "admin/membres") %>
-
-
 <% 
 ##
 ## Formulaire d'édition

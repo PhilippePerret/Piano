@@ -34,14 +34,24 @@ class App
   #   Dossiers
   #
   # ---------------------------------------------------------------------
+  def folder_image
+    @folder_image ||= File.join(folder_page, 'img')
+  end
   def folder_pstore
     @folder_pstore ||= File.join(folder, 'data', 'pstore')
   end
   def folder_module
-    @folder_module ||= File.join(folder, 'public', 'lib', 'module')
+    @folder_module ||= File.join(folder_public, 'lib', 'module')
   end
   def folder_library
-    @folder_library ||= File.join(folder, 'public', 'lib', 'library')
+    @folder_library ||= File.join(folder_public, 'lib', 'library')
+  end
+  
+  def folder_page
+    @folder_page ||= File.join(folder_public, 'page')
+  end
+  def folder_public
+    @folder_public ||= File.join(folder, 'public')
   end
   def folder
     @folder ||= File.expand_path('.')
