@@ -1,5 +1,23 @@
-* Ajouter une option dans <article>.comments pour ne renvoyer que les articles qui sont validés (ok: true) pour pouvoir indiquer le nombre dans le lien "Lire les commentaires (X)".
-  Penser à modifier l'utilisation de la variable @comments => @comments_valided, @comments_all.
+URGENT
+
+  * Gérer le fait de ne pas pouvoir voter deux fois pour un article
+
+PLUS TARD
+* Récupérer l'URL d'un article
+  - l'envoyer à Isabelle Schieffer en lui répondant
+
+* Enregistrer le safe_id dans les data d'un membre ?
+
+* Fieldset synchro pour la table followers.pstore dans l'administration de la mailing list.
+
+* Mettre en place la section administration pour valider les commentaires
+
+* Améliorer le fieldset synchro
+  - enregistrer vraiment la date d'upload en la fournissant explicitement
+    à set_last_time (avec argument optionnel de la date à enregistrer)
+  - indiquer quand le fichier a été modifié online depuis le dernier upload
+
+* Section administration des articles : tester aussi la synchro du fichier de correspondance entre id et idpath
   
 * Formulaire pour voter pour un article
   - C'est un formulaire contenant l'ID de l'article courant

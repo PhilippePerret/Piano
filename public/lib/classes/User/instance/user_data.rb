@@ -4,6 +4,32 @@ class User
   
   ##
   #
+  # @return le safe_id {Hash} de l'user
+  #
+  # Le Hash contient la propriété :id qui est la valeur à utiliser
+  # dans les pstores
+  #
+  # Quel que soit l'user (membre, follower, simple visiteur), ce
+  # safe_id peut être défini. Le seul cas où la méthode retourne NIL
+  # est le cas où l'user n'est pas trustable.
+  #
+  #
+  def safe_id
+    @safe_id ||= begin
+      if trustable? == false
+        nil
+      elsif membre?
+        {m: 1, f: 0, ref: id, ref_type: :id, id: "1-0-#{id}"}
+      elsif follower?
+        {m: 0, f: 1, ref: mail, ref_type: :mail, id: "0-1-#{mail}"}
+      else # Un visiteur quelconque
+        {m: 0, f: 0, ref: remote_ip, ref_type: :ip, id: "0-0-#{remote_ip}"}
+      end
+    end
+  end
+  
+  ##
+  #
   # @return la valeur de la propriété +key+
   #
   #

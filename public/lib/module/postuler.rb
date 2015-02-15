@@ -6,7 +6,6 @@ class App
   #
   def postuler
     check_values_or_raise
-    require_module 'mail'
     send_mail_to_admin(
       from:     param(:user_mail),
       subject:  "Postulation pour le Cercle pianistique",

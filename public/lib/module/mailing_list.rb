@@ -50,7 +50,7 @@ class App
           htime = Time.at(duser[:created_at]).strftime("%d %m %Y - %H:%M")
           cbid = "cb-#{id}-follower"
           (
-            "&nbsp;&nbsp;#{duser[:name]} - #{duser[:mail]} (#{htime})".in_checkbox(id: cbid, name: cbid, class: 'follower')
+            "&nbsp;&nbsp;#{duser[:pseudo]} - #{duser[:mail]} (#{htime})".in_checkbox(id: cbid, name: cbid, class: 'follower')
           ).in_li
         end.join("\n").in_ul(id: 'followers', style: "list-style:none;")
       end
@@ -64,7 +64,7 @@ class App
         @followers ||= begin
           download_pstore_if_needed
           h = {}
-          PStore::new(pstore_mailing).transaction do |ps|
+          PStore::new(pstore_followers).transaction do |ps|
             keys = ps.roots.reject{|e| e == :last_id}
             keys.each do |key|
               h.merge! key => ps[key]
@@ -79,34 +79,21 @@ class App
       # @return TRUE si le follower de mail +umail+ existe
       #
       def follower_exists? umail
-        found = false
-        PStore::new(pstore_mailing).transaction do |ps|
-          keys = ps.roots.reject{|e| e == :last_id}
-          keys.each do |key|
-            if ps[key][:mail] == umail
-              found = true
-              break
-            end
-          end
+        PStore::new(pstore_followers).transaction do |ps|
+          ps.roots.include? umail
         end
-        found
       end
       
       ##
       #
       # @return un follower d'après son mail
+      #
+      # Retourne NIL si le follower n'existe pas
+      #
       def follower umail
-        foll = nil
-        PStore::new(pstore_mailing).transaction do |ps|
-          keys = ps.roots.reject{|e| e == :last_id}
-          keys.each do |key|
-            if ps[key][:mail] == umail
-              foll = ps[key]
-              break
-            end
-          end
+        PStore::new(pstore_followers).transaction do |ps|
+          ps.fetch(umail, nil)
         end
-        foll
       end
       
       ##
@@ -277,12 +264,7 @@ LCP
           ## qui n'est pas définie.
           ##
           if bind_user
-            u = User::new
-            u.instance_variable_set('@data', {
-              pseudo:       duser[:name],
-              created_at:   duser[:created_at],
-              id:           (1000000 + id)
-            })
+            u = User::get_as_follower duser[:mail]
             begin
               data_mail.merge! message: ERB::new(message).result(u.bind)
             rescue Exception => e
@@ -301,7 +283,7 @@ LCP
           ##
           nombre_envois += 1
           nombre_followers += 1
-          debug "MAIL pour #{duser[:name]} (follower)"
+          debug "MAIL pour #{duser[:pseudo]} (follower)"
         end
         
         
@@ -331,9 +313,10 @@ LCP
         ##
         ## On ajoute l'utilisateur dans le pstore des followers
         ##
-        nombre_followers = PStore::new(pstore_mailing).transaction do |ps|
+        umail = param(:user_mail)
+        nombre_followers = PStore::new(pstore_followers).transaction do |ps|
           last_id = ps.fetch(:last_id, 0) + 1
-          ps[last_id]   = {mail: param(:user_mail), name: param(:user_name), created_at: Time.now.to_i}
+          ps[umail]   = {id: last_id, mail: umail, name: param(:user_pseudo), created_at: Time.now.to_i}
           ps[:last_id]  = last_id
           ps.roots.count - 1
         end
@@ -341,8 +324,7 @@ LCP
         ##
         ## On avertit l'admin de la nouvelle inscription
         ##
-        require_module 'mail'
-        App::current::send_mail_to_admin(
+        send_mail_to_admin(
           from:       param(:user_mail),
           subject:    "Nouveau follower pour le #{short_name}",
           message:   "Admin\n\nUn nouvel utilisateur s'est inscrit à la mailing list : #{param :user_mail}.\n\nRien à faire, c'est juste une information. Pour information aussi, le nombre de followers du site est actuellement de #{nombre_followers} personnes."
@@ -357,7 +339,7 @@ LCP
       # Check les valeurs transmises pour l'ajout à la mailing list
       #
       def check_value_add_mailing_list_or_raise
-        uname     = param(:user_name).strip
+        uname     = param(:user_pseudo).strip
         umail     = param(:user_mail).strip
         umailconf = param(:user_mail_confirmation).strip
         ureponse  = param(:user_reponse).strip.downcase
@@ -375,19 +357,10 @@ LCP
   
       ##
       #
-      # Vérifie que l'adresse n'existe pas déjà 
+      # Vérifie que l'adresse +umail+ n'existe pas déjà 
       #
-      def mail_exists_in_mailing? mail
-        found = false
-        PStore::new(pstore_mailing).transaction do |ps|
-          ps.roots.reject{|e| e == :last_id}.each do |id|
-            if ps[id][:mail] == mail
-              found = true
-              break
-            end
-          end
-        end
-        return found
+      def mail_exists_in_mailing? umail
+        follower_exists? umail
       end
       
       ##
@@ -397,7 +370,7 @@ LCP
       def download_pstore_if_needed
         return false if pstore_uptodate?
         `scp piano@ssh.alwaysdata.com:www/#{relpath_pstore} ./#{relpath_pstore}`
-        set_last_time :download_pstore_mailing
+        set_last_time :download_pstore_followers
         return true
       end
 
@@ -411,19 +384,19 @@ LCP
       #
       #
       def pstore_uptodate?
-        ltime = last_time(:download_pstore_mailing)
+        ltime = last_time(:download_pstore_followers)
         return false if ltime.nil?
         return ltime > ( Time.now.to_i - 3600 )
       end
       
-      def htime_pstore_mailing
-        @htime_pstore_mailing ||= Time.at(last_time(:download_pstore_mailing)).strftime("%d %m %Y : %H:%M") 
+      def htime_pstore_followers
+        @htime_pstore_followers ||= Time.at(last_time(:download_pstore_followers)).strftime("%d %m %Y : %H:%M") 
       end
       
-      def pstore_mailing; @pstore_mailing ||= App::current::pstore_mailing end
+      def pstore_followers; @pstore_followers ||= App::current::pstore_followers end
       
       def relpath_pstore
-        @relpath_pstore ||= File.join('data', 'pstore', 'mailing_list.pstore')
+        @relpath_pstore ||= File.join('data', 'pstore', 'followers.pstore')
       end
   
       

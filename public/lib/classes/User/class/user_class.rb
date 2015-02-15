@@ -26,6 +26,25 @@ class User
     
     ##
     #
+    # Retourne un follower comme instance User
+    #
+    # Retourne NIL si le follower n'existe pas
+    #
+    def get_as_follower umail
+      udata = PStore::new(app.pstore_followers).transaction do |ps|
+        ps.fetch umail, nil
+      end
+      return nil if udata.nil?
+      u = User::new
+      udata[:id] += 1000000 # pour éviter les problèmes
+      udata.each do |k, v|
+        u.instance_variable_set("@#{k}", v)
+      end
+      return u
+    end
+    
+    ##
+    #
     # Retourne l'user dont le mail est +umail+
     #
     def get_with_mail umail

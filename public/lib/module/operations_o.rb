@@ -119,7 +119,26 @@ class App
       
       ##
       #
-      # Pour voter pour les articles
+      # Pour coter l'article
+      #
+      #
+      def coter_article
+        raise "Pirate !" unless cu.trustable?
+
+        ##
+        ## L'article visé par la cote
+        ##
+        art = App::Article::get(param('article_id').to_i)
+        raise "Pirate !" if art.nil? || art.idpath != param('article')
+        
+        app.require_module 'article/coter_article'
+        art.coter_article
+        
+      end
+      
+      ##
+      #
+      # Pour voter pour les articles EN PROJET
       #
       # Principe : les 20 premiers articles prennent des points de 20 à 1
       # et les autres n'ont rien.
@@ -194,7 +213,7 @@ class App
           if data_follower.nil?
             raise CommentsError, "Désolé, mais je ne connais aucun follower du cercle avec l'adresse fournie."
           end
-          udata = {mail: umail, ps: data_follower[:name], follower: true, membre: false}
+          udata = {mail: umail, ps: data_follower[:pseudo], follower: true, membre: false}
         end
         
         ##

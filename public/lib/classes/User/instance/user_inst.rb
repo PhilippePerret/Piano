@@ -22,6 +22,10 @@ class User
   # Adresse IP de l'user (identifié ou non)
   #
   # Consigne aussi cette connexion dans ips.pstore
+  # Noter que cette remote ip n'est pas sûre du tout, puisque
+  # les constantes HTTP_CLIENT_IP et HTTP_X_FORWARDED_FOR peuvent
+  # être falsifiées. La méthode trustable? ne tient compte que de
+  # la REMOTE_ADDR.
   #
   def remote_ip
     @remote_ip ||= begin
@@ -32,33 +36,6 @@ class User
       app.remember_ip ip
       ip
     end
-  end
-
-  # ---------------------------------------------------------------------
-  #
-  #   Méthodes d'état
-  #
-  # ---------------------------------------------------------------------
- 
-  ##
-  #
-  # Return TRUE si le membre est identifié
-  #
-  #
-  def identified?
-    @is_identified == true
-  end
-  
-  ##
-  #
-  # @return TRUE si l'user peut voter pour les articles
-  #
-  #
-  def can_vote_articles?
-    last_time_vote = PStore::new(App::Article::pstore_votes).transaction do |ps|
-      ps.fetch(remote_ip, nil)
-    end
-    return last_time_vote.nil? || (last_time_vote < (Time.now.to_i - 60.days))
   end
   
   # ---------------------------------------------------------------------

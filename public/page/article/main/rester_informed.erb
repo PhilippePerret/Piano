@@ -1,4 +1,4 @@
-<h1>Rester informés</h1>
+<h2>Rester informé</h2>
 
 <% 
 if param(:operation) == 'add_to_mailing_list'
@@ -10,7 +10,7 @@ end
 <% if param(:operation) == 'add_to_mailing_list' && no_error? %>
 
   <p>
-  <%= param(:user_name) %>, vous avez été ajouté à la mailing-list du <%= short_name %>.
+  <%= param(:user_pseudo) %>, vous avez été ajouté à la mailing-list du <%= short_name %>.
   </p>
   <p>
   Vous serez informé de tout nouvel article.
@@ -30,7 +30,7 @@ end
       <%= "main/rester_informed".in_hidden(name: 'article') %>
       <div class='row'>
         <span class="libelle">Votre nom</span>
-        <span class="value"><input type="text" name='user_name' value="<%= param(:user_name) || '' %>" /></span>
+        <span class="value"><input type="text" name='user_pseudo' value="<%= param(:user_pseudo) || '' %>" /></span>
       </div>
       <div class='row'>
         <span class="libelle">Votre mail</span>

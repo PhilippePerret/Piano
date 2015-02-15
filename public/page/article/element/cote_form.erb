@@ -13,6 +13,7 @@
     ##
     %>
     <%= article.idpath.in_hidden(name: 'article') %>
+    <%= article.id.to_s.in_hidden(name: 'article_id') %>
     <%= "coter_article".in_hidden(name: 'o') %>
     
     <% 
@@ -44,7 +45,7 @@
         <td class='small'>
           Au niveau de la <strong>clarté</strong>, cet article vous a semblé
         </td><td>
-          <select name="note_clarte" id="note_clarte" class='small'>
+          <select name="note_clarity" id="note_clarity" class='small'>
             <option value="4">Limpide</option>
             <option value="3">Clair</option>
             <option value="2">compréhensible</option>
@@ -68,7 +69,7 @@
         </td>
       </tr>
     </table>
-    <%= "Coter".in_submit(class: '', style:'font-size:14px;padding:5px 12px 4px').in_div(class: 'right')%>
+    <%= "Coter l'article".in_submit(class: '', style:'font-size:14px;padding:5px 12px 4px').in_div(class: 'right')%>
   </form>
   
 </fieldset>

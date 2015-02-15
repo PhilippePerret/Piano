@@ -6,7 +6,7 @@ class User
       @table_mail_to_id ||= File.join(app.folder_pstore, 'table_mail_to_id.pstore')
     end
     def pstore
-      @pstore ||= File.join(app.folder, 'data', 'pstore', 'membres.pstore')
+      @pstore ||= File.join(app.folder_pstore, 'membres.pstore')
     end
   end
 end

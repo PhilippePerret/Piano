@@ -58,3 +58,6 @@ def rond_vert
   @rond_vert ||= "<img src='./public/page/img/pictos/rond-vert.png' />"
 end
 
+def send_mail_to_admin datamail
+  app.send_mail_to_admin datamail
+end

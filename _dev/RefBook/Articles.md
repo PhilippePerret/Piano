@@ -94,3 +94,50 @@ Mettre les options en troisième paramètre.
 ##Méthodes “raccourcis” pour les vues
 
 cf. le fichier "Article_redaction.md"
+
+
+* [Cotes de l'article](#cotes_de_larticle)
+<a name='cotes_de_larticle'></a>
+##Cotes de l'article
+
+Les cotes d'un article, définies par les lecteurs, sont définis dans le pstore&nbsp;:
+
+    ./data/pstore/articles_cotes.pstore
+
+En clé principale est utilisé l'ID de l'article.
+
+En valeur est retourné un `Hash` qui définit&nbsp;:
+
+    {
+      cote_finale:    <Hash données de la cote finale>,
+      cotes:          <Array liste des cotes attribuées>,
+      updated_at:     <Timestamp de dernière modification>
+    }
+
+`cote_finale` contient&nbsp;:
+
+    cote_finale = {
+      interet:          {Float} La note sur 4 attribuée pour l'intérêt de l'article
+      clarity:          {Float} La note sur 4 attribuée pour la clareté de l'article
+      note_interet:     {Fixnum} La note totale (non divisée), somme des notes d'intérêt
+      note_clarity:     {Fixnum} La note totale, somme des notes de clareté
+      nombre_votes:     {Fixnum} Le nombre total de votes pour cet article
+    }
+
+**`cotes`** est un `Array` qui contient des `Hash`. Chaque `Hash` représente une cote attribuée par un lecteur. On les enregistre juste pour mémoire.
+
+    # Un élément du Array `cotes` contient :
+    {
+      i:      {Fixnum} La note d'intérêt de 0 à 4 attribuée par l'user
+      c:      {Fixnum} La note de clareté de 0 à 4 attribuée par l'user
+      n:      {Fixnum} Le niveau en théorie de l'user, de 0 à 4
+      at:     {Fixnum} Timestamp de la date de la cote
+      u:      {Hash} Un hash-ID définissant l'user (retourné par <user>.safe_id).
+                {
+                  m:      1 si l'user est un membres, 0 sinon
+                  f:      1 si l'user est un follower, 0 sinon
+                  id:     ID si c'est un membre, sa remote_addr sinon
+                          Noter que seul un user avec une vraie remote_addr
+                          peut voter
+                }
+    }

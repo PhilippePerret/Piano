@@ -26,9 +26,10 @@ class App
   def pstore_connexions_courantes
     @pstore_connexions_courantes ||= File.join(folder_pstore, 'connexions_courantes.pstore')
   end
-  def pstore_mailing
-    @pstore_mailing ||= File.join(folder_pstore, 'mailing_list.pstore')
+  def pstore_followers
+    @pstore_followers ||= File.join(folder_pstore, 'followers.pstore')
   end
+  
   # ---------------------------------------------------------------------
   #
   #   Dossiers
