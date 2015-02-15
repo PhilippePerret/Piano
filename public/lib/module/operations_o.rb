@@ -245,7 +245,7 @@ class App
         debug e.backtrace.join("\n")
         error e.message
       end
-      
+          
     end # << self App::Operation
   end # Operation
 end # App

@@ -38,7 +38,7 @@ class App
     #
     def links_to_ancres_evaluation
       links = []
-      if cu.trustable?
+      if cu.trustable? && cu.can_note_article?(id)
         links << link_to_ancre_noter_article
         links << link_to_ancre_write_comments
       end

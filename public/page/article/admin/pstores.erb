@@ -1,0 +1,90 @@
+<% 
+##
+## Section des gestions des pstores
+##
+require_module 'admin/pstores'
+%>
+
+<% 
+##
+## Si une opération est à exécuter
+##
+if param('operation').to_s != ""
+  debug "*** Appel de l'opération #{param('operation')}"
+  App::PStores::send(param('operation').to_sym)
+end
+%>
+
+
+<form id='form_pstore' action="index.rb" method="POST" accept-charset="utf-8">
+  <%= "admin/pstores".in_hidden(name: 'a')%>
+  
+  <% 
+  ##
+  ## L'opération à effectuer
+  ##
+  ## Elle sera définie en fonction des boutons utilisés
+  ##
+  %>
+  <%= "".in_hidden(name: 'operation') %>
+  
+  <% 
+  ##
+  ## Menu pour choisir le pstore
+  ##
+  %>
+  <%= App::PStores::menu_pstores %>
+  
+  <% 
+  ##
+  ## Opération générales à effectuer sur le pstore courant
+  ##
+  %>
+  <% unless App::PStores::current_pstore.nil? %>
+    <div id="div_choix_operation" style="margin-top:2em">    
+      <select name="operations" id="operations" onchange="$.proxy(PStore,'set_operation', this.value)();$.proxy(PStore,'submit')()" style="width:540px;">
+        <option value="">Effectuer l'opération…</option>
+        <option value="show_content">Montrer le contenu</option>
+        <option value="show_synchro">État de la synchronisation</option>
+        <option value="upload">Upload le fichier local vers le fichier distant</option>
+        <option value="download">Download le fichier distant vers local</option>
+        <option value="remove_distant">Détruire le fichier distant</option>
+      </select>
+    </div>
+  <% end %>
+  
+  <% 
+  ##
+  ## Affichage du résultat de l'opération (if any)
+  ##
+  %>
+  <%= App::PStores::result_operation if App::PStores::result_operation %>
+  
+  <% 
+  ##
+  ## Affichage du contenu du pstore courant s'il existe
+  ##
+  %>
+  <% if param('operation') == 'show_content' %>
+    <%= App::PStores::show_data_current %>
+  <% end %>
+  
+  <% 
+  ##
+  ## Pour évaluer un code dans le pstore courant
+  ##
+  %>
+  <% unless App::PStores::current_pstore.nil? %>
+    <p class='small'>
+    Code à évaluer dans le pstore courant. Utiliser `ps' pour désigner le pstore, comme dans un code ruby normal.
+    </p>
+    <pre style="font-size:11pt;margin:0;">PStore::new(<%= App::PStores::current_pstore %>).transaction do |ps|</pre>
+    <%= param('code_to_eval').to_s.in_textarea(style: 'margin-left:2em;', name: 'code_to_eval') %>
+    <pre style="font-size:11pt;margin:0;">end</pre>
+    <%= "Évaluer ce code dans #{App::PStores::current_pstore}".in_submit(class: 'btn small', onclick: "$.proxy(PStore,'set_operation','eval_code_in_pstore')()").in_div(class: 'right') %>
+  <% end %>
+  
+</form>
+
+<div style="margin-bottom:4em;"></div>
+

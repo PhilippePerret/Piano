@@ -54,14 +54,11 @@ class User
   
   ##
   #
-  # @return TRUE si l'user peut voter pour les articles
+  # Return TRUE si l'user est un membre-administrateur
   #
-  #
-  def can_vote_articles?
-    last_time_vote = PStore::new(App::Article::pstore_votes).transaction do |ps|
-      ps.fetch(remote_ip, nil)
-    end
-    return last_time_vote.nil? || (last_time_vote < (Time.now.to_i - 60.days))
+  def admin?
+    @is_admin = ( identified? && membre? && grade == :creator ) if @is_admin === nil
+    @is_admin
   end
   
 end

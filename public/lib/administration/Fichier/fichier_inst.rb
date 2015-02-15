@@ -119,6 +119,8 @@ class Fichier
   #                   distant/local et présente les deux boutons pour uploader
   #                   ou downloader
   #                   Default: FALSE
+  #   :no_button      Si TRUE, n'affiche aucun bouton, juste les informations
+  #                   de synchronisation
   #
   def fieldset_synchro options = nil
     options ||= {}
@@ -154,7 +156,7 @@ class Fichier
       th = tdis == 0 ? "Inexistant" : tdis.as_human_date(false, true) 
       mess << "#{rond_distant}&nbsp;Fichier distant : #{th}&nbsp;&nbsp;".in_div(class: 'pre')
       mess << "                  Last download : #{last_download true}".in_div(class: 'pre')
-      if tloc != tdis
+      if tloc != tdis && !options[:no_button]
         mess << (button_download + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + button_upload).in_div
       end
     else
@@ -168,7 +170,7 @@ class Fichier
             mess << "Si vous faites des modifications, des problèmes vont survenir. Il serait plus prudent d'actualiser le fichier distant.".in_div(class: 'warning')
           else
             mess << "Le fichier distant doit être actualisé pour être à jour.".in_div
-            mess << button_upload.in_div(class: 'right air')
+            mess << button_upload.in_div(class: 'right air') unless options[:no_button]
           end
         else
           if online?
@@ -177,7 +179,7 @@ class Fichier
           else
             mess << "Le fichier distant `#{path}' est plus à jour que le fichier local.".in_div
             mess << "Si vous faites des modifications, des problèmes vont survenir. Il serait plus prudent d'actualiser le fichier local en utilisant le bouton ci-dessous.".in_div(class: 'warning')
-            mess << button_download.in_div(class: 'right air')
+            mess << button_download.in_div(class: 'right air') unless options[:no_button]
           end
         end
       end

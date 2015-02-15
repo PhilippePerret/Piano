@@ -130,7 +130,7 @@ class App
       # Pstore des données des articles
       #
       def pstore
-        @pstore ||= File.join('.', 'data', 'pstore', 'articles.pstore')
+        @pstore ||= File.join(app.folder_pstore, 'articles.pstore')
       end
       
       ##

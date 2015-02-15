@@ -1,0 +1,1 @@
+window.PStore={set_operation:function(o){console.log("Mise op\xe9ration : "+o),$('form#form_pstore input[name="operation"]').val(o)},submit:function(){$("form#form_pstore").submit()}};

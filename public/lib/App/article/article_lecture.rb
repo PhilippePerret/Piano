@@ -18,7 +18,7 @@ class App
     #
     #
     def add_lecture
-      PStore::new(App::Article::pstore).transaction do |ps|
+      PStore::new(self.class.pstore).transaction do |ps|
         ps[id] = default_data unless ps.roots.include? id
         ps[id][:x] += 1
         ps[id][:updated_at] = Time.now.to_i

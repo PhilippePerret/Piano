@@ -2,11 +2,35 @@ URGENT
 
   * Gérer le fait de ne pas pouvoir voter deux fois pour un article
 
+  * Préparer les pstores pointeurs_lecteurs et lecteurs avec les membres
+    pour les enregistrer online
+    
+  * Rationnaliser définitivement l'usage de UID
+    - voir où est consigné :last_connexion
+    
 PLUS TARD
+
+RÉFLEXION SUR L'UID
+
+  Imaginons qu'un membre actuel se connecte
+    -> il a une REMOTE_ADDR (remote_ip)
+    -> il a une session     (app.session.id)
+  Dans le pstore des pointeurs, il n'y a que son mail et son ID qui
+  pointe vers son UID. Sa remote address n'est pas enregistrée puisqu'on ne
+  l'a fait que manuellement.
+
+  Il faudrait une méthode qui vérifie, une fois que l'user est reconnu comme
+  membre (ou comme follower) que son pointeur remote_ip est bien défini.
+  
+  
+  
+
+* Pour l'UID : noter qu'un lecteur trustable est toujours enregistré dans la table des lecteurs (+pointeurs) avant de pouvoir devenir follower ou membre, etc. Il faut donc faire un check quelque part pour ne pas doubler les informations.
+  -> à la création du follower
+  -> à la création du membre
+  
 * Récupérer l'URL d'un article
   - l'envoyer à Isabelle Schieffer en lui répondant
-
-* Enregistrer le safe_id dans les data d'un membre ?
 
 * Fieldset synchro pour la table followers.pstore dans l'administration de la mailing list.
 

@@ -39,6 +39,21 @@ class App
   def cgi
     @cgi ||= CGI::new('html4')
   end
+  
+  ##
+  #
+  # @return le titre pour la balise TITLE de HEAD
+  #
+  def title
+    tit = article.titre
+    if tit.to_s.strip == "" && article.name != "_tdm_.erb"
+      tit = "Accueil" 
+      ## TODO: Affiner le traitement ici en testant les article.idpath
+      ## particulière.
+    end
+    return tit
+  end
+  
   ##
   #
   # @return le code HTML complet de la page
@@ -56,7 +71,7 @@ class App
     else
       # => Ajoute un message de débug
       @debugs ||= []
-      @debugs << str
+      @debugs << str.gsub(/</, '&lt;')
     end
   end
   

@@ -32,7 +32,7 @@ class App
         i:    note_interet,
         c:    note_clarity,
         n:    niveau_user,
-        u:    cu.safe_id,
+        u:    cu.uid,
         at:   Time.now.to_i
       }
       
@@ -45,6 +45,7 @@ class App
       ## On indique que l'user ne peut plus coter
       ## cet article
       ##
+      cu.add_article_noted art.id
       
       ##
       ## Calcul des cotes totales de l'article

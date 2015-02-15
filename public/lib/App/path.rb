@@ -14,6 +14,12 @@ class App
   #   Pstores principaux
   #
   # ---------------------------------------------------------------------
+  def pstore_lecteurs
+    @pstore_lecteurs ||= File.join(folder_pstore, 'lecteurs.pstore')
+  end
+  def pstore_pointeurs_lecteurs
+    @pstore_pointeurs_lecteurs ||= File.join(folder_pstore, 'pointeurs_lecteurs.pstore')
+  end
   def pstore_ips
     @pstore_ips ||= File.join(folder_pstore, 'ips.pstore')
   end

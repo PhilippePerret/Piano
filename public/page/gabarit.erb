@@ -9,11 +9,7 @@
 <html>
   <head>
     <meta http-equiv='Content-type' content='text/html; charset=utf-8'>
-    <% 
-      titre = article.titre
-      titre = "Accueil" if titre.to_s.strip == "" && article.name != "_tdm_.erb"
-    %>
-    <title><%= name %> - <%= titre %></title>
+    <title><%= name %> - <%= title %></title>
     <%= stylesheets %>
     <%= javascripts %>
   </head>

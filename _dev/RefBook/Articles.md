@@ -132,12 +132,5 @@ En valeur est retourné un `Hash` qui définit&nbsp;:
       c:      {Fixnum} La note de clareté de 0 à 4 attribuée par l'user
       n:      {Fixnum} Le niveau en théorie de l'user, de 0 à 4
       at:     {Fixnum} Timestamp de la date de la cote
-      u:      {Hash} Un hash-ID définissant l'user (retourné par <user>.safe_id).
-                {
-                  m:      1 si l'user est un membres, 0 sinon
-                  f:      1 si l'user est un follower, 0 sinon
-                  id:     ID si c'est un membre, sa remote_addr sinon
-                          Noter que seul un user avec une vraie remote_addr
-                          peut voter
-                }
+      u:      {Fixnum} UID absolu de l'user (retourné par <user>.uid)
     }

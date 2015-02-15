@@ -25,4 +25,9 @@ Merci de vous identifier à l'aide du formulaire ci-dessous.
   ##
   %>
   <%= row("", "M'identifier".in_submit(class:'btn'), {class: 'buttons'}) %>
+  <% if offline? %>
+    <div class='small'>
+      Noter qu'en OFFLINE l'opération peut être plus longue, car un certain nombre de checks est opéré.
+    </div>
+  <% end %>
 </form>

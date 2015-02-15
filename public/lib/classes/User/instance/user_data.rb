@@ -4,27 +4,139 @@ class User
   
   ##
   #
-  # @return le safe_id {Hash} de l'user
+  # @return l'ID unique et absolu de l'user, qu'il soit membre,
+  # follower ou autre
+  # Cf. RefBook > User.md pour le détail
   #
-  # Le Hash contient la propriété :id qui est la valeur à utiliser
-  # dans les pstores
-  #
-  # Quel que soit l'user (membre, follower, simple visiteur), ce
-  # safe_id peut être défini. Le seul cas où la méthode retourne NIL
-  # est le cas où l'user n'est pas trustable.
-  #
-  #
-  def safe_id
-    @safe_id ||= begin
-      if trustable? == false
+  def uid
+    if @uid === nil
+      @uid = if false == trustable?
         nil
-      elsif membre?
-        {m: 1, f: 0, ref: id, ref_type: :id, id: "1-0-#{id}"}
-      elsif follower?
-        {m: 0, f: 1, ref: mail, ref_type: :mail, id: "0-1-#{mail}"}
-      else # Un visiteur quelconque
-        {m: 0, f: 0, ref: remote_ip, ref_type: :ip, id: "0-0-#{remote_ip}"}
+      else
+        if membre?
+          get_uid_with(id) || created_as_lecteur
+        elsif follower?
+          get_uid_with(mail) || created_as_lecteur
+        else
+          get_uid_with(remote_ip) || created_as_lecteur
+        end
       end
+      
+      ##
+      ## La première fois qu'on demande l'UID, il faut enregistrer
+      ## l'id de session courante dans les données du lecteur si nécessaire
+      ##
+      ## Noter que la méthode en profite aussi pour faire quelques vérifications
+      ## sur les pointeurs, et détruit celui d'après l'ancien session-id s'il
+      ## existe.
+      ##
+      save_session_id
+      
+    end
+    return @uid
+  end
+  
+  ##
+  #
+  # Crée l'user comme lecteur et retourne son UID
+  #
+  def created_as_lecteur
+    return nil unless trustable?
+    ##
+    ## Avant de le créer, il faut voir si ce n'est pas un
+    ## user déjà connu, mais pas encore tout à fait identifié, par
+    ## exemple un membre qui arrive sur le site, mais qui ne s'est
+    ## pas encore identifié.
+    ##
+    uid_checked = get_uid_with app.session.id
+    if uid_checked.nil?
+      uid_checked = get_uid_with remote_ip
+    end
+    return uid_checked unless uid_checked.nil?
+
+    ##
+    ## ID qui sera consigné
+    ##
+    id_intbl = case true
+    when membre?    then id
+    when follower?  then mail
+    else nil
+    end
+  
+    ##
+    ## Type de l'user
+    ##
+    type_intbl = case true
+    when membre?    then :membre
+    when follower?  then :follower
+    else nil
+    end
+    
+    new_uid = nil
+    PStore::new(app.pstore_lecteurs).transaction do |ps|
+      new_uid = ps.fetch(:last_uid, 0) + 1 
+      ps[:last_uid] = new_uid
+
+      ##
+      ## Données enregistrées comme lecteur
+      ## 
+      ## Note : elle pourront être modifiées lorsque le simple user
+      ## change de statut (-> follower -> membre)
+      ##
+      ps[new_uid] = {
+        uid:            new_uid,
+        type:           type_intbl,   # :membre, :follower ou nil
+        id:             id_intbl,     # id (membre) mail (follower) ou nil
+        membre:         membre?,
+        follower:       follower?,
+        last_connexion: Time.now.to_i,
+        last_vote:      nil,
+        articles_noted: []
+      }
+      debug "Création d'un nouveau lecteur : {"+
+        ps[new_uid].collect{|k,v| "#{k.inspect} => #{v.inspect}"}.join("\n") + "}"
+    end
+    
+    ##
+    ## On crée les pointeurs
+    ##
+    create_pointeurs_to new_uid
+    
+    ##
+    ## Si l'user est un membre, on enregistre son UID dans ses
+    ## données
+    ##
+    if membre?
+      set(:uid => new_uid) 
+      debug "* Enregistrement de l'UID #{new_uid} dans les données du membres"
+    end
+    
+    return new_uid
+  end
+  ##
+  #
+  # Attribue un UID unique et absolu pour l'user et LE RETOURNE
+  #
+  def create_pointeurs_to new_uid
+    return nil unless trustable?
+    PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps|
+      ps[id]              = new_uid if membre?
+      ps[mail]            = new_uid if membre? || follower?
+      ps[remote_ip]       = new_uid
+      ps[app.session.id]  = new_uid unless app.session.nil? # tests
+    end
+  end
+  
+  ##
+  #
+  # Return l'UID de l'user, quel qu'il soit. Mais il faut utiliser
+  # seulement la méthode-propriété `uid' qui créera l'user s'il
+  # n'existe pas encore.
+  #
+  def get_uid_with uref
+    return nil unless trustable?
+    PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps|
+      ps.fetch(uref, nil)
     end
   end
   
@@ -109,6 +221,7 @@ class User
     end
   end
   
+
   ##
   #
   # Retourne toutes les données du pstore
