@@ -36,6 +36,8 @@ class User
   #
   def check_as_membre
     saved_uid = get(:uid)
+    debug "= uid en data membre : #{saved_uid}"
+    return if online?
     if saved_uid.nil?
       saved_uid = uid # pour lui en donner un
       set :uid => saved_uid

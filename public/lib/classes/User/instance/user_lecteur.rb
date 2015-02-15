@@ -37,6 +37,12 @@ class User
       uid_checked = get_uid_with remote_ip
     end
     return uid_checked unless uid_checked.nil?
+    
+    ##
+    ## Si on passe ici c'est que l'user n'a été reconnu
+    ## dans la table des pointeurs ni par sa remote_ip ni
+    ## par le numéro de session.
+    ##
 
     ##
     ## ID qui sera consigné
@@ -56,7 +62,11 @@ class User
     else nil
     end
     
-    new_uid = nil
+    is_membre   = true == membre?
+    is_follower = true == follower?
+    
+    new_uid   = nil
+    new_data  = nil
     PStore::new(app.pstore_lecteurs).transaction do |ps|
       new_uid = ps.fetch(:last_uid, 0) + 1 
       ps[:last_uid] = new_uid
@@ -71,15 +81,18 @@ class User
         uid:            new_uid,
         type:           type_intbl,   # :membre, :follower ou nil
         id:             id_intbl,     # id (membre) mail (follower) ou nil
-        membre:         membre?,
-        follower:       follower?,
+        membre:         is_membre,
+        follower:       is_follower,
         last_connexion: Time.now.to_i,
         last_vote:      nil,
         articles_noted: []
       }
-      debug "Création d'un nouveau lecteur : {"+
-        ps[new_uid].collect{|k,v| "#{k.inspect} => #{v.inspect}"}.join("\n") + "}"
+      new_data = ps[new_uid]
     end
+
+    debug "Création d'un nouveau lecteur : {"+
+      new_data.collect{|k,v| "#{k.inspect} => #{v.inspect}"}.join("\n") +
+      "}"
     
     ##
     ## On crée les pointeurs
@@ -103,12 +116,17 @@ class User
   #
   def create_pointeurs_to new_uid
     return nil unless trustable?
+    debug "-> create_pointeurs_to(#{new_uid.inspect})"
+    is_membre   = true == membre?
+    is_follower = true == follower?
+    session_id  = app.session.id
     PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps|
-      ps[id]              = new_uid if membre?
-      ps[mail]            = new_uid if membre? || follower?
-      ps[remote_ip]       = new_uid
-      ps[app.session.id]  = new_uid unless app.session.nil? # tests
+      ps[id]          = new_uid if is_membre
+      ps[mail]        = new_uid if is_membre || is_follower
+      ps[remote_ip]   = new_uid
+      ps[session_id]  = new_uid unless session_id.nil? # tests
     end
+    debug "<- create_pointeurs_to"
   end
  
   ##
@@ -151,8 +169,9 @@ class User
     ## Pour une nouvelle session, il faut la définir dans les données,
     ## définir un pointeur et peut-être supprimer le pointeur précédent
     ##
-    PStore::new(app.pstore_lecteurs).transaction { |ps| ps[uid][:session_id] = app.session.id }    
+    PStore::new(app.pstore_lecteurs).transaction { |ps| ps[uid][:session_id] = new_session_id }    
     
+    this_uid = uid
     PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps|
 
       ##
@@ -160,14 +179,14 @@ class User
       ##
       unless old_session_id.nil?
         ps.delete(old_session_id)
-        debug "* Destruction de l'ancien pointeur vers #{uid} (uid) de l'ancienne session-id : #{old_session_id}"
+        debug "* Destruction de l'ancien pointeur vers #{this_uid} (uid) de l'ancienne session-id : #{old_session_id}"
       end
 
       ##
       ## Ajout du nouveau pointeur
       ##
       ps[new_session_id] = uid
-      debug "= Nouveau pointeur sur #{uid} (uid) depuis session-id #{new_session_id}"
+      debug "= Nouveau pointeur sur #{this_uid} (uid) depuis session-id #{new_session_id}"
 
       ##
       ## On vérifie que le pointeur par la remote-addr est bien définie
@@ -175,7 +194,7 @@ class User
       ##
       if ps.fetch(remote_ip, nil).nil?
         ps[remote_id] = uid
-        debug "= Nouveau pointeur sur #{uid} (uid) depuis remote_id #{remote_id}"
+        debug "= Nouveau pointeur sur #{this_uid} (uid) depuis remote_ip #{remote_ip}"
       end
       
       ##
@@ -185,7 +204,7 @@ class User
       if membre?
         if ps.fetch(id, nil).nil?
           ps[id] = uid
-          debug "= Nouveau pointeur sur #{uid} (uid) depuis l'id du membre #{id.inspect}"
+          debug "= Nouveau pointeur sur #{this_uid} (uid) depuis l'id du membre #{id.inspect}"
         end
       end
     end

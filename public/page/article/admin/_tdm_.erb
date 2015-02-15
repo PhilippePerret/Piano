@@ -10,7 +10,8 @@ tdms = []
 ## Les menus online
 ##
 tdms += [
-  ["Gestion des commentaires", 'comments']
+  ["Gestion des commentaires", 'comments'],
+  ["Consultation/édition des PStores", 'pstores']
 ]
 ##
 ## Les menus seulement offline
@@ -20,8 +21,8 @@ if offline?
     ["Administration des membres", 'membres'],
     ["Administration des articles", 'articles'],
     ["Mailing list", 'mailing'],
-    ["Consultation/édition des PStores", 'pstores'],
     ["Aperçu des connexions", 'connexions']
   ]
+end
 %>
 <%= App::Article::tdm_with( tdms ) %>

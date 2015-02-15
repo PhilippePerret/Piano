@@ -65,7 +65,7 @@ class App
   def debug str = nil
     if str.nil?
       # => Retourne le contenu du debug
-      return "" if @debugs.nil? || online?
+      return "" if @debugs.nil? || (online? && false == cu.admin?)
       debug_str = @debugs.join("\n")
       "<div style='clear:both;'></div><pre id='debug'>#{debug_str}</pre>"
     else

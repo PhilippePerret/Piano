@@ -43,10 +43,14 @@ class User
   # n'existe pas encore.
   #
   def get_uid_with uref
+    debug "-> get_uid_with(uref=#{uref.inspect})"
     return nil unless trustable?
+    uid_found = nil
     PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps|
-      ps.fetch(uref, nil)
+      uid_found = ps.fetch(uref, nil)
     end
+    debug "[get_uid_with] uid_found : #{uid_found.inspect}"
+    uid_found
   end
   
   ##
@@ -79,6 +83,8 @@ class User
   #
   def set_as_lecteur hdata
     uid # pour ne pas avoir à le chercher ci-dessous
+    debug "[set_as_lecteur] -> "
+    return 
     PStore::new(app.pstore_lecteurs).transaction do |ps|
       hdata.each { |k,v| ps[uid][k] = v }
     end

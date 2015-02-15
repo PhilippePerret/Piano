@@ -65,11 +65,11 @@ class User
     ##
     ## Vérification du membre
     ##
-    # check_as_membre
+    check_as_membre
     ##
     ## Enregistrement de la date de dernière connexion
     ##
-    # set_last_connexion
+    set_last_connexion
   end
   
   ##

@@ -1,3 +1,5 @@
+* Gérer le débug ONLINE pour pouvoir suivre le programme (enregistrer dans un fichier log temporaire).
+
 * Fieldset synchro pour la table followers.pstore dans l'administration de la mailing list.
 
 * Mettre en place la section administration pour valider les commentaires
