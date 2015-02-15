@@ -30,7 +30,7 @@ if cu.identified?
 else
   arr_menus << ["S’identifier", 'user/login']
 end
-if App::offline?
+if App::offline? || cu.admin?
   arr_menus += [
     :separator,
     ["Administration", "admin/"]

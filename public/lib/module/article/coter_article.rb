@@ -39,20 +39,20 @@ class App
       ##
       ## Enregistrement de la cote de l'article
       ##
-      art.add_cote data_cote
+      add_cote data_cote
       
       ##
       ## On indique que l'user ne peut plus coter
       ## cet article
       ##
-      cu.add_article_noted art.id
+      cu.add_article_noted id
       
       ##
       ## Calcul des cotes totales de l'article
       ##
-      note_interet_finale = (art.note_interet||0) + note_interet
-      note_clarity_finale = (art.note_clarity||0) + note_clarity
-      nombre_cotes        = (art.nombre_cotes||0) + 1
+      note_interet_finale = (note_interet||0) + note_interet
+      note_clarity_finale = (note_clarity||0) + note_clarity
+      nombre_cotes        = (nombre_cotes||0) + 1
       data_cote_finale = {
         note_interet:       note_interet_finale,
         note_clarity:       note_clarity_finale,
@@ -60,7 +60,7 @@ class App
         clarity:            (note_clarity_finale.to_f / nombre_cotes).round(1),
         nombre_votes:       nombre_cotes
       }
-      art.set_cote_finale data_cote_finale
+      set_cote_finale data_cote_finale
       
       flash "Merci à vous pour votre estimation."
     end

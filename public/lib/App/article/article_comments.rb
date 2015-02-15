@@ -107,13 +107,11 @@ class App
     def section_comments
       c = ""
       c << '<div style="clear:both;margin-top:2em;border:1px solid #ccc;"></div>'
-      c << if cu.trustable? && cu.can_note_article?(id)
-        app.view('article/element/cote_form') +
-        app.view('article/element/comments_form')
-      elsif false == cu.can_note_article?(id)
-        ""
+      if cu.trustable?
+        c << app.view('article/element/cote_form') if cu.can_note_article?(id)
+        c << app.view('article/element/comments_form')
       else
-        "Vous n'êtes pas un utilisateur de confiance, je ne peux pas vous laisser noter cet article ou le commenter.".in_div
+        "Vous n'êtes pas un visiteur de confiance, je ne peux pas vous laisser noter cet article ou le commenter.".in_div
       end
       c << list_comments.in_fieldset(legend: "Commentaires")
       return c

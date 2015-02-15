@@ -91,11 +91,11 @@ class User
     #
     def retrieve_current
       return if app.session['user_id'].to_s == ""
-      uid = app.session['user_id'].to_i
-      u   = User::get(uid)
+      user_id = app.session['user_id'].to_i
+      u = User::get(user_id)
       if u.get(:session_id) == app.session.id
         User::current = u
-        app.session['user_id'] = uid
+        app.session['user_id'] = user_id
         u.instance_variable_set('@is_identified', true)
       end
     end

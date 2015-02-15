@@ -12,9 +12,8 @@ class User
   # l'user
   #
   def articles_noted
-    return []
     @articles_noted ||= begin
-      uid # pour le moment
+      uid # pour le moment (pour créer le lecteur au besoin)
       PStore::new(app.pstore_lecteurs).transaction do |ps|
         ps[uid][:articles_noted]
       end
@@ -28,6 +27,7 @@ class User
   def add_article_noted art_id
     PStore::new(app.pstore_lecteurs).transaction do |ps|
       ps[uid][:articles_noted] << art_id
+      @articles_noted = ps[uid][:articles_noted]
     end
   end
   

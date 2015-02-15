@@ -2,14 +2,26 @@
 ##
 ## Table des matières pour la section administration
 ##
-raise if online?
+raise unless offline? || cu.admin?
 %>
-<%= 
-App::Article::tdm_with([
-  ["Administration des membres", 'membres'],
-  ["Administration des articles", 'articles'],
-  ["Aperçu des connexions", 'connexions'],
-  ["Mailing list", 'mailing'],
-  ["Consultation/édition des PStores", 'pstores']
-])
+<%
+tdms = []
+##
+## Les menus online
+##
+tdms += [
+  ["Gestion des commentaires", 'comments']
+]
+##
+## Les menus seulement offline
+##
+if offline?
+  tdms += [
+    ["Administration des membres", 'membres'],
+    ["Administration des articles", 'articles'],
+    ["Mailing list", 'mailing'],
+    ["Consultation/édition des PStores", 'pstores'],
+    ["Aperçu des connexions", 'connexions']
+  ]
 %>
+<%= App::Article::tdm_with( tdms ) %>

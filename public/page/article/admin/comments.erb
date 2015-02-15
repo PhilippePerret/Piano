@@ -1,0 +1,34 @@
+<% 
+##
+## Gestion des commentaires
+##
+%>
+
+<% 
+##
+## Pour valider les commentaires, il faut être online et connecté en
+## tant qu'administrateur
+##
+if offline?
+%>
+<p>
+La gestion des commentaires doit impérativement se faire ONLINE en étant connecté comme administrateur
+</p>
+<% 
+elsif false == cu.admin?
+  ##
+  ## Pirate
+  ##
+%>
+
+<% 
+else # online et admin
+  require_module 'admin/comments'
+%>
+<p>
+ONLINE : Vous pouvez gérer les commentaires.
+</p>
+
+<% 
+end # Si offline et admin
+%>

@@ -24,7 +24,21 @@ class App
         c << (app.link_to_tdm + links_to_ancres_evaluation).in_div(style: 'margin-top:4em')
         c << section_comments
       end
+      c << direct_link
       return c
+    end
+    
+    ##
+    #
+    # Return une section contenant le lien direct vers
+    # la page à copier-coller
+    #
+    def direct_link
+      return "" unless complete?
+      (
+        "Lien direct (à copier-coller dans un mail, une page web, etc.)".in_div +
+        "<input type='text' value='#{FULL_URL}?a=#{CGI::escape idpath}' onfocus='this.select()' style='width:100%;font-size:11pt' />"
+      ).in_div(class: 'small')
     end
     
     ##

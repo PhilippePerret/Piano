@@ -1,69 +1,25 @@
 # encoding: UTF-8
+=begin
+
+Méthodes d'instances User utilitaires
+
+=end
 class User
   
-  attr_reader :id
-  
-  def initialize user_id = nil
-    @id = if user_id.to_s.strip == ""
-      user_id = nil 
-    else
-      user_id.to_i
-    end
-  end
-  
-  # ---------------------------------------------------------------------
-  #
-  #   Méthodes-propriétés volatiles
-  #
-  # ---------------------------------------------------------------------
-  
   ##
   #
-  # Adresse IP de l'user (identifié ou non)
+  # Enregistre la date de dernière connexion (login)
   #
-  # Consigne aussi cette connexion dans ips.pstore
-  # Noter que cette remote ip n'est pas sûre du tout, puisque
-  # les constantes HTTP_CLIENT_IP et HTTP_X_FORWARDED_FOR peuvent
-  # être falsifiées. La méthode trustable? ne tient compte que de
-  # la REMOTE_ADDR.
+  # Elle est enregistrée dans les data lecteur, pas dans les
+  # data du membre, donc elle est utilisable pour tout user
+  # quel qu'il soit.
   #
-  def remote_ip
-    @remote_ip ||= begin
-      raddr   = ENV['REMOTE_ADDR']
-      httpid  = ENV['HTTP_CLIENT_IP']
-      httpx   = ENV['HTTP_X_FORWARDED_FOR']
-      ip = raddr || httpid || httpx # TODO: affiner
-      app.remember_ip ip
-      ip
-    end
+  def set_last_connexion
+    set_as_lecteur :last_connexion => Time.now.to_i
   end
   
-  # ---------------------------------------------------------------------
-  #
-  #   Méthodes fonctionnelles
-  #
-  # ---------------------------------------------------------------------
   
-  ##
-  #
-  # Identifie l'user
-  #
-  # On enregistre l'ID de session courante dans ses données, on
-  # met son identifiant dans 'user_id' de la session, pour pouvoir
-  # le reconnaitre au prochain chargement de page.
-  #
-  # On profite aussi de ce login pour faire un check de l'utilisateur
-  # Cf. check_as_membre
-  #
-  def login
-    User::current = self
-    set :session_id => app.session.id
-    app.session['user_id']  = id
-    @is_identified          = true
-    flash "Bienvenue, #{pseudo} !"
-    check_as_membre
-  end
-  
+
   ##
   #
   # Procède au check d'un user-membre qui vient de s'identifier
@@ -87,16 +43,15 @@ class User
     end
     
     if offline?
-      fichier = Fichier::new(app.pstore_pointeurs_lecteurs)
-      fichier.download
+      fichier_pointeurs = Fichier::new(app.pstore_pointeurs_lecteurs)
+      fichier_pointeurs.download
       debug "= Fichier des pointeurs lecteurs downloadé en local"
     end
     modified = false
-    # sleep 4
     PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps| ps.abort end
     PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps|
       checked_mail = ps.fetch(mail, nil)
-      if checked_mail.nil? || checked_mail != mail
+      if checked_mail.nil? || checked_mail != saved_uid
         ps[mail] = saved_uid
         debug "= Pointeur lecteur mail -> uid ajouté (#{mail} -> #{saved_uid})"
         modified = true
@@ -111,7 +66,7 @@ class User
       # Note : le session-id sera ajouté ou a été ajouté autrement
     end
     if offline? && modified
-      fichier.upload
+      fichier_pointeurs.upload
       debug "= Fichier des pointeurs lecteurs uploadé sur le serveur distant"
     end
 
@@ -154,30 +109,12 @@ class User
       debug "= Fichier local des data-lecteurs uploadé sur le serveur distant"
     end
 
-    # ##
-    # ## Y a-t-il des opérations administrateur à faire
-    # ##
-    # if admin?
-    #   debug "= Administrateur détecté (check des opérations à faire)"
-    # end
+    ##
+    ## Y a-t-il des opérations administrateur à faire
+    ##
+    if admin?
+      debug "= Administrateur détecté (check des opérations à faire)"
+    end
   end
-  
-  ##
-  #
-  # Déconnexion du membre
-  #
-  #
-  def logout
-    User::current           = nil
-    set :session_id        => nil
-    app.session['user_id']  = nil
-    @is_identified          = false
-  end
-  
-  def app
-    @app ||= App::current
-  end
-    
-  def bind; binding() end
   
 end
