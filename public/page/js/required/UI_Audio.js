@@ -16,9 +16,10 @@ $.extend(window.UI,{
 		
 		objets_audio: {}, // Liste des objets audio instanciés
 		
-		new:function(audio_id){
+		new:function(audio_id, bouton_start_name){
 			if('undefined' == typeof this.objets_audio[audio_id]){
-				 this.objets_audio[audio_id] = new ObjAudio(audio_id) ;
+				if('undefined' == typeof bouton_start_name) bouton_start_name = "Écouter"
+				 this.objets_audio[audio_id] = new ObjAudio(audio_id, bouton_start_name) ;
 			}
 			return this.objets_audio[audio_id] ;
 		}
@@ -27,16 +28,16 @@ $.extend(window.UI,{
 	
 });
 
-window.ObjAudio = function(id){
+window.ObjAudio = function(id, btn_start){
 	this.objet_audio = $('audio#'+id)[0] ;
 	this.button_play = $('a#btn_audio'+id) ;
 	this.playing = false ;
+	this.bouton_start_name = btn_start ; // "Rejouer" par défaut
 	this.observe() ;
 }
 $.extend(window.ObjAudio.prototype,{
 	on_end:function(){
 		this.stop() ;
-		F.show("Fin atteinte");
 	},
 	play:function(){
 		if(this.playing == true){
@@ -51,14 +52,14 @@ $.extend(window.ObjAudio.prototype,{
 		this.objet_audio.pause();
 		this.objet_audio.currentTime = 0 ;
 		this.playing = false ;
-		this.set_button("Rejouer") ;
+		this.set_button(this.bouton_start_name) ;
 	},
 	set_button:function(name){this.button_play.html(name)},
 	on_waiting:function(){
 		this.set_button("...")
 	},
 	on_canplay:function(){
-		this.set_button("Rejouer");
+		this.set_button(this.bouton_start_name);
 	},
 	on_loadstart:function(){
 		this.set_button("Chargement…") ;

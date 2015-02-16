@@ -60,7 +60,7 @@ class App
     c = ""
     c << File.join('.', 'public', 'page', 'img', relpath).in_image( args )
     if args.has_key? :mp3
-      c << balise_audio( args.delete(:mp3) )
+      c << link_play( path: args.delete(:mp3), balise_audio: true, no_controls: args.delete(:no_controls) )
       c.in_div(class: 'imgmp3')
     else
       c
@@ -68,17 +68,72 @@ class App
   end
   
   ##
-  # @return une balise audio
-  def balise_audio mp3
-    audio_id = 'mp3_'.concat( mp3.gsub(/[\/\.\-]/,'_') )
-    mp3.concat('.mp3') unless mp3.end_with? '.mp3'
+  # @return un lien permettant de jouer le fichier audio
+  # d'affixe +audio_affixe+ en replaçant le mot +rejouer_name+ à
+  # la fin du jeu
+  #
+  # Note : une balise audio a dû être définie, soit avec la méthode
+  # `image' (qui associe le son à une image de partition) soit avec
+  # la méthode `balise_audio' qui place le son dans la page.
+  #
+  # +args+
+  #   btn_jouer:        Le titre du lien
+  #   btn_rejouer:      Le titre du lien après lecteur ("Rejouer" par défaut ou 
+  #                     btn_jouer s'il est défini)
+  #   path:             Le path relatif au fichier (avec ou sans .mp3)
+  #                     Sauf s'il est passé en premier argument
+  #   balise_audio:     Si true, on construit la balise audio. Sinon, elle doit
+  #                     avoir été construite
+  #   no_controls:      Ne pas mettre de lien pour jouer le fichier audio (il
+  #                     sera placé ailleurs)
+  #
+  def link_play path_or_args, args = nil
+    case path_or_args
+    when Hash 
+      args = path_or_args
+      path = args.delete(:path)
+    else
+      path = path_or_args
+      args ||= {}
+    end
+    
+    btn_rejouer   = args.delete(:btn_rejouer) || args[:btn_jouer] || "Rejouer"
+    debug "btn_rejouer : #{btn_rejouer}"
+    btn_jouer     = args.delete(:btn_jouer) || "Écouter"
+    path_affixe   = File.join( File.dirname(path), File.basename(path, File.extname(path) ) )
+    audio_id      = "mp3_#{path_affixe.gsub(/[\/\.:\-]/,'_')}"
+    link_a_id     = "btn_audio#{audio_id}"
+    onclick       = "$.proxy(UI.Audio.new('#{audio_id}', '#{btn_rejouer}'), 'play')()"
+    
+    c = ""
+    c << balise_audio(audio_id, path) if args[:balise_audio]
+    c << btn_jouer.in_a(id: link_a_id, onclick: onclick, class: 'mp3') unless args[:no_controls]
+
+    return c
+  end
+  
+  ##
+  # Emplacement des fichiers sons, pour les atteindre par une
+  # URL externe
+  # 
+  # Pour le moment, les sons sont placés sur l'atelier icare
+  # 
+  def url_folder_sounds
+    @url_folder_sounds ||= "www.atelier-icare.net/sound/cp"
+  end
+  
+  ##
+  # @return une balise audio pour le son de path ou d'affixe-path +mp3+
+  #
+  def balise_audio audio_id, path
+    path.concat('.mp3') unless path.end_with? '.mp3'
     <<-HTML
 <audio id="#{audio_id}" class='mp3'>
-  <source src="http://www.atelier-icare.net/sound/cp/#{mp3}" type='audio/mpeg'>
+  <source src="http://#{url_folder_sounds}/#{path}" type='audio/mpeg'>
 </audio>
-<a id='btn_audio#{audio_id}' href="javascript:void(0)" onclick="$.proxy(UI.Audio.new('#{audio_id}'), 'play')()" class='mp3'>Écouter</a>
     HTML
   end
+  
   ##
   #
   # @return une balise “<a name”, une ancre

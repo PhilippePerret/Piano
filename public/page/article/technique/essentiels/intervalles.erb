@@ -5,6 +5,7 @@
 ## Dossier contenant les images de cet article
 ##
 rep_img = "music/technique/essentiels"
+rep_son = 'technique/essentiels/intervalles'
 %>
 
 <h3>Une méprise courante</h3>
@@ -97,7 +98,7 @@ Donc, si vous voulez connaitre l'intervalle qu'il y a entre deux notes écrites 
 Quel intervalle y a-t-il entre ces deux notes (quel est son NOM, quelle est sa NATURE)&nbsp;?
 </p>
 
-<%= image("#{rep_img}/Bb-Cd.png", center: true, mp3: 'Bb-Cd') %>
+<%= image("#{rep_img}/Bb-Cd.png", center: true, mp3: "#{rep_son}/Bb-Cd") %>
 
 <p>
 Si vous avez reçu une formation quelque peu laxiste, vous compterez qu'il y a un ton et demi entre les deux notes, et vous répondrez UNE TIERCE MINEURE puisque les deux notes sont séparées par un ton et demi, intervalle qui se trouve correspondre, effectivement, à une tierce mineure. Mais seulement lorsque les deux notes sont <em>en rapport de tierce, hors de toute altération</em>.
@@ -136,7 +137,7 @@ Encore une fois, il ne s'agit pas de pure théorie ici, et dans un contexte donn
 Essayez de déterminer d'abord par vous-même cet intervalle (son NOM et sa NATURE) puis affichez la solution pour vérifier que vous avez parfaitement compris. Peut-être aurez-vous du mal avec la <em>nature</em> de l'intervalle, essayez de trouver au moins son <em>nom</em>.
 </p>
 
-<%= image("#{rep_img}/Eb-Cd.png", center: true) %>
+<%= image("#{rep_img}/Eb-Cd.png", center: true, mp3: "#{rep_son}/6aug") %>
 
 <p>
 <%= "Afficher la solution".in_a(onclick: "$('div#reponse_01').toggle()") %>
@@ -170,7 +171,7 @@ Essayez de déterminer d'abord par vous-même cet intervalle (son NOM et sa NATU
   <p>
   Ici, les deux notes inversées DO-MI forment une TIERCE MAJEURE donc MI-DO forme une SIXTE MINEURE.
   </p>
-  <%= image("#{rep_img}/C-E_E-C.png", legend: "Tierce MAJEURE => Sixte MINEURE")%>
+  <%= image("#{rep_img}/C-E_E-C.png", legend: "Tierce MAJEURE => Sixte MINEURE", mp3: "#{rep_son}/CE-EC") %>
   <p>
   Donc MI-DO# forme une SIXTE MAJEURE (sixte majeure = sixte mineure + 1/2 ton)
   </p>
@@ -183,7 +184,7 @@ Essayez de déterminer d'abord par vous-même cet intervalle (son NOM et sa NATU
 Cet intervalle est identique, en nombre de tons, à l'intervalle MI bémol - RÉ bémol, une septième mineure —&nbsp;5 tons.
 </p>
 
-<%= image("#{rep_img}/6aug-vs-7min.png", legend: "Même intervalle en 1/2 tons (5 tons), mais NOM d'intervalle différent car NOM DE NOTES différent.") %>
+<%= image("#{rep_img}/6aug-vs-7min.png", legend: "Même intervalle en 1/2 tons (5 tons), mais NOM d'intervalle différent car NOM DE NOTES différent.", mp3: "#{rep_son}/6aug-7") %>
 
 <h3>Loin de toute pure théorie</h3>
 
@@ -191,7 +192,7 @@ Cet intervalle est identique, en nombre de tons, à l'intervalle MI bémol - RÉ
 Voilà un exemple —&nbsp;l'exemple précédent&nbsp;— où il est possible de comprendre que ces différences ne sont pas purement théoriques. “Remplissons” ces accords en ajoutant les tierces intermédiaires.
 </p>
 
-<%= image("#{rep_img}/Eb6aug-vs-Eb7dom.png", legend: "Accords présentant les MÊMES SONS, mais deux fonctions différentes") %>
+<%= image("#{rep_img}/Eb6aug-vs-Eb7dom.png", legend: "Accords présentant les MÊMES SONS, mais deux fonctions différentes", mp3: "#{rep_son}/Eb6aug-Eb7") %>
 
 <p>
 Si vous ne comprenez pas pourquoi j'ai ajouté un SI bémol plutôt qu'un SI bécarre, rassurez-vous, ça ne jouera pas dans l'explication qui suit.
@@ -209,7 +210,7 @@ Je le répète&nbsp;: ils contiennent les mêmes SONS. C'est-à-dire qu'en les j
 Maintenant, créons un contexte pour ces accords. Écoutons sur la portée ou jouons au clavier ce premier enchainement qui utilise le second accord (en premier accord ici et réparti aux deux mains)&nbsp;:
 </p>
 
-<%= image("#{rep_img}/Eb7-Ab.png", center: true) %>
+<%= image("#{rep_img}/Eb7-Ab.png", center: true, mp3: "#{rep_son}/cadence-Ab") %>
 
 <p>
 Concentrons-nous sur le RÉ bémol supérieur en jouant plusieurs fois cet enchainement, jusqu'à parfaitement entendre la tension qu'il contient, tension qui attend de résoudre le RÉb sur le DO.
@@ -219,7 +220,7 @@ Concentrons-nous sur le RÉ bémol supérieur en jouant plusieurs fois cet encha
 Maintenant, vidons notre mémoire —&nbsp;en jouant par exemple un autre morceau :-)&nbsp;— et écoutons ou jouons au clavier cet enchainement ou nous jouons en premier accord notre accord de sixte augmentée&nbsp;:
 </p>
 
-<%= image("#{rep_img}/Eb6aug-cadence.png", center: true, mp3: 'Eb6aug-Gm4et6-D-Gm') %>
+<%= image("#{rep_img}/Eb6aug-cadence.png", center: true, mp3: "#{rep_son}/6aug-cadence") %>
 
 <p>
 Jouons plusieurs fois cet enchainement jusqu'à entendre que le DO# du premier accord est “appelé” par le RÉ du second. La tension du DO# se résout naturellement sur le RÉ.
@@ -244,7 +245,7 @@ Puisqu'une résolution naturelle de tension se fait toujours sur une note diffé
 <p>
 Dans le premier cas, nous sommes en <strong>LA bémol majeur</strong> (4 bémols à la clé).
 </p>
-  <%= image("#{rep_img}/Eb7-Ab-in-Ab.png", center: true) %>
+  <%= image("#{rep_img}/Eb7-Ab-in-Ab.png", center: true, mp3: "#{rep_son}/cadence-Ab") %>
 <p>
 Le RÉ est <em>naturellement</em> bémol dans cette tonalité, et il se résout sur un DO tout aussi <em>naturel</em> dans cette tonalité. Pourquoi compliquerions-nous les choses en utilisant un DO#&nbsp;?
 </p>
@@ -252,7 +253,7 @@ Le RÉ est <em>naturellement</em> bémol dans cette tonalité, et il se résout 
 Dans le second cas, nous sommes en <strong>SOL mineur</strong> (2 bémols à la clé et un FA# ajouté —&nbsp;sensible de la tonalité mineure de SOL mineur).
 </p>
 
-<%= image("#{rep_img}/Eb6aug-cadence-in-Gm.png", center: true) %>
+<%= image("#{rep_img}/Eb6aug-cadence-in-Gm.png", center: true, mp3: "#{rep_son}/6aug-cadence") %>
 
 <p>Le RÉ est naturellement bécarre dans cette tonalité et le DO —&nbsp;naturel dans cette tonalité&nbsp;— est altéré, diésé, pour faire un emprunt à la dominante. Si vous ne comprenez pas cette notion d'“emprunt à la dominante”, retenez simplement que ce DO# s'explique très simplement dans cette tonalité de SOL mineur. Alors qu'un RÉ bémol serait beaucoup plus compliqué à expliquer.
 </p>
