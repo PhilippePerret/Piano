@@ -46,8 +46,9 @@ class App
       @path ||= File.join('.', 'public', 'page', relpath)
     end
     def output
-      app.add_css path_css if File.exist? path_css
-      app.add_js  path_js  if File.exist? path_js
+      app.add_css path_css  if File.exist? path_css
+      app.add_js  path_js   if File.exist? path_js
+      add_all_in_folder     if File.exist? folder_article
       ERB.new(File.read(path).force_encoding('UTF-8')).result(bindee || app.bind)
     end
     def path_js
@@ -56,6 +57,27 @@ class App
     def path_css
       @path_css ||= File.expand_path( File.join(dirname, "#{affixe}.css") )
     end
+    
+    ##
+    #
+    # Chargement de tous les éléments du dossier au même niveau que
+    # la vue ERB, contenant les css, js et rb
+    #
+    def add_all_in_folder
+      Dir["#{folder_article}/**/*.rb"].each { |m| require m }
+      app.add_css Dir["#{folder_article}/**/*.css"]
+      app.add_js  Dir["#{folder_article}/**/*_mini.js"]
+    end
+    
+    ##
+    #
+    # Le "dossier-article". C'est un dossier au même niveau que
+    # le fichier ERB qui peut contenir css, js et modules ruby
+    #
+    def folder_article
+      @folder_article ||= File.join(dirname, affixe)
+    end
+    
     def affixe
       @affixe ||= File.basename( relpath, File.extname(relpath) )
     end

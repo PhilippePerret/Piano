@@ -42,6 +42,8 @@ Pour la table des matières, on définit l'article sans renseigner le nom de l'a
 
 Dans l'étape de chargement ([3]) le programme cherche alors la vue `_tdm_.erb` qui se trouve dans le dossier des articles.
 
+Pour le détail de ce qui est chargé, cf. le fichier Vues.md.
+
 <a name='lien_vers_un_article'></a>
 ##Lien vers un article
 

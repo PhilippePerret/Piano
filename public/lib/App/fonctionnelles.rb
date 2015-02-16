@@ -26,9 +26,9 @@ class App
   # 
   # Définit le temps de dernière… opération de clé +key+
   #
-  def set_last_time key
+  def set_last_time key, time = nil
     PStore::new(pstore_last_times).transaction do |ps|
-      ps[key] = Time.now.to_i
+      ps[key] = time || Time.now.to_i
     end
   end
   

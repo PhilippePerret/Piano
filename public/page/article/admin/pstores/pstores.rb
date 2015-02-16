@@ -91,7 +91,7 @@ class App
       #
       def download
         return if current_pstore.nil?
-        fichier_synchro.donwload
+        fichier_synchro.download
         flash "PStore downloadé"
       end
       

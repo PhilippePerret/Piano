@@ -2,6 +2,7 @@
 ##
 ## Gestion des commentaires
 ##
+App::Comments::exec_operation
 %>
 
 <% 
@@ -11,9 +12,36 @@
 ##
 if offline?
 %>
-<p>
-La gestion des commentaires doit impérativement se faire ONLINE en étant connecté comme administrateur
+<p class='small italic'>
+La gestion des commentaires doit impérativement se faire ONLINE en étant connecté comme administrateur. Ici, en OFFLINE, vous pouvez juste avoir un aperçu des commentaires.
 </p>
+<% 
+##
+## Formulaire pour effectuer une opération OFFLINE
+##
+%>
+<form id="form_operations" action="index.rb" method="POST" accept-charset="utf-8">
+  <%= "admin/comments".in_hidden(name: 'a') %>
+  <select name="operation" id="operation" onchange="$('form#form_operations').submit()">
+    <option value="">Exécuter l'opération…</option>
+    <option value="download">Downloader le fichier distant des commentaires</option>
+    <option value="copy">Faire une copie de secours du pstore des commentaires</option>
+  </select>
+</form>
+
+<% 
+##
+## Listing des commentaires
+##
+filtre = nil # pour le moment
+%>
+<fieldset id="liste_des_commentaires">
+  <legend>Liste des commentaires</legend>
+  <ul id="comments">
+    <%= App::Comments::listing_comments filtre %>
+  </ul>
+</fieldset>
+
 <% 
 elsif false == cu.admin?
   ##
@@ -23,7 +51,6 @@ elsif false == cu.admin?
 
 <% 
 else # online et admin
-  require_module 'admin/comments'
 %>
 <p>
 ONLINE : Vous pouvez gérer les commentaires.

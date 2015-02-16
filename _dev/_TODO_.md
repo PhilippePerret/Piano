@@ -1,3 +1,21 @@
+* Pour les commentaires, on peut en faire aussi si on est membre (pour le moment, seuls les followers sont autorisés)
+
+* Méthode handy pour les tests d'intégration
+  main_title_is ""
+  subtitle_is ""
+  page_contains ""
+  page_contains_tags
+  page_contains_link
+  page_contains_form
+  
+* Comme pour last_time, il faut enregistrer le time du fichier lors de son upload/download.
+  Par exemple, un fichier chargé à 10:51 peut avoir un time de dernière modification à 7:21.
+  Il faut donc :
+    > Indiquer que le fichier a été uploadé à 10:51 et que sa date 
+      de modification était 7:21. 
+  De cette manière, on peut savoir si le fichier a été modifié online (ou offline)
+  
+
 * Gérer le débug ONLINE pour pouvoir suivre le programme (enregistrer dans un fichier log temporaire).
 
 * Fieldset synchro pour la table followers.pstore dans l'administration de la mailing list.
