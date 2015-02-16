@@ -1,4 +1,3 @@
-* Pour les commentaires, on peut en faire aussi si on est membre (pour le moment, seuls les followers sont autorisés)
 
 * Méthode handy pour les tests d'intégration
   main_title_is ""
@@ -19,8 +18,6 @@
 * Gérer le débug ONLINE pour pouvoir suivre le programme (enregistrer dans un fichier log temporaire).
 
 * Fieldset synchro pour la table followers.pstore dans l'administration de la mailing list.
-
-* Mettre en place la section administration pour valider les commentaires
 
 * Améliorer le fieldset synchro
   - enregistrer vraiment la date d'upload en la fournissant explicitement

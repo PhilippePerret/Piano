@@ -50,12 +50,13 @@ class App
     
     ##
     #
-    # Défini la liste des commentaires validés et non validés
+    # Définit la liste des commentaires validés et non validés
     #
     def define_comments_valided_or_not
       @comments_valided     = []
       @comments_not_valided = []
       @comments.each do |dcomment|
+        next if dcomment[:killed] # passer commentaires détruits
         if dcomment[:ok]
           @comments_valided << dcomment
         else
@@ -72,23 +73,10 @@ class App
     # car la méthode ne s'occupe que de l'ajout du commentaire dans
     # la table.
     #
-    def add_comments new_comment, user_data
-      data_comment = user_data.merge(id: comments.count, ok: false, c: new_comment, at: Time.now.to_i)
+    def add_comments data_com
+      data_com = data_com.merge(i: comments.count)
       PStore::new(self.class.pstore_comments).transaction do |ps|
-        ps[id] << data_comment
-      end
-    end
-    
-    ##
-    #
-    # Validation d'un commentaire par l'administration
-    #
-    # Noter que comments_id correspond simplement à l'index des données
-    # du commentaire dans la liste des commentaires.
-    #
-    def valider_comments comments_id
-      PStore::new(self.class.pstore_comments).transaction do |ps|
-        ps[id][comments_id][:ok] = true
+        ps[id] << data_com
       end
     end
     

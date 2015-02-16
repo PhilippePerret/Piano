@@ -15,6 +15,9 @@ if offline?
 <p class='small italic'>
 La gestion des commentaires doit impérativement se faire ONLINE en étant connecté comme administrateur. Ici, en OFFLINE, vous pouvez juste avoir un aperçu des commentaires.
 </p>
+<p>
+Noter que vous devez être identifié comme administrateur, même en OFFLINE, pour faire des opérations sur les articles (sauf pour les opérations générales — download, etc.).
+</p>
 <% 
 ##
 ## Formulaire pour effectuer une opération OFFLINE
@@ -29,6 +32,25 @@ La gestion des commentaires doit impérativement se faire ONLINE en étant conne
   </select>
 </form>
 
+
+<% 
+elsif false == cu.admin?
+  ##
+  ## Pirate
+  ##
+%>
+<% raise "Pirate !" %>
+<% 
+else # online et admin
+%>
+<p>
+ONLINE : Vous pouvez réellement gérer les commentaires.
+</p>
+
+<% 
+end # Si offline et admin
+%>
+
 <% 
 ##
 ## Listing des commentaires
@@ -42,20 +64,3 @@ filtre = nil # pour le moment
   </ul>
 </fieldset>
 
-<% 
-elsif false == cu.admin?
-  ##
-  ## Pirate
-  ##
-%>
-
-<% 
-else # online et admin
-%>
-<p>
-ONLINE : Vous pouvez gérer les commentaires.
-</p>
-
-<% 
-end # Si offline et admin
-%>

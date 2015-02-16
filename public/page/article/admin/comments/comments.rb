@@ -6,6 +6,65 @@ App::Comments
 
 =end
 class App
+  
+  # ---------------------------------------------------------------------
+  #
+  #   Extensions de la class App::Article
+  #   Pour la gestion des commentaires de l'article
+  #
+  # ---------------------------------------------------------------------
+  class Article
+
+    ##
+    #
+    # Validation d'un commentaire par l'administration
+    #
+    # Noter que comments_id correspond simplement à l'index des données
+    # du commentaire dans la liste des commentaires.
+    #
+    def valider_comments comments_id
+      raise "Pirate !" unless cu.admin?
+      PStore::new(self.class.pstore_comments).transaction do |ps|
+        ps[id][comments_id][:ok] = true
+      end
+    end
+    
+    ##
+    #
+    # Invalidation d'un commentaire
+    #
+    # Au cas où…
+    #
+    def invalider_comments comments_id
+      raise "Pirate !" unless cu.admin?
+      PStore::new(self.class.pstore_comments).transaction do |ps|
+        ps[id][comments_id][:ok] = false
+      end
+    end
+    
+    ##
+    #
+    # Détruire un commentaire
+    #
+    # Noter que la destruction correspond simplement à mettre l'article
+    # à {killed: true, ok: false} pour conserver les indices dans la liste
+    #
+    def kill_comment comments_id
+      raise "Pirate !" unless cu.admin?
+      PStore::new(self.class.pstore_comments).transaction do |ps|
+        ps[id][comments_id] = {killed: true, ok: false, i: comments_id}
+      end
+    end
+
+  end
+  
+  # ---------------------------------------------------------------------
+  #
+  #   Class App::Comments
+  #   -------------------
+  #   Gestion des commentaires
+  #
+  # ---------------------------------------------------------------------
   class Comments
     class << self
       
@@ -47,7 +106,9 @@ class App
       # Détruit le commentaire
       #
       def kill
-        flash "Je détruis le commentaire"
+        App::Article::new(param('aid').to_i).kill_comment(param('icom').to_i)
+        flash "Le commentaire a été détruit (noter que pour conserver les indices, la donnée a simplement été mise à {killed: true, ok: false})"
+        message_if_offline
       end
       
       ##
@@ -55,7 +116,10 @@ class App
       # Valide le commentaire
       #
       def valider
-        flash "Je valide le commentaire"
+        raise "Pirate !" unless cu.admin?
+        App::Article::new(param('aid').to_i).valider_comments(param('icom').to_i)
+        flash "Le commentaire a été validé, il apparaitra sous l'article."
+        message_if_offline
       end
       
       ##
@@ -63,7 +127,10 @@ class App
       # Invalider le commentaire
       #
       def invalider
-        flash "J'invalide le commentaire"
+        raise "Pirate !" unless cu.admin?
+        App::Article::new(param('aid').to_i).invalider_comments(param('icom').to_i)
+        flash "Le commentaire a été invalidé, il n'apparaitra plus sous l'article."
+        message_if_offline
       end
 
       # ---------------------------------------------------------------------
@@ -92,12 +159,13 @@ class App
               next unless art_id == only_article_id
             end
             ps[art_id].each do |dcom|
+              next if dcom[:killed]
               if only_unvalided
                 next if dcom[:ok] == true
               elsif only_valided
                 next if dcom[:ok] == false
               end
-              arr_comments << dcom.merge(aid: art_id)
+              arr_comments << dcom
             end
           end
         end
@@ -110,6 +178,10 @@ class App
       #   Méthodes d'helper
       #
       # ---------------------------------------------------------------------
+      
+      def message_if_offline
+        flash "Mais cette opération est virtuelle puisque vous êtes en OFFLINE." if offline?
+      end
       
       ##
       #
@@ -131,7 +203,7 @@ class App
           li << dcom[:aid].to_s.in_hidden(name: 'aid')
           li << "Article ##{dcom[:aid]}".in_div(class: 'small right') unless dcom[:aid] == last_article_id
           li << boutons_edition(dcom) if boutons_edition_needed
-          li << (mark_valided(dcom) + '&nbsp;' + dcom[:c]).in_div
+          li << ( mark_valided(dcom) + '&nbsp;' + dcom[:c] ).in_div
           li.in_li
         end.join('')
       end
@@ -141,11 +213,11 @@ class App
       # Retourne le div des boutons d'édition du commentaire de data +dcom+
       #
       def boutons_edition dcom
-        common_qs = "?a=#{CGI::escape 'admin/comment'}&aid=#{dcom[:aid]}&id=#{dcom[:id]}s&operation="
+        common_qs = "?a=#{CGI::escape 'admin/comments'}&aid=#{dcom[:aid]}&icom=#{dcom[:i]}&operation="
         b = ""
         b << "kill".in_a(href: common_qs + "kill")
-        b << dcom[:ok] ? "Invalider".in_a(href: common_qs + 'invalider') : "Valider".in_a(href: common_qs + "valider")
-        b.in_div(class: 'small fright')
+        b << (dcom[:ok] ? "Invalider".in_a(href: (common_qs + 'invalider')) : "Valider".in_a(href: (common_qs + "valider")))
+        b.in_div(class: 'bedit')
       end
       
       ##
