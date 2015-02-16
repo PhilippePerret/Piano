@@ -41,11 +41,16 @@ class App
   #   Dossiers
   #
   # ---------------------------------------------------------------------
+
+  # Sub-sub
+  def folder_ticket
+    @folder_ticket ||= File.join(folder_data, 'ticket')
+  end
   def folder_image
     @folder_image ||= File.join(folder_page, 'img')
   end
   def folder_pstore
-    @folder_pstore ||= File.join(folder, 'data', 'pstore')
+    @folder_pstore ||= File.join(folder_data, 'pstore')
   end
   def folder_module
     @folder_module ||= File.join(folder_public, 'lib', 'module')
@@ -53,13 +58,17 @@ class App
   def folder_library
     @folder_library ||= File.join(folder_public, 'lib', 'library')
   end
-  
+  # Sub
   def folder_page
     @folder_page ||= File.join(folder_public, 'page')
   end
   def folder_public
     @folder_public ||= File.join(folder, 'public')
   end
+  def folder_data
+    @folder_data ||= File.join(folder, 'data')
+  end
+  # Main
   def folder
     @folder ||= File.expand_path('.')
   end

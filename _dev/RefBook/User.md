@@ -1,8 +1,44 @@
 #User
 
 
+* [User, Membre, Lecteur et Follower](#lecteur_user_and_follower)
 * [Données de l'user](#data_user_lecteur)
 * [ID de lecteur unique (:uid)](#identifiant_lecteur_unique)
+
+
+<a name='lecteur_user_and_follower'></a>
+##User, Membre, Lecteur et Follower
+
+Il est important de ne pas confondre les quatre&nbsp;:
+
+    USER
+      C'est la classe générale qui concerne même un visiteur
+      inconnu non trustable (qui n'a pas de REMOTE ADDR)
+      
+    MEMBRE
+      Un membre est un utilisateur spécial, qui a été accepté au sein
+      du cercle après un vote.
+      Ses données sont enregistrées dans membres.pstore
+    
+    FOLLOWER
+      Un follower est un visiteur trustable qui s'est inscrit sur la mailing
+      list pour être informé des actualisations.
+      Ses données sont enregistrées dans followers.pstore
+      
+    LECTEUR
+      Un "lecteur" peut être soit un MEMBRE, soit un FOLLOWER, soit un simple
+      USER trustable.
+      Ils possèdent chacun un ID unique et absolu, appelé UID. Cet UID sert de
+      clé dans la table lecteurs.pstore
+      Noter que pour les membres, cet ID ne correspond pas à l'ID en tant que
+      membre.
+      On peut pointer vers cet UID (le retrouver) à l'aide de la table pstore
+      pointeurs_lecteurs.pstore où toutes ces valeurs pointent (retourne) l'UID
+      du lecteur :
+        - REMOTE_ADDR (appelée `remote_ip' dans <user>)
+        - mail
+        - ID membre (si membre)
+        - SESSION_ID (app.session.id)
 
 <a name='data_user_lecteur'></a>
 ##Données de l'user

@@ -10,6 +10,11 @@ begin
   app.session.delete_last
   
   ##
+  ## Si opération appelée par ticket
+  ##
+  app.traite_ticket_if_any
+  
+  ##
   ## On essaie de reconnaitre le visiteur courant s'il
   ## est loggué
   ##

@@ -47,7 +47,7 @@ class User
     #
     # Retourne l'user dont le mail est +umail+
     #
-    def get_with_mail umail
+    def get_by_mail umail
       user_found = nil
       PStore::new(table_mail_to_id).transaction do |ps|
         user_found = ps.fetch(umail, nil)
@@ -82,7 +82,7 @@ class User
       end
       return user_found
     end
-    alias :get_by_mail :get_with_mail
+    alias :get_with_mail :get_by_mail
     
     ##
     #

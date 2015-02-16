@@ -71,7 +71,16 @@ class App
     else
       # => Ajoute un message de débug
       @debugs ||= []
-      @debugs << str.gsub(/</, '&lt;')
+      if str.class == String
+        @debugs << str.gsub(/</, '&lt;')
+      elsif str.respond_to? :backtrace
+        # => Une erreur envoyée
+        bckt = str.backtrace.join("\n")
+        merr = str.message.gsub(/</, '&lt;')
+        @debugs << "#{merr}\n\n#{bckt}"
+      else
+        @debugs << str.inspect
+      end
     end
   end
   

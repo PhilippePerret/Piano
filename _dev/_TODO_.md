@@ -1,12 +1,4 @@
 
-* Méthode handy pour les tests d'intégration
-  main_title_is ""
-  subtitle_is ""
-  page_contains ""
-  page_contains_tags
-  page_contains_link
-  page_contains_form
-  
 * Comme pour last_time, il faut enregistrer le time du fichier lors de son upload/download.
   Par exemple, un fichier chargé à 10:51 peut avoir un time de dernière modification à 7:21.
   Il faut donc :
@@ -14,7 +6,17 @@
       de modification était 7:21. 
   De cette manière, on peut savoir si le fichier a été modifié online (ou offline)
   
-
+* Ticket de désincription du follower
+  -> à la création du follower, on enregistre un ticket dans ses données qui sera son ticket de désinscription.
+  -> Dans tous les mails qui lui sont envoyés, on ajoute un lien de désinscription renvoyant à ce ticket
+    http://piano.alwaysdata.net/?t=<valeur ticket>&p=<code protection>
+  > Les tickets sont dans data/tickets
+  > Que contient le ticket ?
+      :protection   =>  le paramètre "p" qui permet de protéger le ticket
+      :code         => le code à évaluer
+                        p.e. "User::get_by_mail(<le mail>).unfollow_cercle"
+    Quand le ticket est lu, le code est évalué
+    
 * Gérer le débug ONLINE pour pouvoir suivre le programme (enregistrer dans un fichier log temporaire).
 
 * Fieldset synchro pour la table followers.pstore dans l'administration de la mailing list.
@@ -42,6 +44,13 @@
 * Mettre en place une rubrique “Les âneries sur le piano” ou "sur la musique"
   - Visiter HP et relever toutes les bêtises racontées
   - Penser à mettre en garde contre les livres eux-même : cf. Fassina.
+
+* Faire un article de désinscription comme follower. Utiliser le ticket créé.
+  > L'user donne son mail
+  > On regarde s'il existe (User::get_by_mail)
+  > Dans ses données, on trouver :ti_unsub et :tp_unsub qui définissent le ticket de sa protection
+  > On produit un lien dans la page avec ces deux données dans 'ti' et 'pt' dans l'url
+  > L'user clique ce lien "Se désinscrire de la mailing-list". Le ticket est joué et l'user détruit.
   
 SUJETS À TRAITER
   * Commencer le piano à un âge tardif.

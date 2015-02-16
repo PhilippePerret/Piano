@@ -3,6 +3,12 @@
 URL_ONLINE_PRODUCTION     = "piano.alwaysdata.net"
 URL_OFFLINE_DEVELOPPEMENT = "localhost/AlwaysData/Piano/index.rb"
 
+if ARGV[1] == "--prod"
+  MODE_PRODUCTION = true
+else
+  MODE_PRODUCTION = false
+end
+
 require 'capybara/rspec'
 require 'rspec-html-matchers'
 

@@ -311,12 +311,32 @@ LCP
         check_value_add_mailing_list_or_raise
     
         ##
-        ## On ajoute l'utilisateur dans le pstore des followers
+        ## Le mail du nouveau follower
         ##
         umail = param(:user_mail)
+
+        ##
+        ## On crée un ticket de désinscription pour le 
+        ## follower
+        ##
+        app.require_module 'tickets'
+        tck_unsubscribe = App::Ticket::new
+        code = "Proc::new{ User::get_as_follower('#{umail}').unsubscribe }"
+        tck_unsubscribe.create_with_code code
+        
+        ##
+        ## On ajoute l'utilisateur dans le pstore des followers
+        ##
         nombre_followers = PStore::new(pstore_followers).transaction do |ps|
           last_id = ps.fetch(:last_id, 0) + 1
-          ps[umail]   = {id: last_id, mail: umail, name: param(:user_pseudo), created_at: Time.now.to_i}
+          ps[umail]   = {
+            id:         last_id, 
+            mail:       umail, 
+            pseudo:     param(:user_pseudo),
+            ti_unsub:   tck_unsubscribe.id,
+            tp_unsub:   tck_unsubscribe.protection,
+            created_at: Time.now.to_i
+          }
           ps[:last_id]  = last_id
           ps.roots.count - 1
         end
@@ -332,6 +352,10 @@ LCP
     
       rescue Exception => e
         error e.message
+        debug "Class erreur : #{e.class}"
+        bt = e.backtrace.join("\n")
+        mess_err = e.message.gsub(/</, '&lt;')
+        debug "#{mess_err}\n\n#{bt}"
       end
       
       ##

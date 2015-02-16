@@ -212,5 +212,47 @@ class User
     
   end
   
-  
+  ##
+  #
+  # Méthode de désinscription de l'user
+  #
+  # Note: la méthode est le plus naturelle appelée par un
+  # ticket appelé par un lien dans le mail
+  #
+  def unsubscribe
+    debug "-> unsubscribe"
+    
+    ##
+    ## Destruction dans la table des followers
+    ##
+    PStore::new(app.pstore_followers).transaction do |ps|
+      unless ps.fetch(mail, :unfound) == :unfound
+        ps.delete mail
+        debug "= Suppression de table des followers OK"
+      end
+    end
+    
+    ##
+    ## Destruction dans la table des pointeurs de lecteurs
+    ##
+    session_id = app.session.id
+    PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps|
+      unless ps.fetch(remote_ip, :unfound) == :unfound
+        ps.delete remote_ip
+        debug "= Suppression de pointeur remot_ip"
+      end
+      unless ps.fetch(mail, :unfound) == :unfound
+        ps.delete mail
+        debug "= Suppression de pointeur mail"
+      end
+      unless ps.fetch(session_id, :unfound) == :unfound
+        ps.delete session_id
+        debug "= Suppression de pointeur session-id"
+      end
+    end
+    debug "= Fin de suppression des pointeurs"
+    
+    
+    flash "Votre désinscription a bien été prise en compte. Désolé de ne plus vous compter parmi nous."
+  end
 end
