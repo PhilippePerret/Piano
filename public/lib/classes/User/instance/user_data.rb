@@ -1,41 +1,7 @@
 # encoding: UTF-8
 require 'digest/md5'
 class User
-  
-  ##
-  #
-  # @return l'ID unique et absolu de l'user, qu'il soit membre,
-  # follower ou autre
-  # Cf. RefBook > User.md pour le détail
-  #
-  def uid
-    if @uid === nil
-      @uid = if false == trustable?
-        nil
-      else
-        if membre?
-          get_uid_with(id) || created_as_lecteur
-        elsif follower?
-          get_uid_with(mail) || created_as_lecteur
-        else
-          get_uid_with(remote_ip) || created_as_lecteur
-        end
-      end
-      
-      ##
-      ## La première fois qu'on demande l'UID, il faut enregistrer
-      ## l'id de session courante dans les données du lecteur si nécessaire
-      ##
-      ## Noter que la méthode en profite aussi pour faire quelques vérifications
-      ## sur les pointeurs, et détruit celui d'après l'ancien session-id s'il
-      ## existe.
-      ##
-      save_session_id
-      
-    end
-    return @uid
-  end
-   
+     
   ##
   #
   # Return l'UID de l'user, quel qu'il soit. Mais il faut utiliser
@@ -43,14 +9,10 @@ class User
   # n'existe pas encore.
   #
   def get_uid_with uref
-    debug "-> get_uid_with(uref=#{uref.inspect})"
     return nil unless trustable?
-    uid_found = nil
     PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps|
       uid_found = ps.fetch(uref, nil)
     end
-    debug "[get_uid_with] uid_found : #{uid_found.inspect}"
-    uid_found
   end
   
   ##

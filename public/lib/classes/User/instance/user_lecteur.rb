@@ -27,24 +27,6 @@ class User
   def created_as_lecteur
     return nil unless trustable?
     ##
-    ## Avant de le créer, il faut voir si ce n'est pas un
-    ## user déjà connu, mais pas encore tout à fait identifié, par
-    ## exemple un membre qui arrive sur le site, mais qui ne s'est
-    ## pas encore identifié.
-    ##
-    uid_checked = get_uid_with app.session.id
-    if uid_checked.nil?
-      uid_checked = get_uid_with remote_ip
-    end
-    return uid_checked unless uid_checked.nil?
-    
-    ##
-    ## Si on passe ici c'est que l'user n'a été reconnu
-    ## dans la table des pointeurs ni par sa remote_ip ni
-    ## par le numéro de session.
-    ##
-
-    ##
     ## ID qui sera consigné
     ##
     id_intbl = case true
@@ -89,44 +71,25 @@ class User
       }
       new_data = ps[new_uid]
     end
-
-    debug "Création d'un nouveau lecteur : {"+
-      new_data.collect{|k,v| "#{k.inspect} => #{v.inspect}"}.join("\n") +
-      "}"
-    
-    ##
-    ## On crée les pointeurs
-    ##
-    create_pointeurs_to new_uid
-    
-    ##
-    ## Si l'user est un membre, on enregistre son UID dans ses
-    ## données
-    ##
-    if membre?
-      set(:uid => new_uid) 
-      debug "* Enregistrement de l'UID #{new_uid} dans les données du membres"
-    end
     
     return new_uid
   end
   ##
   #
-  # Attribue un UID unique et absolu pour l'user et LE RETOURNE
+  # Enregistre les pointeurs vers l'UID après l'avoir déterminé
   #
-  def create_pointeurs_to new_uid
+  def create_pointeurs
     return nil unless trustable?
-    debug "-> create_pointeurs_to(#{new_uid.inspect})"
+    raise "@uid devrait être défini pour créer les pointeurs…" if uid.nil?
     is_membre   = true == membre?
     is_follower = true == follower?
     session_id  = app.session.id
     PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps|
-      ps[id]          = new_uid if is_membre
-      ps[mail]        = new_uid if is_membre || is_follower
-      ps[remote_ip]   = new_uid
-      ps[session_id]  = new_uid unless session_id.nil? # tests
+      ps[remote_ip]   = uid
+      ps[session_id]  = uid unless session_id.nil? # tests
+      ps[id]          = uid if is_membre
+      ps[mail]        = uid if is_membre || is_follower
     end
-    debug "<- create_pointeurs_to"
   end
  
   ##
@@ -142,6 +105,7 @@ class User
   # que son pointeur par sa remote_ip soit bien définie.
   #
   def save_session_id
+    return
     ##
     ## Rien à faire si la session enregistrée est la session
     ## courante

@@ -120,10 +120,10 @@ class App
     #
     def as_li options = nil
       options ||= {}
-      tit = get(:titre)
+      tit = get(:titre) || titre_in_file
       tit = idpath if tit.to_s == ""
       (
-        tit.in_span(class: 'titre') +
+        tit.to_s.in_span(class: 'titre') +
         (options[:votes] ? "#{get :votes}" : '').in_span(class: 'cote')
       ).in_li('data-id' => id)
     end

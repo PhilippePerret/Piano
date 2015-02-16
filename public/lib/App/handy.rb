@@ -46,6 +46,7 @@ def error arg
 end
 
 def debug arg
+  return unless offline? || cu.admin?
   App::current.debug arg
 end
 

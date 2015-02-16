@@ -1,3 +1,9 @@
+* user_article_#can_note_article? retourne true pour le moment, car il merde en ONLINE (mais pas en offline)
+  > Idem pour can_vote_articles?
+  > Pouvoir réutiliser la méthode user_lecteur#save_session_id
+  
+*# Voir le problème avec les articles sans titre en ONLINE
+
 * La méthode de classe User::get doit pouvoir retrouver n'importe quel lecteur, Membre (par ID ou Mail), Follower (par Mail) ou SimpleLecteur (par mail ou IP)
 
 * Comme pour last_time, il faut enregistrer le time du fichier lors de son upload/download.

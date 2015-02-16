@@ -26,7 +26,7 @@ class User
   # Retourne TRUE si l'user est un membre
   #
   def membre?
-    return false unless trustable?
+    return false if false == trustable? || id.nil?
     PStore::new(self.class.pstore).transaction do |ps|
       ps.fetch(id, nil) != nil
     end
@@ -37,7 +37,7 @@ class User
   # Return TRUE si l'user est un follower
   #
   def follower?
-    return false unless trustable?
+    return false if false == trustable? || @mail.nil?
     PStore::new(app.pstore_followers).transaction do |ps|
       ps.roots.include? mail
     end

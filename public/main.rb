@@ -12,7 +12,7 @@ begin
   ##
   ## Si opération appelée par ticket
   ##
-  app.traite_ticket_if_any
+  app.traite_ticket_if_any if param('ti').to_s != "" && param('tp').to_s != ""
   
   ##
   ## On essaie de reconnaitre le visiteur courant s'il
