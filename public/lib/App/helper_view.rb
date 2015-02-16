@@ -57,9 +57,28 @@ class App
   # +attrs+ Les attributs à ajouter à la balise img
   #
   def image relpath, args = nil
-    File.join('.', 'public', 'page', 'img', relpath).in_image( args )
+    c = ""
+    c << File.join('.', 'public', 'page', 'img', relpath).in_image( args )
+    if args.has_key? :mp3
+      c << balise_audio( args.delete(:mp3) )
+      c.in_div(class: 'imgmp3')
+    else
+      c
+    end
   end
   
+  ##
+  # @return une balise audio
+  def balise_audio mp3
+    audio_id = 'mp3_'.concat( mp3.gsub(/[\/\.\-]/,'_') )
+    mp3.concat('.mp3') unless mp3.end_with? '.mp3'
+    <<-HTML
+<audio id="#{audio_id}" class='mp3'>
+  <source src="http://www.atelier-icare.net/sound/cp/#{mp3}" type='audio/mpeg'>
+</audio>
+<a id='btn_audio#{audio_id}' href="javascript:void(0)" onclick="$.proxy(UI.Audio.new('#{audio_id}'), 'play')()" class='mp3'>Écouter</a>
+    HTML
+  end
   ##
   #
   # @return une balise “<a name”, une ancre

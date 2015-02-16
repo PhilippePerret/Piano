@@ -1,3 +1,4 @@
+* La méthode de classe User::get doit pouvoir retrouver n'importe quel lecteur, Membre (par ID ou Mail), Follower (par Mail) ou SimpleLecteur (par mail ou IP)
 
 * Comme pour last_time, il faut enregistrer le time du fichier lors de son upload/download.
   Par exemple, un fichier chargé à 10:51 peut avoir un time de dernière modification à 7:21.
