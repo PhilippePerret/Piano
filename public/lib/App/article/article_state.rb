@@ -10,6 +10,16 @@ class App
     
     ##
     #
+    # @return TRUE si c'est un article administrateur
+    #
+    #
+    def article_admin?
+      @is_article_admin = idpath.start_with?("admin/") if @is_article_admin === nil
+      @is_article_admin
+    end
+    
+    ##
+    #
     # @return TRUE si l'article est achevé
     #
     def complete?

@@ -21,7 +21,7 @@ $.extend(window.Articles,{
 		var li_article 	= $('li#li-'+article_id) ;
 		var new_etat		= $(select).val() ;
 		li_article.attr('data-etat', new_etat) ;
-		Ajax.send({o: 'change_etat_article', o1: article_id, o2: new_etat})
+		Ajax.send({operation: 'change_etat_article', a:'admin/articles', o1: article_id, o2: new_etat})
 	},
 	
 	/**
@@ -31,7 +31,7 @@ $.extend(window.Articles,{
 	remove_data:function(btn){
 		var article_id = $(btn).attr('data-id') ;
 		if(confirm("Voulez-vous vraiment détruire les données pstore de l'article "+article_id+" (mais pas l'article lui-même)?")){
-			Ajax.send({o: 'remove_data_article', o1: article_id, onreturn: $.proxy(Articles,'retour_remove_data', article_id)})
+			Ajax.send({operation: 'remove_data_article', a:'admin/articles', o1: article_id, onreturn: $.proxy(Articles,'retour_remove_data', article_id)})
 		}
 	},
 	retour_remove_data:function(article_id, rajax){

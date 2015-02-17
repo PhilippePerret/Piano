@@ -10,7 +10,6 @@
 ## Si une opération est à exécuter
 ##
 if param('operation').to_s != ""
-  debug "*** Appel de l'opération #{param('operation')}"
   App::PStores::send(param('operation').to_sym)
 end
 %>

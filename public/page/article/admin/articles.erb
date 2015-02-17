@@ -4,6 +4,21 @@
 ##
 %>
 <h2>Édition des articles</h2>
+
+<% 
+##
+## Si une opération est définie
+##
+## Note: Elle est définie dans le module articles.rb du dossier articles
+## ci-dessus
+##
+debug "param('operation') : #{param('operation').inspect}"
+if param('operation').to_s != ""
+  debug "---> App::Operations::#{param('operation')}"
+  App::Operations::send(param('operation').to_sym)
+end
+%>
+
 <% 
 ##
 ## Fieldset de synchro
@@ -72,7 +87,7 @@ fichier = Fichier::new App::Article::pstore
     <% art.define_titre_if_any %>
     <%= art.as_li %>
     <% unless File.exist? art.fullpath %>
-      <%= "Cet article est introuvable (#{art.idpath})"%>
+      <%= "L’article ci-dessus est introuvable (#{art.idpath})"%>
     <% end %>
     <%# @all_data.merge! art.id => art.data %>
   <% end %>

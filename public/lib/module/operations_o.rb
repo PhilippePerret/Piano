@@ -71,52 +71,7 @@ class App
           fichier.upload
         end
       end
-      
-      ##
-      #
-      # Change l'état d'un article
-      #
-      # La méthode est appelée par Ajax par la section administration
-      #
-      #
-      def change_etat_article
-        raise "Pirate !" unless offline?
-        article_id  = param('o1').to_i
-        new_etat    = param('o2').to_i
-        new_data = {:etat => new_etat}
-        article_complete = new_etat == 9
-        if article_complete
-          ##
-          ## Article marqué achevé
-          ## On ré-initialise ses votes pour pouvoir voter
-          ## vraiment pour l'article.
-          ##
-          new_data.merge! votes: nil
-        end
-        App::Article::new(article_id).set(new_data)
-        mess = "Article #{article_id} mis à l'état #{new_etat}."
-        mess << " Les votes de l'article ont été réinitialisés." if article_complete
-        flash mess
-      end
-      
-      ##
-      #
-      # Détruit une donnée article
-      #
-      # La méthode est appelée par ajax depuis la section
-      # d'administration des articles
-      #
-      def remove_data_article
-        raise "Pirate !" unless offline?
-        art  = App::Article::new param('o1').to_i
-        if art.remove_data
-          app.data_ajax = {ok: true}
-          flash "Data de l'article #{art.id} (#{art.idpath}) détruites avec succès."
-        else
-          error "Impossible de détruire les données de l'article #{art.id} #{art.idpath}…"
-        end
-      end
-      
+                  
       ##
       #
       # Pour coter l'article
@@ -152,7 +107,7 @@ class App
         ## Est-ce que l'utilisateur peut vraiment voter ?
         ##
         unless cu.can_vote_articles?
-          return error "Vous avez déjà voté pour ces articles."
+          return error "Vous avez déjà voté pour l'ordre de ces articles."
         end
         
         ##
@@ -172,6 +127,16 @@ class App
         ## On enregistre la date de dernier vote du reader
         ##
         cu.set_last_time_vote
+        
+        ##
+        ## On avertit l'administration
+        ##
+        ## Mode sans erreur
+        ##
+        send_mail_to_admin(
+          subject:      "Nouveau vote pour ordre des articles",
+          message:      "Admin, je t'informe qu'un nouveau vote vient d'être effectué pour la liste des articles.\n\nJe te conseille de downloader le pstore pour voire le changement.\n\nVote effectué par le reader d'UID #{cu.uid}."
+        ) rescue nil
         
         flash "Votre vote a bien été enregistré. Merci à vous."
       end

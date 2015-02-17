@@ -24,6 +24,7 @@ class App
     #
     #
     def add_lecture
+      return if article_admin?
       check_existence_article_data
       PStore::new(self.class.pstore).transaction do |ps|
         ps[id][:x] += 1
@@ -37,6 +38,7 @@ class App
     #
     #
     def add_duree_lecture duree
+      return if article_admin?
       check_existence_article_data
       PStore::new(App::Article::pstore).transaction do |ps|
         ps[id][:duree_lecture] += duree
@@ -44,7 +46,7 @@ class App
         @hduree_lecture = ps[id][:duree_lecture]
       end
     end
-    
+        
     ##
     #
     # Durée de lecture en format humain

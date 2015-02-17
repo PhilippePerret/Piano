@@ -72,18 +72,42 @@ class Fichier
       end
     end
     
+    ##
+    #
+    # @return la date de dernier upload/download
+    #
     def get_last_time_of path, sens = :upload
       key = "#{path}-#{sens}"
-      PStore::new(pstore).transaction do |ps|
-        ps.fetch key, nil
+      PStore::new(pstore).transaction { |ps| ps.fetch key, nil }
+    end
+    
+    ##
+    #
+    # Retourne la date de modification du fichier
+    #
+    def get_last_mtime_of path
+      key = "#{path}-mtime"
+      PStore::new(pstore).transaction { |ps| ps.fetch( key, 0 ).to_i }
+    end
+    
+    ##
+    #
+    # Enregistre deux temps dans le pstore qui checke les 
+    # synchros :
+    #
+    #   * Le temps de dernier upload/download
+    #   * La date de dernière modification du fichier (en partant
+    #     du principe qu'elle est la même une fois l'upload/download
+    #     effectué)
+    #
+    def set_last_times_of path, sens = :upload, time = nil
+      mtime = File.stat(path).mtime.to_i
+      PStore::new(pstore).transaction do |ps| 
+        ps["#{path}-#{sens}"] = time || Time.now.to_i 
+        ps["#{path}-mtime"]   = mtime
       end
     end
-    def set_last_time_of path, sens = :upload
-      key = "#{path}-#{sens}"
-      PStore::new(pstore).transaction do |ps|
-        ps[key] = Time.now.to_i
-      end
-    end
+    
     
   end # << self
   
@@ -144,6 +168,8 @@ class Fichier
   def message_synchro
     tloc = mtime_local
     tdis = mtime_distant
+    
+    
     mess = []
     if options[:no_check] == true
       
@@ -156,6 +182,23 @@ class Fichier
       th = tdis == 0 ? "Inexistant" : tdis.as_human_date(false, true) 
       mess << "#{rond_distant}&nbsp;Fichier distant : #{th}&nbsp;&nbsp;".in_div(class: 'pre')
       mess << "                  Last download : #{last_download true}".in_div(class: 'pre')
+      
+      if last_mtime > 0
+        ##
+        ## Le fichier a-t-il été modifié depuis son dernier upload/download
+        ##
+        loc_modified_since_last_operation = tloc > last_mtime
+        dis_modified_since_last_operation = tdis > last_mtime
+        
+        if loc_modified_since_last_operation
+          mess << "Fichier local modifié depuis dernier upload/downlaod".in_div(class: 'pre')
+        end
+        
+        if dis_modified_since_last_operation
+          mess << "Fichier distant modifié depuis dernier upload/download".in_div(class: 'pre')
+        end
+      end
+      
       if tloc != tdis && !options[:no_button]
         mess << (button_download + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + button_upload).in_div
       end
@@ -243,6 +286,24 @@ class Fichier
     end
   end
   
+  ##
+  #
+  # @return la date de modification qu'avait le fichier
+  # lors de son dernier upload/download
+  #
+  # Retourne 0 si la date n'existe pas (pour simplifier les méthodes)
+  #
+  def last_mtime as_human = false
+    lastmtime = self.class::get_last_mtime_of path
+    if lastmtime.nil?
+      return 0 unless as_human
+      return "(jamais enregistrée)"
+    else
+      lastmtime = lastmtime.as_human_date(false, true) if as_human
+      return lastmtime
+    end
+  end
+  
   # ---------------------------------------------------------------------
   #
   #   Opérations sur le fichier
@@ -267,8 +328,9 @@ class Fichier
     folders_upto :local
     copie_local
     res = `scp -p #{Fichier::serveur}:www/#{path} ./#{path}`
+    now = Time.now.to_i
     ok = res == ""
-    self.class::set_last_time_of( path, :download ) if ok
+    self.class::set_last_times_of( path, :download, now ) if ok
     return ok
   end
   alias :download :serveur_to_local
@@ -282,8 +344,9 @@ class Fichier
   def local_to_serveur
     folders_upto :distant
     res = `scp -p ./#{path} #{Fichier::serveur}:www/#{path}`
+    now = Time.now.to_i
     ok = res == ""
-    self.class::set_last_time_of( path, :upload ) if ok
+    self.class::set_last_times_of( path, :upload, now ) if ok
     return ok
   end
   alias :upload :local_to_serveur
