@@ -17,7 +17,10 @@ class User
     else
       user_id.to_i
     end
-    define_uid if @id != nil || ENV['REMOTE_ADDR'] != nil
+    if @id != nil || ENV['REMOTE_ADDR'] != nil
+      define_uid 
+      set_last_connexion
+    end
   end
   
   ##
@@ -140,12 +143,7 @@ class User
     ## Vérification du membre
     ##
     check_as_membre
-
-    ##
-    ## Enregistrement de la date de dernière connexion
-    ##
-    set_last_connexion
-
+    
   end
   
   ##

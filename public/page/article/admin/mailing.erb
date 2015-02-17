@@ -1,6 +1,13 @@
-<% show_mailing_list %>
-
 <h2>Mailing-list</h2>
+
+<% 
+##
+## Si une opération est demandée, on la joue
+##
+if param( :operation ).to_s != ""
+  App::Mailing::send("exec_#{param :operation}".to_sym)
+end
+%>
 
 <p class='italic'>
 Cette partie permet de gérer les mailing-lists, et principalement de transmettre des annonces aux personnes inscrites.<br />

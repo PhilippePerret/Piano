@@ -17,18 +17,6 @@ class App
   
   ##
   #
-  # Section admin de la mailing list
-  #
-  #
-  def show_mailing_list
-    require_module 'mailing_list'
-    if param( :operation ).to_s != ""
-      App::Mailing::send("exec_#{param :operation}".to_sym)
-    end
-  end
-  
-  ##
-  #
   # Charge le module admin 'articles' pour la gestion des articles
   #
   #

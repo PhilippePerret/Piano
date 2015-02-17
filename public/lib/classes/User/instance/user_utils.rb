@@ -8,13 +8,14 @@ class User
   
   ##
   #
-  # Enregistre la date de dernière connexion (login)
+  # Enregistre la date de dernière connexion
   #
   # Elle est enregistrée dans les data lecteur, pas dans les
   # data du membre, donc elle est utilisable pour tout user
   # quel qu'il soit.
   #
   def set_last_connexion
+    return unless trustable?
     set_as_reader :last_connexion => Time.now.to_i
   end
   

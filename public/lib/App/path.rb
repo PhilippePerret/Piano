@@ -5,6 +5,11 @@ Paths
 
 =end
 class App
+  
+  HOST_ONLINE =   "piano.alwaysdata.net"
+  FULL_URL    =    "http://#{HOST_ONLINE}/"
+  
+  
   def relative_path path
     path.sub(/^#{folder}\//, '')
   end

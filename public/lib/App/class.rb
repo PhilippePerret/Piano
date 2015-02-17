@@ -6,9 +6,6 @@ Class App
 =end
 class App
   
-  HOST_ONLINE =   "piano.alwaysdata.net"
-  FULL_URL    =    "http://#{HOST_ONLINE}/"
-  
   class << self
     
     ##

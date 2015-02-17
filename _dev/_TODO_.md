@@ -1,19 +1,8 @@
-
-* Ticket de désincription du follower
-  -> Dans tous les mails qui lui sont envoyés, on ajoute un lien de désinscription renvoyant à ce ticket
-    http://piano.alwaysdata.net/?t=<valeur ticket>&p=<code protection>
-  > Que contient le ticket ?
-      :protection   =>  le paramètre "p" qui permet de protéger le ticket
-      :code         => le code à évaluer
-                        p.e. "User::get_by_mail(<le mail>).unfollow_cercle"
-    
-
 * Fieldset synchro pour la table followers.pstore dans l'administration de la mailing list.
-
-* last_connexion est enregistré pour un membre, il doit l'être pour un visiteur quelconque.
 
 * Supprimer un membre de la mailing-list quand il était follower et qu'il
   est devenu membre.
+  cf. une méthode create_membre
   
 * Mettre en place une rubrique “Les âneries sur le piano” ou "sur la musique"
   - Visiter HP et relever toutes les bêtises racontées
