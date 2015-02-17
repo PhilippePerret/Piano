@@ -1,62 +1,14 @@
 require "spec_helper"
-class File
-  class << self
-    def unlink_with_rescue path
-      return unless exist? path
-      FileUtils::mv path, path_rescue(path)
-    end
-    def retrieve_rescue path
-      prescue = path_rescue(path)
-      raise "Copie de secours introuvable (#{prescue})" unless File.exist? prescue
-      File.unlink path if File.exist? path
-      FileUtils::mv prescue, path
-    end
-    def path_rescue path
-      "#{path}-rescue"
-    end
-  end
-end
 
 describe "Création/gestion de l'UID #{relative_path __FILE__}" do
-
-  # Raccourci
-  def pstore_rh
-    @pstore_rh ||= app.pstore_readers_handlers
-  end
-  
-  def remove_fichier_pointeurs
-    File.unlink pstore_rh if File.exist? pstore_rh
-  end
-  def remove_fichier_readers
-    File.unlink app.pstore_readers if File.exist? app.pstore_readers
-  end
-  def rescue_fichier_pointeurs
-    File.unlink_with_rescue pstore_rh
-  end
-  def rescue_fichier_readers
-    File.unlink_with_rescue app.pstore_readers
-  end
-  def retrieve_fichier_pointeurs
-    File.retrieve_rescue pstore_rh
-  end
-  def retrieve_fichier_readers
-    File.retrieve_rescue app.pstore_readers
-  end
-  def fichier_pointeurs_existe existe = true
-    if existe
-      expect(File).to be_exist pstore_rh
-    else
-      expect(File).not_to be_exist pstore_rh
-    end
-  end
-  
   
   before :all do
+    require_relative 'required'
     ##
     ## On détruit le fichier pointeur pour partir de rien
     ##
-    rescue_fichier_pointeurs
-    rescue_fichier_readers
+    rescue_and_unlink_fichier_pointeurs
+    rescue_and_unlink_fichier_readers
   end
   
   after :all do
@@ -77,7 +29,7 @@ describe "Création/gestion de l'UID #{relative_path __FILE__}" do
       @u = User::new
     end
     describe "L'instanciation" do
-      it 'ne définit pas UID' do
+      it 'ne définit pas UID pour l’user' do
         expect(u.uid).to eq(nil)
       end
       it 'ne crée pas de fichier pointeur' do
@@ -137,8 +89,32 @@ describe "Création/gestion de l'UID #{relative_path __FILE__}" do
     end
   end
 
-  describe "Création des pointeurs de l'user" do
-    
+  context 'Avec un user qui a un pointeur IP mais pas de données (cas d’erreur)' do
+    before :all do
+      remove_fichier_readers
+      remove_fichier_pointeurs
+      @ip = "127.0.1.2"
+      set_remote_ip @ip
+      save_pointeur @ip => 1
+      @u = User::new
+    end
+    it 'le reader est créé' do
+      expect(u.data_reader).to_not eq(nil)
+    end
+  end
+  
+  context 'Avec un user qui a un pointeur session mais pas de données (cas d’erreur)' do
+    before :all do
+      remove_fichier_readers
+      remove_fichier_pointeurs
+      @ip = "127.0.1.2"
+      set_remote_ip @ip
+      save_pointeur app.session.id => 1
+      @u = User::new
+    end
+    it 'le reader est créé' do
+      expect(u.data_reader).to_not eq(nil)
+    end
   end
   
 end

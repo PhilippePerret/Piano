@@ -98,7 +98,6 @@ class App
     end
     
     btn_rejouer   = args.delete(:btn_rejouer) || args[:btn_jouer] || "Rejouer"
-    debug "btn_rejouer : #{btn_rejouer}"
     btn_jouer     = args.delete(:btn_jouer) || "Écouter"
     path_affixe   = File.join( File.dirname(path), File.basename(path, File.extname(path) ) )
     audio_id      = "mp3_#{path_affixe.gsub(/[\/\.:\-]/,'_')}"

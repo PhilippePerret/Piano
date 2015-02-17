@@ -1,9 +1,3 @@
-* Mettre le lien direct à l'article juste sous l'article, pas tout en bas de page.
-
-* Mettre une message
-  <audio>Actualiser votre navigateur etc.</audio>
-  en haut des pages qui utilisent les sons.
-  L'insérer automatiquement en ajoutant un lien vers Firefox dès que le code de l'article contient "</audio>"
   
 * user_article_#can_note_article? retourne true pour le moment, car il merde en ONLINE (mais pas en offline)
   > Idem pour can_vote_articles?

@@ -17,15 +17,29 @@ class App
     #
     def body_content titre, options = nil
       c = ""
+      c << infos_admin_article if offline?
       c << app.link_to_tdm unless tdm?
       c << titre.in_h1
       c << view
+      c << direct_link
       unless tdm? || en_projet?
-        c << (app.link_to_tdm + links_to_ancres_evaluation).in_div(style: 'margin-top:4em')
+        c << (app.link_to_tdm + links_to_ancres_evaluation).in_div(id:'botlkart')
         c << section_comments
       end
-      c << direct_link
       return c
+    end
+    
+    ##
+    #
+    # Retourne un DIV avec les infos administrateur de l'article
+    # courant, dont son ID
+    #
+    def infos_admin_article
+      @infos_admin_article ||= begin
+        c = ""
+        c << "Article-id: #{id}"
+        c.in_div(id: 'infos_admin_article')
+      end
     end
     
     ##
@@ -38,7 +52,7 @@ class App
       (
         "Lien direct (à copier-coller dans un mail, une page web, etc.)".in_div +
         "<input type='text' value='#{FULL_URL}?a=#{CGI::escape idpath}' onfocus='this.select()' style='width:100%;font-size:11pt' />"
-      ).in_div(class: 'small')
+      ).in_div(class: 'directlk small')
     end
     
     ##
@@ -98,7 +112,9 @@ class App
     #
     def view
       begin
-        app.view "article/#{folder}/#{name}"
+        code_view = app.view "article/#{folder}/#{name}"
+        code_view.prepend(alerte_when_audio_in_page) if code_view.index('</audio>')
+        return code_view
       rescue RedirectError => e
         ##
         ## En cas de redirection par exemple
@@ -109,7 +125,21 @@ class App
       end
     end
     
-    
+    ##
+    #
+    # @return une balise audio d'alerte qui s'affichera si le navigateur 
+    # ne peut pas lire les fichiers audio.
+    #
+    def alerte_when_audio_in_page
+      <<-HTML
+<audio>
+<div class='warning'>
+Cet article contient des exemples audio, mais votre navigateur est trop ancien pour les entendre. Nous vous suggérons de l'actualiser pour profiter pleinement de cet article.
+</div>
+</audio>
+      HTML
+    end
+
     ##
     #
     # Retourne l'article dans un LI, avec les informations minimales.

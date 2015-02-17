@@ -18,12 +18,12 @@ class App
   def pstore_readers
     @pstore_readers ||= File.join(folder_pstore, 'readers.pstore')
   end
-  alias :pstore_lecteurs :pstore_readers
+  alias :pstore_readers :pstore_readers
   
   def pstore_readers_handlers
     @pstore_readers_handlers ||= File.join(folder_pstore, 'readers_handlers.pstore')
   end
-  alias :pstore_pointeurs_lecteurs :pstore_readers_handlers
+  alias :pstore_readers_handlers :pstore_readers_handlers
 
   def pstore_last_times
     @pstore_last_times ||= File.join(folder_pstore, 'last_times.pstore')

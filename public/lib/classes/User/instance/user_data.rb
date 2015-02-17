@@ -39,18 +39,6 @@ class User
     end
   end
   
-  ##
-  #
-  # Définit des données de lecteur
-  #
-  def set_as_lecteur hdata
-    uid # pour ne pas avoir à le chercher ci-dessous
-    debug "[set_as_lecteur] -> "
-    return 
-    PStore::new(app.pstore_lecteurs).transaction do |ps|
-      hdata.each { |k,v| ps[uid][k] = v }
-    end
-  end
   
   # ---------------------------------------------------------------------
   #

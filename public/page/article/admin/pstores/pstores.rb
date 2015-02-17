@@ -101,8 +101,13 @@ class App
       #
       def remove_distant
         return if current_pstore.nil?
-        fichier_synchro.remove_distant
-        flash "Fichier distant détruit avec succès."
+        if offline?
+          fichier_synchro.remove_distant
+          flash "Pstore distant détruit avec succès."
+        else
+          File.unlink current_pstore_path
+          flash "Pstore `#{current_pstore_path}' détruit avec succès."
+        end
       end
       
       def fichier_synchro

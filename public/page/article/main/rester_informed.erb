@@ -18,6 +18,10 @@ end
   <p>
   Un grand merci de votre intérêt&nbsp;! Et bon piano&nbsp;!
   </p>
+<% elsif cu.membre? %>
+<p class='grand_air'>
+En tant que membre du <%= short_name %>, <%= cu.pseudo %>, vous êtes automatiquement averti des nouvelles publications du site.
+</p>
 <% else %>
   <p>
   Pour être informé des nouvelles publications du site “<%= name %>”, communiquez-nous votre adresse mail ci-dessous. Nous nous ferons un plaisir de vous avertir dès qu'un nouvel article paraitra.

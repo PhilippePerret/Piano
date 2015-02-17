@@ -13,7 +13,7 @@ class User
   #
   def articles_noted
     @articles_noted ||= begin
-      PStore::new(app.pstore_lecteurs).transaction do |ps|
+      PStore::new(app.pstore_readers).transaction do |ps|
         ps[uid][:articles_noted]
       end
     end
@@ -24,7 +24,7 @@ class User
   # Ajoute un article noté par l'user (quel qu'il soit)
   #
   def add_article_noted art_id
-    PStore::new(app.pstore_lecteurs).transaction do |ps|
+    PStore::new(app.pstore_readers).transaction do |ps|
       ps[uid][:articles_noted] << art_id
       @articles_noted = ps[uid][:articles_noted]
     end

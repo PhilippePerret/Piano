@@ -30,7 +30,6 @@ class User
   # lecteur.
   #
   def define_uid
-    debug "-> define_uid"
     ##
     ## Est-ce que l'id (si défini), la session-id ou la remote-ip
     ## permettent de retrouver l'UID ? (pointeurs)
@@ -38,7 +37,6 @@ class User
     ## Note: Ne surtout pas utiliser mail ou @mail ici qui ne peut
     ## être défini que si c'est un membre.
     ##
-    debug "* Recherche UID"
     @uid = nil
     [id, app.session.id, remote_ip].each do |uref|
       next if uref.nil?
@@ -48,7 +46,6 @@ class User
         break
       end
     end
-    debug "= UID après recherche : #{@uid.inspect}"
     
     ##
     ## Si @uid est nil, il faut créer le lecteur courant
@@ -65,7 +62,7 @@ class User
       ## UID lui sera attribué. Il ne sera connu qu'au moment où
       ## il s'identifiera comme membre.
       ##
-      @uid = created_as_lecteur
+      @uid = create_as_reader
     
       ##
       ## On crée les pointeurs
@@ -76,11 +73,16 @@ class User
       ## Si l'user est un membre, on enregistre son UID dans ses
       ## données
       ##
-      if membre?
-        set(:uid => @uid) 
-        debug "* Enregistrement de l'UID #{new_uid} dans les données du membres"
-      end
+      set(:uid => @uid) if membre?
 
+    else # si @uid est défini
+      
+      ##
+      ## Quand @uid a été trouvé, il faut vérifier que le lecteur
+      ## possède bien des données, ce qui n'est pas le cas parfois en
+      ## cas d'erreur
+      ##
+      
     end
     
     ##
@@ -93,7 +95,6 @@ class User
     ##
     update_session_id_if_needed
     
-    debug "<- define_uid"
   end
   
   # ---------------------------------------------------------------------
@@ -134,14 +135,17 @@ class User
     app.session['user_id']  = id
     @is_identified          = true
     flash "Bienvenue, #{pseudo} !"
+    
     ##
     ## Vérification du membre
     ##
     check_as_membre
+
     ##
     ## Enregistrement de la date de dernière connexion
     ##
     set_last_connexion
+
   end
   
   ##

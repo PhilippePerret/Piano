@@ -47,7 +47,7 @@ end
         <option value="show_synchro">État de la synchronisation</option>
         <option value="upload">Upload le fichier local vers le fichier distant</option>
         <option value="download">Download le fichier distant vers local</option>
-        <option value="remove_distant">Détruire le fichier distant</option>
+        <option value="remove_distant">Détruire le pstore<%= offline? ? ' distant' : '' %></option>
       </select>
     </div>
   <% end %>

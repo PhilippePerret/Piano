@@ -14,16 +14,30 @@ class User
   def data_reader
     return nil unless trustable?
     @data_reader ||= begin
-      PStore::new(app.pstore_readers).transaction { |ps| ps[uid] }
+      d = PStore::new(app.pstore_readers).transaction { |ps| ps.fetch uid, nil }
+      if d.nil?
+        create_as_reader
+        d = PStore::new(app.pstore_readers).transaction { |ps| ps.fetch uid, nil }
+      end
+      d
     end
   end
   
+  ##
+  #
+  # Définit des données de lecteur
+  #
+  def set_as_reader hdata
+    PStore::new(app.pstore_readers).transaction do |ps|
+      hdata.each { |k,v| ps[uid][k] = v }
+    end
+  end
   
   ##
   #
   # Crée l'user comme lecteur et retourne son UID
   #
-  def created_as_lecteur
+  def create_as_reader
     return nil unless trustable?
     
     is_membre   = true == membre?
@@ -47,27 +61,31 @@ class User
     else nil
     end
     
-    new_uid   = nil
-    new_data  = nil
+    new_uid   = @uid # il peut être défini, en cas d'erreur
     PStore::new(app.pstore_readers).transaction do |ps|
-      new_uid = ps.fetch(:last_uid, 0) + 1 
-      ps[:last_uid] = new_uid
-
+      if new_uid.nil?
+        new_uid = ps.fetch(:last_uid, 0) + 1 
+        ps[:last_uid] = new_uid
+      end
+      
       ##
       ## Données enregistrées comme lecteur
       ## 
       ## Note : elle pourront être modifiées lorsque le simple user
       ## change de statut (-> follower -> membre)
       ##
+      now = Time.now.to_i
       ps[new_uid] = {
         uid:            new_uid,
         type:           type_intbl,   # :membre, :follower ou nil
         id:             id_intbl,     # id (membre) mail (follower) ou nil
         membre:         is_membre,
         follower:       is_follower,
-        last_connexion: Time.now.to_i,
+        last_connexion: now,
         last_vote:      nil,
-        articles_noted: []
+        articles_noted: [],
+        session_id:     app.session.id,
+        created_at:     now
       }
     end
     
@@ -170,7 +188,7 @@ class User
     ## Destruction dans la table des pointeurs de lecteurs
     ##
     session_id = app.session.id
-    PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps|
+    PStore::new(app.pstore_readers_handlers).transaction do |ps|
       unless ps.fetch(remote_ip, :unfound) == :unfound
         ps.delete remote_ip
         debug "= Suppression de pointeur remot_ip"

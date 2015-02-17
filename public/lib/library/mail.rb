@@ -29,7 +29,7 @@ a {
 }
 div#logo{
   font-size: 24pt;
-  padding: 1em 0;
+  padding: 0 0 1em;
   border-bottom: 2px solid;
   margin-bottom: 2em;
 }
