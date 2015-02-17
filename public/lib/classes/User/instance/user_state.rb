@@ -17,7 +17,7 @@ class User
   #
   def trustable?
     @is_trustable ||= begin
-      @is_identified || app.cgi.remote_addr != nil
+      @is_identified || remote_ip != nil
     end
   end
   

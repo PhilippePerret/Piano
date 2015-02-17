@@ -43,9 +43,9 @@ Il est important de ne pas confondre les quatre&nbsp;:
 <a name='data_user_lecteur'></a>
 ##Données de l'user
 
-Les données de l'user quelconque se récupère par `data_as_lecteur`&nbsp;:
+Les données de l'user quelconque se récupère par `data_reader`&nbsp;:
 
-    data = <user>.data_as_lecteur
+    data = <user>.data_reader
 
 Pour un membre elles se récupèrent par `data`&nbsp;:
 

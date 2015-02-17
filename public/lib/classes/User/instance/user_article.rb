@@ -53,7 +53,7 @@ class User
   
   def last_time_vote
     @last_time_vote ||= begin
-      data_as_lecteur[:last_vote]
+      data_reader[:last_vote]
     end
   end
   

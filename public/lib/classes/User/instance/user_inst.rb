@@ -34,49 +34,63 @@ class User
 
     ##
     ## Est-ce que l'id (si défini), la session-id ou la remote-ip
-    ## permettent de retrouver l'UID ?
+    ## permettent de retrouver l'UID ? (pointeurs)
     ##
+    ## Note: Ne surtout pas utiliser mail ou @mail ici qui ne peut
+    ## être défini que si c'est un membre.
+    ##
+    @uid = nil
     [id, app.session.id, remote_ip].each do |uref|
       next if uref.nil?
       uid_checked = get_uid_with uref
       unless uid_checked.nil?
         @uid = uid_checked
-        return
+        break
       end
     end
     
     ##
-    ## Si l'UID n'a pas pu être retrouvé, on doit créer un
-    ## nouveau lecteur. Noter que si c'est un membre par exemple
-    ## qui se connecte à partir d'un autre ordinateur, un nouvel
-    ## UID lui sera attribué. Il ne sera connu qu'au moment où
-    ## il s'identifiera comme membre.
+    ## Si @uid est nil, il faut créer le lecteur courant
     ##
-    @uid = created_as_lecteur
+    ## Noter que ça peut très bien être un membre ou un follower
+    ## pas encore identifié
+    ##
+    if @uid.nil?
+      
+      ##
+      ## Si l'UID n'a pas pu être retrouvé, on doit créer un
+      ## nouveau lecteur. Noter que si c'est un membre par exemple
+      ## qui se connecte à partir d'un autre ordinateur, un nouvel
+      ## UID lui sera attribué. Il ne sera connu qu'au moment où
+      ## il s'identifiera comme membre.
+      ##
+      @uid = created_as_lecteur
     
-    ##
-    ## On crée les pointeurs
-    ##
-    create_pointeurs
+      ##
+      ## On crée les pointeurs
+      ##
+      create_pointeurs
     
-    ##
-    ## Si l'user est un membre, on enregistre son UID dans ses
-    ## données
-    ##
-    if membre?
-      set(:uid => @uid) 
-      debug "* Enregistrement de l'UID #{new_uid} dans les données du membres"
+      ##
+      ## Si l'user est un membre, on enregistre son UID dans ses
+      ## données
+      ##
+      if membre?
+        set(:uid => @uid) 
+        debug "* Enregistrement de l'UID #{new_uid} dans les données du membres"
+      end
+
     end
     
-    # ##
-    # ## La première fois qu'on demande l'UID, il faut enregistrer
-    # ## l'id de session courante dans les données du lecteur si nécessaire
-    # ##
-    # ## Noter que la méthode en profite aussi pour faire quelques vérifications
-    # ## sur les pointeurs, et détruit celui d'après l'ancien session-id s'il
-    # ## existe.
-    # ##
-    # save_session_id
+    ##
+    ## Il faut enregistrer l'id de session courante dans les données
+    ## du lecteur si nécessaire (c'est-à-dire si elle a changé)
+    ##
+    ## En cas de changement de session-id, la méthode détruit aussi l'ancien
+    ## pointeur session-id et crée le nouveau, puisque ça n'a été fait 
+    ## ci-dessus que si le lecteur a dû être créé.
+    ##
+    update_session_id_if_needed
     
   end
   
@@ -90,21 +104,8 @@ class User
   #
   # Adresse IP de l'user (identifié ou non)
   #
-  # Consigne aussi cette connexion dans ips.pstore
-  # Noter que cette remote ip n'est pas sûre du tout, puisque
-  # les constantes HTTP_CLIENT_IP et HTTP_X_FORWARDED_FOR peuvent
-  # être falsifiées. La méthode trustable? ne tient compte que de
-  # la REMOTE_ADDR.
-  #
   def remote_ip
-    @remote_ip ||= begin
-      raddr   = ENV['REMOTE_ADDR']
-      httpid  = ENV['HTTP_CLIENT_IP']
-      httpx   = ENV['HTTP_X_FORWARDED_FOR']
-      ip = raddr || httpid || httpx # TODO: affiner
-      app.remember_ip ip
-      ip
-    end
+    @remote_ip ||= app.cgi.remote_addr
   end
   
   # ---------------------------------------------------------------------

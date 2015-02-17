@@ -4,7 +4,7 @@ describe "UID de lecteur #{relative_path __FILE__}" do
   before :all do
     @u = User::new
     @ip = "125.1.2.3"
-    ENV['REMOTE_ADDR'] = @ip
+    set_remote_ip @ip
   end
   
   let(:u) { @u }
@@ -17,7 +17,7 @@ describe "UID de lecteur #{relative_path __FILE__}" do
     context 'avec un membre' do
       before :all do
         @u = User::new 1
-        ENV['REMOTE_ADDR'] = @u.get(:remote_ip)
+        set_remote_ip @u.get(:remote_ip)
       end
       it 'retourne l’UID unique du membre' do
         

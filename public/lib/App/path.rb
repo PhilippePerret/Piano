@@ -14,15 +14,17 @@ class App
   #   Pstores principaux
   #
   # ---------------------------------------------------------------------
-  def pstore_lecteurs
-    @pstore_lecteurs ||= File.join(folder_pstore, 'lecteurs.pstore')
+  
+  def pstore_readers
+    @pstore_readers ||= File.join(folder_pstore, 'readers.pstore')
   end
-  def pstore_pointeurs_lecteurs
-    @pstore_pointeurs_lecteurs ||= File.join(folder_pstore, 'pointeurs_lecteurs.pstore')
+  alias :pstore_lecteurs :pstore_readers
+  
+  def pstore_readers_handlers
+    @pstore_readers_handlers ||= File.join(folder_pstore, 'readers_handlers.pstore')
   end
-  def pstore_ips
-    @pstore_ips ||= File.join(folder_pstore, 'ips.pstore')
-  end
+  alias :pstore_pointeurs_lecteurs :pstore_readers_handlers
+
   def pstore_last_times
     @pstore_last_times ||= File.join(folder_pstore, 'last_times.pstore')
   end
