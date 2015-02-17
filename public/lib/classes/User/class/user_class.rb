@@ -86,18 +86,32 @@ class User
     
     ##
     #
-    # Essaie, à chaque chargement de page (required), de récupérer
-    # l'utilisateur courant (s'il s'est identifié)
+    # Essaie, à chaque chargement de page (required) de récupérer
+    # l'utilisateur courant (s'il s'est identifié). Sinon, on
+    # fait un user virtuel qui peut être reconnu par son IP ou
+    # sa session.
     #
     def retrieve_current
-      return if app.session['user_id'].to_s == ""
-      user_id = app.session['user_id'].to_i
-      u = User::get(user_id)
-      if u.get(:session_id) == app.session.id
-        User::current = u
-        app.session['user_id'] = user_id
-        u.instance_variable_set('@is_identified', true)
+      unless app.session['user_id'].to_s == ""
+        user_id = app.session['user_id'].to_i
+        u = User::get(user_id)
+        if u.get(:session_id) == app.session.id
+          app.session['user_id'] = user_id
+          u.instance_variable_set('@is_identified', true)
+        end
+      else
+        u = User::new
       end
+      User::current = u
+      ##
+      ## On définit l'UID, peut-être en le récupérant dans
+      ## la session
+      ##
+      u.define_uid
+      ##
+      ## On indique la date de dernière connexion
+      ##
+      u.set_last_connexion
     end
     
     ##

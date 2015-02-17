@@ -11,15 +11,20 @@ class User
   ##
   attr_reader :uid
   
+  ##
+  #
+  # Instanciation d'un User
+  #
+  # Penser que cette méthode n'est pas seulement appelée pour
+  # les visiteurs, mais aussi pour récupérer une instance d'user
+  # lors de certaines opérations, même lorsque ce n'est pas
+  # l'administrateur (pour voir la liste des membres par exemple)
+  #
   def initialize user_id = nil
     @id = if user_id.to_s.strip == ""
       nil 
     else
       user_id.to_i
-    end
-    if @id != nil || ENV['REMOTE_ADDR'] != nil
-      define_uid 
-      set_last_connexion
     end
   end
   
@@ -33,6 +38,19 @@ class User
   # lecteur.
   #
   def define_uid
+    ##
+    ## Barrière untrustable user
+    ##
+    return unless @id != nil || ENV['REMOTE_ADDR'] != nil
+    
+    ##
+    ## Est-ce que l'UID est défini dans les variables session ?
+    ##
+    uid_session = app.session['reader_uid']
+    unless uid_session.nil?
+      debug "uid défini en session : #{uid_session.inspect}"
+    end
+    
     ##
     ## Est-ce que l'id (si défini), la session-id ou la remote-ip
     ## permettent de retrouver l'UID ? (pointeurs)
@@ -81,12 +99,24 @@ class User
     else # si @uid est défini
       
       ##
+      ## Si l'UID en correspond pas à celui en session, on raise
+      ##
+      if uid_session != nil && uid_session != @uid
+        raise "Vous tentez de pirater le site ?"
+      end
+      
+      ##
       ## Quand @uid a été trouvé, il faut vérifier que le lecteur
       ## possède bien des données, ce qui n'est pas le cas parfois en
       ## cas d'erreur
       ##
       
     end
+    
+    ##
+    ## On met l'UID en session
+    ##
+    app.session['reader_uid'] = @uid
     
     ##
     ## Il faut enregistrer l'id de session courante dans les données
