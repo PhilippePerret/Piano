@@ -1,0 +1,11 @@
+<% 
+##
+## Listing des sujets soumis
+##
+%>
+
+<h3>Listing des sujets proposés</h3>
+
+<% App::NewSujet::each do |sujet| %>
+  <%= sujet.in_div %>
+<% end %>

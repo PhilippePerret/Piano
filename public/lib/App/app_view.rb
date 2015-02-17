@@ -66,7 +66,7 @@ class App
     def add_all_in_folder
       Dir["#{folder_article}/**/*.rb"].each { |m| require m }
       app.add_css Dir["#{folder_article}/**/*.css"]
-      app.add_js  Dir["#{folder_article}/**/*_mini.js"]
+      app.add_js Dir["#{folder_article}/**/*_mini.js"]
     end
     
     ##

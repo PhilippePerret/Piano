@@ -8,6 +8,22 @@ class User
   
   ##
   #
+  # Envoyer un mail à l'user
+  #
+  # Cette méthode est à utiliser lorsqu'on n'a qu'un seul mail
+  # à envoyer, seulement à ce membre/follower
+  #
+  # +data_mail+ doit contenir au minium :
+  #   :subject    Le sujet
+  #   :message    Le message
+  #
+  def send_mail data_mail
+    app.require_library 'mail'
+    Mail::new(data_mail).send
+  end
+  
+  ##
+  #
   # Enregistre la date de dernière connexion
   #
   # Elle est enregistrée dans les data lecteur, pas dans les

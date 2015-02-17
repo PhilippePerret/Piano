@@ -2,15 +2,34 @@
 ##
 ## Formulaire de soumission d'un nouveau sujet
 ##
+from_administration = article.idpath.start_with? 'admin/'
+
+if from_administration
+  app.add_css "./public/page/article/user/submit_sujet/submit_sujet.css"
+  visib_form = param(:operation) != "edit" ? 'none' : 'block'
+else
+  visib_form = 'block'
+end
+
+titre_form = from_administration ? "Édition sujet" : "Formulaire de soumission d’un nouveau sujet"
 %>
-<fieldset id="formulaire_de_soumission_dun_nouveau_sujet">
-  <legend>Formulaire de soumission d’un nouveau sujet</legend>
+<fieldset id="formulaire_de_soumission_dun_nouveau_sujet" style="display:<%= visib_form %>;">
+  <legend><%= titre_form %></legend>
   <form id="form_submit_subject" action="index.rb" method="POST" accept-charset="utf-8">
-    <%= "user/submit_sujet".in_hidden(name: 'a') %>
+    <% 
+    article_path = from_administration ? 'admin/sujets_soumis' : 'user/submit_sujet' %>
+    <%= article_path.in_hidden(name: 'a') %>
     <%= "soumettre_sujet".in_hidden(name: 'operation') %>
-    <%= row("", "Donnez un titre provisoire au sujet&nbsp;:".in_div(class: 'small'))%>
-    <%= row("Sujet", param('art_sujet').to_s.in_input_text(name: 'art_sujet') ) %>
-    <%= row("", "Définissez grâce aux cases à cocher ci-dessous ce que pourrait faire cet article. Il viserait à…".in_div(class: 'small'))%>
+    <% if from_administration %>
+      <%= param(:art_id).to_s.in_hidden(name: "art_id")%>
+    <% end %>
+    <% unless from_administration %>
+      <%= row("", "Donnez un titre provisoire au sujet&nbsp;:".in_div(class: 'small'))%>
+    <% end %>
+    <%= row("Sujet", param('art_titre').to_s.in_input_text(name: 'art_titre') ) %>
+    <% unless from_administration %>
+      <%= row("", "Définissez grâce aux cases à cocher ci-dessous ce que pourrait faire cet article. Il viserait à…".in_div(class: 'small'))%>
+    <% end %>
     <div class='row'>
       <span class='libelle'></span>
       <span class='value'>
@@ -21,13 +40,47 @@
           App::NewSujet::LISTE_THEMES.each do |dcb|
             label = dcb[0]
             id_cb = "cb_#{dcb[1]}"
+            is_checked = param(id_cb) == "on"
         %>
-          <%= label.in_checkbox(name: id_cb, label_class: 'small').in_div %>
+          <%= label.in_checkbox(name: id_cb, label_class: 'small', checked: is_checked).in_div %>
         <% end %>
         </span>
       </div>
-    <%= row("", "Décrivez un peu plus, ci-dessous, ce sujet en indiquant peut-être ce qu'il devrait contenir selon vous, ce que vous en entendez, la manière dont il devrait être traité, la raison de le traiter, etc., toutes choses qui pourront être utiles aux rédacteurs et montrer la pertinence de ce sujet.".in_div(class: 'small')) %>
+    <% unless from_administration %>
+      <%= row("", "Décrivez un peu plus, ci-dessous, ce sujet en indiquant peut-être ce qu'il devrait contenir selon vous, ce que vous en entendez, la manière dont il devrait être traité, la raison de le traiter, etc., toutes choses qui pourront être utiles aux rédacteurs et montrer la pertinence de ce sujet.".in_div(class: 'small')) %>
+    <% end %>
     <%= row("Description", param('art_description').to_s.in_textarea(id: 'art_description', name: 'art_description'))%>
-    <%= row("", "Proposer ce sujet".in_submit, {class: 'buttons'}) %>
+
+    <% 
+    ##
+    ## Quand c'est l'édition du sujet, on ajoute un champ pour entrer le
+    ## path de l'article, avec son nom. Et une case à cocher pour décider de
+    ## transformer vraiment le sujet soumis en article.
+    ##
+    if from_administration
+    %>
+      <div class='row'>
+        <span class="libelle"></span>
+        <span class="value">
+        <div class='small bold'>Entrez ci-dessous le path à l'article à créer (avec le nom)&nbsp;:</div>
+        </span>
+      </div>
+      <%= row("", '<select id="dossiers" onchange="$.proxy(NewSujet,\'onchoose_dossier\',this.value)()"></select>') %>
+      <%= row("Chemin", param('art_path').to_s.in_input_text(name: 'art_path', onfocus: "$.proxy(NewSujet,'onfocus_path')()", onblur:"$.proxy(NewSujet,'onblur_path')()") ) %>
+      <div class='row'>
+        <span class="libelle"></span>
+        <span class="value">
+          <div class='small'>Vous pouvez utiliser les tabulations pour obtenir un path rapidement, comme dans un shell bash.</div>
+        </span>
+      </div>
+      <%= row("", "Transformer le sujet en article".in_checkbox(name: 'sujet_to_article'))%>
+    <% end %>
+    <% 
+    ##
+    ## Bouton pour soumettre
+    ##
+    nom_bouton = from_administration ? "Actualiser" : "Proposer ce sujet"
+    %>
+    <%= row("", nom_bouton.in_submit, {class: 'buttons'}) %>
   </form>
 </fieldset>

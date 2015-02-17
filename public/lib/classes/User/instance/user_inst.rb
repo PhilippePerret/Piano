@@ -47,9 +47,6 @@ class User
     ## Est-ce que l'UID est défini dans les variables session ?
     ##
     uid_session = app.session['reader_uid']
-    unless uid_session.nil?
-      debug "uid défini en session : #{uid_session.inspect}"
-    end
     
     ##
     ## Est-ce que l'id (si défini), la session-id ou la remote-ip

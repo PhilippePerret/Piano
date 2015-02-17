@@ -132,7 +132,8 @@ class App
           ps.roots.each do |key|
             value = ps[key]
             value = case value
-            when Hash then value_as_hash(value, 1)
+            when Hash   then value_as_hash(value, 1)
+            when Fixnum then treate_fixnum_value value, key
             else value.inspect
             end
             c << "#{key.inspect} => #{value}".in_div
@@ -141,11 +142,20 @@ class App
         return c.in_fieldset(legend: "Contenu du pstore #{current_pstore}")
       end
       
+      def treate_fixnum_value value, key
+        case key
+        when :at, :created_at, :updated_at, :last_connexion, :last_vote
+          "#{value} [#{value.as_human_date(false, true).in_span(class: 'small')}]"
+        else value
+        end
+      end
+      
       def value_as_hash h, tab
         retrait = "#{'&nbsp;' * 8 * tab}"
         h.collect do |k, v|
           v = case v
-          when Hash then value_as_hash(v, tab + 1)
+          when Hash   then value_as_hash(v, tab + 1)
+          when Fixnum then treate_fixnum_value v, k
           else v.inspect
           end
           "#{retrait}#{k.inspect} => #{v}".in_div

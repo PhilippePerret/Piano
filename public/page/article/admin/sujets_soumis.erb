@@ -1,0 +1,24 @@
+<h2>Administration des sujets soumis</h2>
+
+<% 
+##
+## Exécuter l'opération éventuellement définie
+##
+unless param(:operation).to_s == ""
+  App::NewSujet::send(param(:operation).to_sym)
+end
+%>
+
+<% 
+##
+## Formulaire d'édition d'un sujet
+##
+%>
+<%= app.view 'article/user/submit_sujet/form' %>
+
+<% 
+##
+## Liste des sujets soumis
+##
+%>
+<%= app.view 'article/admin/sujets_soumis/listing' %>
