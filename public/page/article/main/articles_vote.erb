@@ -17,7 +17,7 @@
 <% end %>
 </ul>
 <p class='right italic small'>
-Vérifiez bien l'ordre avant de voter, car vous n'aurez qu'<strong>un seul essai</strong>.
+Vérifiez bien l'ordre avant de voter, car vous n'aurez qu'<strong>un seul essai</strong> :-).
 </p>
 <%= form_o(
   button:   "Voter pour cet ordre",
@@ -41,14 +41,14 @@ $(document).ready(function(){
     containment:  'parent',
     axis:         'y',
     cursor:       "move",
-    cursorAt:     { left: 0, top: 0, bottom: -25 },
+    cursorAt:     { left: 0, top: 0, bottom: 0 },
     distance:     5,
     forceHelperSize: true
   });  
 })
 </script>
 <% 
-else # si l'use ne peut pas voter
+else # si l'user ne peut pas voter
 %>
 <p>
 Vous avez déjà voté pour le classement des articles. Vous ne pourrez voter à nouveau qu'après un délai de deux mois, ou si une actualisation importante des sujets d'article a été effectuée.
