@@ -5,7 +5,7 @@ Bienvenue sur mon blog piano sur <%= name %>.
 <h3>Les Classiques Favoris du piano</h3>
 
 <p>
-Je commence ce blog en reprenant le cours de mon travail sur le volume 1A des <strong>Classiques Favoris du Piano</strong> que j'ai décidé de travailler dans son intégralité pour la fin de la 3e année de piano et le début de ma 4e.
+Je commence ce blog en reprenant le cours de mon travail sur le volume 1A des <strong>Classiques Favoris du Piano</strong> que j'ai décidé de travailler dans son intégralité entre ma 3e et 4e année d'apprentissage du piano.
 </p>
 <p>Mon but principal dans ce “challenge”, au-delà de la difficulté de l'enregistrement, est de respecter un certain nombre de contraintes&nbsp;:
   <ul>
@@ -16,13 +16,4 @@ Je commence ce blog en reprenant le cours de mon travail sur le volume 1A des <s
 </ul>
 </p>
 
-<p class='bold'>Liste de tous les morceaux du volume 1A.</p>
-
-<div style="margin-left:4em;">  
-  <ul style="list-style:none;">
-    <li><%= link_to "30 - Sonatine n°1 de Kuhlau", "blog/philicare/cfp/30" %></li>
-    <li><%= link_to "29 - Minuetto de Dussek", "blog/philicare/cfp/29" %></li>
-    <li><%= link_to "02 - Bernoise de Kozeluch", "blog/philicare/cfp/02" %></li>
-    <li><%= link_to "01 - Mélodie de Robert Schumann", "blog/philicare/cfp/01" %></li>
-  </ul>
-</div>
+<%= app.view('article/blog/philicare/cfp/ul_cfp') %>

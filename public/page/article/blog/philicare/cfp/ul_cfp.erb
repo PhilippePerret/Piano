@@ -1,0 +1,52 @@
+<% 
+##
+## Liste des morceaux liés du CFP Vol 1A pour insertion dans la
+## page d'accueil du blog et dans la section des CFP.
+##
+%>
+<% 
+dos = "blog/philicare/cfp"
+%>
+<p class='bold'>Liste de tous les morceaux enregistrés du volume 1A.</p>
+
+<div style="margin-left:4em;">  
+  <ul style="list-style:none;">
+    <% 
+    [
+      ["Sonatine n°1 de Kuhlau",        30],
+      ["Minuetto de Dussek",            29],
+      ["Kuhlau - Rondo vivace",         28],
+      ["Diabelli - Rondo",              27],
+      ["Diabelli - Scherzo",            26],
+      ["Diabelli - Andantino",          25],
+      ["Steibelt - Rondo élégant",      24],
+      ["Beethoven - Danse villageoise", 23],
+      ["Schumann - Le Gai laboureur",   22],
+      ["Steibelt - Landler",            21],
+      ["Mozart — Ariette",              20],
+      ["Schumann - Le Cavalier sauvage", 19],
+      ["Cramer - Ariette",              18],
+      ["Clementi - Rondo Sonatine 1 op. 36", 17],
+      ["Clementi - Sonatine 1 op. 36 (2eme mouvement)", 16],
+      ["Clementi - Sonatine 1 op. 36 (1er mouvement)",  15],
+      ["Schumann - Marche militaire",   14],
+      ["Mozart - Valse favorite",       13],
+      ["Clementi - Air suisse",         12],
+      ["Hummel - Ecossaise",            11],
+      ["Beethoven - Rondo",             10],
+      ["Beethoven - Sonatine",        "09"],
+      ["Clementi - Rondo",            "08"],
+      ["Beethoven - Bagatelle en Do", "07"],
+      ["Kozeluch - Romance",          "06"],
+      ["Clementi - Rondo en SOL",     "05"],
+      ["Beethoven - Romance en Sol",  "04"],
+      ["Beethoven - Sonatine en Sol", "03"],
+      ["Bernoise de Kozeluch",        "02"],
+      ["Mélodie de Robert Schumann",  "01"]
+    ].each do |data_cfp|
+      num = data_cfp[1].to_s
+    %>
+      <li><%= link_to "#{num} - #{data_cfp[0]}", "blog/philicare/cfp/#{num}" %></li>
+    <% end %>
+  </ul>
+</div>

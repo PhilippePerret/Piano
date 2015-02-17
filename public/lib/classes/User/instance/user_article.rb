@@ -35,7 +35,6 @@ class User
   # @Return TRUE si l'user peut voter pour l'article d'ID +art_id+
   #
   def can_note_article? art_id
-    return true
     return false unless trustable?
     return false == articles_noted.include?(art_id)
   end
@@ -46,7 +45,6 @@ class User
   #
   #
   def can_vote_articles?
-    return true
     return false unless trustable?
     return last_time_vote.nil? || (last_time_vote < (Time.now.to_i - 60.days))
   end

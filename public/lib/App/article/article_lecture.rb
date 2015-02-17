@@ -12,14 +12,20 @@ class App
     #   Lectures
     # ---------------------------------------------------------------------
     
+    def check_existence_article_data
+      PStore::new(self.class.pstore).transaction do |ps|
+        ps[id] = default_data if ps.fetch( id, nil).nil?
+      end
+    end
+    
     ##
     #
     # Ajoute une lecture de l'article courant
     #
     #
     def add_lecture
+      check_existence_article_data
       PStore::new(self.class.pstore).transaction do |ps|
-        ps[id] = default_data unless ps.roots.include? id
         ps[id][:x] += 1
         ps[id][:updated_at] = Time.now.to_i
       end
@@ -31,6 +37,7 @@ class App
     #
     #
     def add_duree_lecture duree
+      check_existence_article_data
       PStore::new(App::Article::pstore).transaction do |ps|
         ps[id][:duree_lecture] += duree
         ps[id][:updated_at] = Time.now.to_i

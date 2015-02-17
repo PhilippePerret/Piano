@@ -23,10 +23,18 @@ class App
       c << view
       c << direct_link
       unless tdm? || en_projet?
-        c << (app.link_to_tdm + links_to_ancres_evaluation).in_div(id:'botlkart')
+        c << bottom_buttons
         c << section_comments
       end
       return c
+    end
+    
+    def bottom_buttons
+      (
+        bottom_link_to_next_article +
+        app.link_to_tdm + 
+        links_to_ancres_evaluation
+      ).in_div(id:'botlkart')
     end
     
     ##
@@ -53,6 +61,18 @@ class App
         "Lien direct (à copier-coller dans un mail, une page web, etc.)".in_div +
         "<input type='text' value='#{FULL_URL}?a=#{CGI::escape idpath}' onfocus='this.select()' style='width:100%;font-size:11pt' />"
       ).in_div(class: 'directlk small')
+    end
+    
+    
+    ##
+    #
+    # Lien vers l'article suivant
+    #
+    def bottom_link_to_next_article
+      ne = self.next
+      return "" unless ne
+      p = ne.class == Hash ? ne[:path] : ne
+      app.button_next(p, :inline => true).in_div(class: 'nextbtn fright')
     end
     
     ##

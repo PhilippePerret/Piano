@@ -4,6 +4,8 @@
 * [Insérer des images](#inserer_images)
 * [Insérer une ancre](#inserer_balise_aname)
 * [Insérer un lien vers une ancre](#link_to_ancre)
+* [Lien vers la page suivante](#lien_to_page_suivante)
+
 
 
 * [Insérer un article dans l'article courant](#inserer_article_in_article)
@@ -61,3 +63,12 @@ On peut alors simplement créer un lien (dans le même fichier) à cette balise 
     
 
 Utiliser `<path/article>` si l'ancre se trouve dans un autre article que l'article dans lequel est inséré ce code.
+
+<a name='lien_to_page_suivante'></a>
+##Lien vers la page suivante
+
+Pour ajouter un lien qui pointe vers la page suivante, insérer quelque part dans le code de la vue ERB&nbsp;:
+
+    <% article.next = "path/to/article" %>
+    
+Cela insèrera le bouton "Suivant ->" à côté des boutons de bas de page.

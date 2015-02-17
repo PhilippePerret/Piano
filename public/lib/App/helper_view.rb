@@ -20,6 +20,24 @@ class App
   end
   
   ##
+  # Pour insérer un bouton "Suivant"
+  #
+  # Par défaut, c'est un bouton qui porte le titre "Suivant" et s'insert
+  # en bas de page. On peut utiliser les +options+ pour modifier ça.
+  # +options+
+  #     :button_name      Autre nom pour le bouton
+  #     :top              Si true, c'est un bouton pour le haut de page
+  def button_next art_path, options = nil
+    options ||= {}
+    btn_name = options[:button_name] || "Suivant"
+    classes_css = ['nextbtn']
+    classes_css << (options[:top] ? 'top' : 'bottom')
+    lk = link_to( "Suivant &rarr;", art_path )
+    lk = lk.in_div(class: classes_css.join(' ')) unless options[:inline]
+    return lk
+  end
+  
+  ##
   #
   # Pour construire une rangée de formulaire
   #

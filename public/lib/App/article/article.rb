@@ -92,6 +92,14 @@ class App
     attr_reader :content
     
     ##
+    ## {Hash} de l'article suivant (if any)
+    ##
+    ## Le définir dans la vue à l'aide de :
+    ## article.next = {path:, title:} ou 
+    ## article.next = path (le bouton sera "Suivant ->")
+    attr_accessor :next
+    
+    ##
     #
     # Instanciation
     #
@@ -192,10 +200,24 @@ class App
     #
     def titre_in_file
       if File.exist? fullpath
-        code = File.read(fullpath).force_encoding('utf-8')
-        @titre = code.match(/<h2>(.*?)<\/h2>/).to_a[1].to_s.strip
+        titre_in_code File.read(fullpath).force_encoding('utf-8')
       else
         debug "= Fichier ID #{id} introuvable (#{fullpath}). Impossible de récupérer son titre"
+        ""
+      end
+    end
+    
+    def titre_in_code code
+      if idpath == "main/home"
+        "Accueil du site"
+      elsif name == "_tdm_.erb"
+        "Table des matières (#{idpath})"
+      elsif code.match(/<h2>(.*?)<\/h2>/)
+        code.match(/<h2>(.*?)<\/h2>/).to_a[1].to_s.strip
+      elsif code.index('article.body_content')
+        code.match(/article\.body_content(.*?)"(.*?)"/).to_a[1].to_s.strip
+      else
+        debug "= Titre introuvable dans le fichier existant #{fullpath}"
         ""
       end
     end

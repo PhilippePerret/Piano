@@ -45,7 +45,7 @@ class App
         sort_by_votes = filtre.delete(:sort_by_votes)
         listarts = articles.dup
         if sort_by_votes
-          listarts = listarts.sort_by{ |k,v| v.get(:votes) }.reverse
+          listarts = listarts.sort_by{ |k,v| v.get(:votes) || 0 }.reverse
         end
         listarts.each do |art_id, art|
           ok = true
