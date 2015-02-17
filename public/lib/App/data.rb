@@ -8,6 +8,14 @@ class App
   
   attr_reader :params
   
+  ##
+  #
+  # @return l'instance CGI
+  #
+  def cgi
+    @cgi ||= CGI::new('html4')
+  end
+  
   def param pname
     @params ||= {}
     if pname.class == Hash

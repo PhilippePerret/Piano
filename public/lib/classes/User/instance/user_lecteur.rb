@@ -14,8 +14,7 @@ class User
   def data_reader
     return nil unless trustable?
     @data_reader ||= begin
-      uid # au cas où…
-      PStore::new(app.pstore_lecteurs).transaction { |ps| ps[uid] }
+      PStore::new(app.pstore_readers).transaction { |ps| ps[uid] }
     end
   end
   
@@ -26,30 +25,31 @@ class User
   #
   def created_as_lecteur
     return nil unless trustable?
-    ##
-    ## ID qui sera consigné
-    ##
-    id_intbl = case true
-    when membre?    then id
-    when follower?  then mail
-    else nil
-    end
-  
-    ##
-    ## Type de l'user
-    ##
-    type_intbl = case true
-    when membre?    then :membre
-    when follower?  then :follower
-    else nil
-    end
     
     is_membre   = true == membre?
     is_follower = true == follower?
     
+    ##
+    ## ID qui sera consigné (id membre, mail follower ou nil)
+    ##
+    id_intbl = case true
+    when is_membre    then id
+    when is_follower  then mail
+    else nil
+    end
+  
+    ##
+    ## Type du lecteur
+    ##
+    type_intbl = case true
+    when is_membre    then :membre
+    when is_follower  then :follower
+    else nil
+    end
+    
     new_uid   = nil
     new_data  = nil
-    PStore::new(app.pstore_lecteurs).transaction do |ps|
+    PStore::new(app.pstore_readers).transaction do |ps|
       new_uid = ps.fetch(:last_uid, 0) + 1 
       ps[:last_uid] = new_uid
 
@@ -69,7 +69,6 @@ class User
         last_vote:      nil,
         articles_noted: []
       }
-      new_data = ps[new_uid]
     end
     
     return new_uid

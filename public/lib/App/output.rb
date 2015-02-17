@@ -32,13 +32,6 @@ class App
     STDOUT.write self.data_ajax.to_json
   end
   
-  ##
-  #
-  # @return l'instance CGI
-  #
-  def cgi
-    @cgi ||= CGI::new('html4')
-  end
   
   ##
   #
@@ -60,28 +53,6 @@ class App
   #
   def code_html
     ERB.new(File.read('./public/page/gabarit.erb').force_encoding('UTF-8')).result(bind)
-  end
-    
-  def debug str = nil
-    if str.nil?
-      # => Retourne le contenu du debug
-      return "" if @debugs.nil? || (online? && false == cu.admin?)
-      debug_str = @debugs.join("\n")
-      "<div style='clear:both;'></div><pre id='debug'>#{debug_str}</pre>"
-    else
-      # => Ajoute un message de débug
-      @debugs ||= []
-      if str.class == String
-        @debugs << str.gsub(/</, '&lt;')
-      elsif str.respond_to? :backtrace
-        # => Une erreur envoyée
-        bckt = str.backtrace.join("\n")
-        merr = str.message.gsub(/</, '&lt;')
-        @debugs << "#{merr}\n\n#{bckt}"
-      else
-        @debugs << str.inspect
-      end
-    end
   end
   
   ##

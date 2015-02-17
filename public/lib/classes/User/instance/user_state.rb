@@ -16,9 +16,10 @@ class User
   # donc qu'il soit membre accepté, soit qu'il ait une remote address
   #
   def trustable?
-    @is_trustable ||= begin
-      @is_identified || remote_ip != nil
+    if @is_trustable === nil
+      @is_trustable = @is_identified || ENV['REMOTE_ADDR'].to_s != ""
     end
+    @is_trustable
   end
   
   ##
@@ -26,7 +27,7 @@ class User
   # Retourne TRUE si l'user est un membre
   #
   def membre?
-    return false if false == trustable? || id.nil?
+    return false if false == @is_trustable || id.nil?
     PStore::new(self.class.pstore).transaction do |ps|
       ps.fetch(id, nil) != nil
     end
@@ -37,7 +38,7 @@ class User
   # Return TRUE si l'user est un follower
   #
   def follower?
-    return false if false == trustable? || @mail.nil?
+    return false if false == @is_trustable || @mail.nil?
     PStore::new(app.pstore_followers).transaction do |ps|
       ps.roots.include? mail
     end
@@ -57,7 +58,7 @@ class User
   # Return TRUE si l'user est un membre-administrateur
   #
   def admin?
-    @is_admin = ( identified? && membre? && grade == :creator ) if @is_admin === nil
+    @is_admin = ( @is_identified && membre? && grade == :creator ) if @is_admin === nil
     @is_admin
   end
   

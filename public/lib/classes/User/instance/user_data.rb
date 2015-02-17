@@ -10,8 +10,8 @@ class User
   #
   def get_uid_with uref
     return nil unless trustable?
-    PStore::new(app.pstore_pointeurs_lecteurs).transaction do |ps|
-      uid_found = ps.fetch(uref, nil)
+    PStore::new(app.pstore_readers_handlers).transaction do |ps|
+      ps.fetch(uref, nil)
     end
   end
   

@@ -17,7 +17,7 @@ class User
     else
       user_id.to_i
     end
-    define_uid
+    define_uid if @id != nil || ENV['REMOTE_ADDR'] != nil
   end
   
   ##
@@ -30,8 +30,7 @@ class User
   # lecteur.
   #
   def define_uid
-    return unless trustable?
-
+    debug "-> define_uid"
     ##
     ## Est-ce que l'id (si défini), la session-id ou la remote-ip
     ## permettent de retrouver l'UID ? (pointeurs)
@@ -39,6 +38,7 @@ class User
     ## Note: Ne surtout pas utiliser mail ou @mail ici qui ne peut
     ## être défini que si c'est un membre.
     ##
+    debug "* Recherche UID"
     @uid = nil
     [id, app.session.id, remote_ip].each do |uref|
       next if uref.nil?
@@ -48,6 +48,7 @@ class User
         break
       end
     end
+    debug "= UID après recherche : #{@uid.inspect}"
     
     ##
     ## Si @uid est nil, il faut créer le lecteur courant
@@ -92,6 +93,7 @@ class User
     ##
     update_session_id_if_needed
     
+    debug "<- define_uid"
   end
   
   # ---------------------------------------------------------------------
