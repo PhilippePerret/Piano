@@ -235,14 +235,14 @@ class String
     label = attrs.delete(:label)
     label = self if label.nil?
     label_class = attrs.delete(:label_class)
-    checked = attrs.delete(:checked)
+    checked = attrs.delete(:checked) == true
     attrs = attrs.merge( :checked => "CHECKED" ) if checked === true
     unless attrs.has_key? :id
       prefix = attrs[:prefix] || (is_radio ? 'ra' : 'cb')
       suffix = attrs[:suffix] || (is_radio ? attrs[:value].as_normalized_id : '')
       attrs = attrs.merge(id: "#{prefix}_#{attrs[:name]}#{suffix}")
     end
-    unless attrs.has_key? :type # arrive pour les radio
+    unless attrs.has_key? :type # arrive pour les radios
       attrs = attrs.merge(type: "checkbox")
     end
     
@@ -251,11 +251,13 @@ class String
     attrs[:class] = [attrs[:class]] if attrs[:class].class == String
     attrs[:class] << (is_radio ? 'ra' : 'cb')
     
+    attrs[:class] = attrs[:class].join(' ')
+    
     # Code retourné
     ("".in_input(attrs) +
     label.
       in_label(:for => attrs[:id], :class => label_class)).
-      in_span(id: "div-#{attrs[:id]}", class: attrs[:class].join(' '))
+      in_span(id: "div-#{attrs[:id]}", class: attrs[:class])
   end
   def in_hidden attrs = nil
     self.in_input(attrs.merge :type => 'hidden') 

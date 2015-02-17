@@ -62,4 +62,15 @@ class User
     @is_admin
   end
   
+  ##
+  # Return TRUE si le membre peut soumettre un sujet
+  def can_submit_subject?
+    return false unless cu.membre?
+    return (grade_as_level & User::LEVEL_SUGGEST_IDEAS) > 0
+  end
+  
+  def grade_as_level
+    User::GRADES[grade][:level]
+  end
+  
 end

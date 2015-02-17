@@ -12,9 +12,14 @@ if param('operation') == "enregistrer"
 end
 %>
 
-
-<div class='p small right'>
+<div class='p small center'>
   <%= link_to "Modifier votre profil", :edit_profil %>
+  &nbsp;.&nbsp;
+  <%= link_to :articles_en_projet %>
+  &nbsp;.&nbsp;
+  <%= link_to "Proposer un sujet d'article", 'user/submit_sujet' %>
+  &nbsp;.&nbsp;
+  <%= link_to :vote_articles %>
 </div>
 
 <%= row( "Pseudo", cu.pseudo ) %>
@@ -27,10 +32,3 @@ end
 <%= row( "Chaine Youtube", cu.chaine_yt_as_link("www.youtube.com/channel/...")) %>
 <%= row( "Description", cu.hdescription ) %>
 
-
-<div class='p small right'>
-  <%= link_to :articles_en_projet %>
-</div>
-<div class='p small right'>
-  <%= link_to :vote_articles %>
-</div>

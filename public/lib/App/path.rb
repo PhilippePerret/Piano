@@ -43,6 +43,12 @@ class App
     @pstore_followers ||= File.join(folder_pstore, 'followers.pstore')
   end
   
+  ##
+  # Pstore des sujets proposés
+  def pstore_new_sujets
+    @pstore_new_sujets ||= File.join(folder_pstore, 'submitted_subjects.pstore')
+  end
+  
   # ---------------------------------------------------------------------
   #
   #   Dossiers

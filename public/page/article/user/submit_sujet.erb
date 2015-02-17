@@ -1,5 +1,58 @@
-<h2>Soumettre un nouveau sujet d'article</h2>
+<h2>Soumettre un sujet d'article</h2>
 
+
+<% 
+if cu.membre?
+%>
+  <% 
+  if cu.can_submit_subject?
+  %>
+    <%
+    ##
+    ## Exécuter l'opération définie (if any)
+    ##
+    App::NewSujet::send(param(:operation).to_sym) if param(:operation).to_s != ""
+    %>
+    <%= app.link_ancre "Sujets déjà enregistrés", 'sujets_saved' %>
+    <% 
+    ##
+    ## Formulaire pour soumettre un sujet
+    ##
+    %>
+    <%= app.view 'article/user/submit_sujet/form' %>
+    <% 
+    ##
+    ## Liste des sujets enregistrés
+    ##
+    %>
+    <%= app.ancre "sujets_saved" %>
+    <h3>Sujets déjà enregistrés</h3>
+    <%= App::NewSujet::liste_sujets_saved %>
+  <% 
+  else
+    ##
+    ## Si le membre n'a pas le niveau requis
+    ##
+  %>
+  <p>
+  Vous êtes membre, mais vous n'avez pas le niveau requis pour pouvoir proposer des sujets d'article.
+  </p>
+  <p>
+  Rassurez-vous, votre grade peut évoluer au sein du <%= short_name %> en fonction de votre assiduité&nbsp;! :-)
+  </p>
+  <% end %>
+<% 
+else
+  ##
+  ## Si le visiteur n'est pas un membre
+  ##
+%>
 <p>
-[PARTIE EN CONSTRUCTION]
+Il faut être membre pour pouvoir soumettre un nouveau sujet d'article.
 </p>
+<div class='p'>
+Si vous êtes membre, merci de <%= link_to "vous identifier", :login %>.
+</div>
+<% 
+end
+%>
