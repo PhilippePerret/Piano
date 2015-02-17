@@ -125,16 +125,7 @@ class App
       def pstore_cotes
         @pstore_cotes ||= File.join(app.folder_pstore, 'articles_cotes.pstore')
       end
-      
-      ##
-      #
-      # Pstore pour les votes
-      #
-      #
-      def pstore_votes
-        @pstore_votes ||= File.join(app.folder_pstore, 'votes_articles.pstore')
-      end
-      
+            
       ##
       #
       # Pstore des données des articles

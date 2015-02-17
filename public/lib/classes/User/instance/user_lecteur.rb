@@ -28,10 +28,12 @@ class User
   # Définit des données de lecteur
   #
   def set_as_reader hdata
+    return unless trustable?
     PStore::new(app.pstore_readers).transaction do |ps|
       hdata.each { |k,v| ps[uid][k] = v }
     end
   end
+  alias :set_data_reader :set_as_reader
   
   ##
   #

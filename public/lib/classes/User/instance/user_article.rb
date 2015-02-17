@@ -24,6 +24,7 @@ class User
   # Ajoute un article noté par l'user (quel qu'il soit)
   #
   def add_article_noted art_id
+    return unless trustable?
     PStore::new(app.pstore_readers).transaction do |ps|
       ps[uid][:articles_noted] << art_id
       @articles_noted = ps[uid][:articles_noted]
@@ -49,10 +50,22 @@ class User
     return last_time_vote.nil? || (last_time_vote < (Time.now.to_i - 60.days))
   end
   
+  ##
+  #
+  # Retourne la date de dernier vote
+  #
   def last_time_vote
     @last_time_vote ||= begin
       data_reader[:last_vote]
     end
+  end
+  
+  ##
+  #
+  # Définit la dernière date de vote du reader
+  #
+  def set_last_time_vote
+    set_data_reader :last_vote => Time.now.to_i
   end
   
 end

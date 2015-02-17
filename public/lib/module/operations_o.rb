@@ -149,34 +149,9 @@ class App
       #
       def vote_articles
         ##
-        ## Est-ce que l'utilisateur peut voter ?
+        ## Est-ce que l'utilisateur peut vraiment voter ?
         ##
-        user_ok = true
-        deux_mois_plus_tot = Time.now.to_i - 60.days
-        PStore::new(App::Article::pstore_votes).transaction do |ps|
-          time_with_ip = ps.fetch(cu.remote_ip, nil)
-          unless time_with_ip.nil?
-            if time_with_ip > deux_mois_plus_tot
-              user_ok = false
-            end
-          end
-          if user_ok
-            time_with_session = ps.fetch(app.session.id, nil)
-            unless time_with_session.nil?
-              if time_with_session > deux_mois_plus_tot
-                user_ok = false
-              end
-            end
-          end
-          
-          # On enregistre ce temps de vote
-          if user_ok
-            ps[cu.remote_ip]    = Time.now.to_i
-            ps[app.session.id]  = Time.now.to_i
-          end
-          
-        end
-        unless user_ok
+        unless cu.can_vote_articles?
           return error "Vous avez déjà voté pour ces articles."
         end
         
@@ -192,6 +167,11 @@ class App
             break if vote == 0
           end
         end
+        
+        ##
+        ## On enregistre la date de dernier vote du reader
+        ##
+        cu.set_last_time_vote
         
         flash "Votre vote a bien été enregistré. Merci à vous."
       end

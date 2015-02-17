@@ -1,4 +1,4 @@
-*# Voir le problème avec les articles sans titre en ONLINE
+* Détruire le pstore votes_articles.pstore
 
 * La méthode de classe User::get doit pouvoir retrouver n'importe quel lecteur, Membre (par ID ou Mail), Follower (par Mail) ou SimpleLecteur (par mail ou IP)
 
