@@ -13,14 +13,14 @@ NOTE
       2.  Elle procède à l'actualisation véritable
 =end
 
-SIMPLE_CHECK = true # mettre à faux pour procéder à la synchronisation
+SIMPLE_CHECK = false # mettre à faux pour procéder à la synchronisation
 
 ##
 ## Par prudence, on peut d'abord ne rien faire avec les fichiers
 ## serveurs qui n'existent pas en offline. Et les traiter dans un
 ## second temps
 ##
-LONELY_ONLINE_DO_NOTHING = true
+LONELY_ONLINE_DO_NOTHING = false
 
 ##
 ## Si true, détruit les fichiers serveurs qui n'existent pas

@@ -150,6 +150,7 @@ class App
     # value: Leur valeur
     #
     def set hdata
+      hdata.merge! :updated_at => Time.now.to_i
       PStore::new(App::Article::pstore).transaction do |ps|
         hdata.each do |prop, value|
           ps[id][prop] = value
@@ -160,18 +161,13 @@ class App
     
     ##
     #
+    # Confection du contenu (@content) de l'article
+    #
     # Méthode principal, appelée par la vue `content.erb', qui définit
     # le code de l'article et le place dans @content
     #
     def load
-      ##
-      ## Confection du contenu de l'article
-      ##
       @content = app.view( "article/#{base}" )
-      ##
-      ## On ajoute un chargement de cet article
-      ##
-      add_lecture
     end
     
     ##

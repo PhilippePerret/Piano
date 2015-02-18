@@ -181,7 +181,7 @@ class User
     
     ##
     #
-    # Retourne un hash de tous les utilisateurs
+    # Retourne un hash de tous les membres
     #
     def all type = nil
       type ||= :all

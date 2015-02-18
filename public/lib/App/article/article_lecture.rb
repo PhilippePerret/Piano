@@ -14,39 +14,10 @@ class App
     
     def check_existence_article_data
       PStore::new(self.class.pstore).transaction do |ps|
-        ps[id] = default_data if ps.fetch( id, nil).nil?
+        ps[id] = default_data if ps.fetch(id, nil).nil?
       end
     end
-    
-    ##
-    #
-    # Ajoute une lecture de l'article courant
-    #
-    #
-    def add_lecture
-      return if article_admin?
-      check_existence_article_data
-      PStore::new(self.class.pstore).transaction do |ps|
-        ps[id][:x] += 1
-        ps[id][:updated_at] = Time.now.to_i
-      end
-    end
-    
-    ##
-    #
-    # Ajoute une durée de lecture de l'article
-    #
-    #
-    def add_duree_lecture duree
-      return if article_admin?
-      check_existence_article_data
-      PStore::new(App::Article::pstore).transaction do |ps|
-        ps[id][:duree_lecture] += duree
-        ps[id][:updated_at] = Time.now.to_i
-        @hduree_lecture = ps[id][:duree_lecture]
-      end
-    end
-        
+            
     ##
     #
     # Durée de lecture en format humain

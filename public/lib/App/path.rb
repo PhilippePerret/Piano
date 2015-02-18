@@ -25,10 +25,10 @@ class App
   end
   alias :pstore_readers :pstore_readers
   
-  def pstore_readers_handlers
-    @pstore_readers_handlers ||= File.join(folder_pstore, 'readers_handlers.pstore')
+  def pstore_ip_to_uid
+    @pstore_ip_to_uid ||= File.join(folder_pstore, 'ip_to_uid.pstore')
   end
-  alias :pstore_readers_handlers :pstore_readers_handlers
+  alias :pstore_ip_to_uid :pstore_ip_to_uid
 
   def pstore_last_times
     @pstore_last_times ||= File.join(folder_pstore, 'last_times.pstore')

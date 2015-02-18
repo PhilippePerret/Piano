@@ -1,3 +1,5 @@
+* Voir si connexion_courantes.pstore sert encore
+
 * Dans check_as_membre (après login), il faut vérifier que l'user a bien sa propriété :uid définie et la définir au cas où.
   Vérifier la concordance des uid. 
     - uid n'est pas défini pour le membre => l'enregistrer
@@ -25,12 +27,6 @@
                         au cours de la session.
       }
 
-* Mettre en place le fait qu'on crée un pstore propre à l'user (de nom session-id), dans lequel on enregistre tout.
-  Ensuite, au cours de la nuit, on remet ces données dans les pstores généraux.
-
-* Même sans que je m'identifie, le site (local) me reconnait
-  > Il ne faut pas. Il faut me laisser en reader.
-  > Voir si c'est toujours le cas depuis que logout détruit plus de choses
 
 * Dès que l'user est reconnu comme follower (soumission d'un commentaire), on store son `:follower_mail`
 

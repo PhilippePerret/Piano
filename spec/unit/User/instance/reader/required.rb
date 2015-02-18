@@ -2,7 +2,7 @@
 
 # Raccourci
 def pstore_rh
-  @pstore_rh ||= app.pstore_readers_handlers
+  @pstore_rh ||= app.pstore_ip_to_uid
 end
 
 def remove_fichier_pointeurs
@@ -35,7 +35,7 @@ end
 # Enregistre un pointeur
 #
 def save_pointeur hdata
-  PStore::new(app.pstore_readers_handlers).transaction do |ps|
+  PStore::new(app.pstore_ip_to_uid).transaction do |ps|
     hdata.each { |k,v| ps[k] = v }
   end
 end

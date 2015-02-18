@@ -109,7 +109,7 @@ class User
   #
   def get_uid_via_pointeur_ip
     return nil unless trustable?
-    PStore::new(app.pstore_readers_handlers).transaction do |ps|
+    PStore::new(app.pstore_ip_to_uid).transaction do |ps|
       ps.fetch( remote_ip, nil)
     end
   end
@@ -123,7 +123,7 @@ class User
   #
   def create_pointeur_ip
     return nil unless trustable?
-    PStore::new(app.pstore_readers_handlers).transaction do |ps|
+    PStore::new(app.pstore_ip_to_uid).transaction do |ps|
       ps[remote_ip] = uid
       debug "Nouveau pointeur #{remote_ip} (remote_ip) -> #{uid} (uid)"
     end
@@ -178,7 +178,7 @@ class User
     ## Ajout du pointeur de session-id et destruction de l'ancien
     ## s'il existait.
     ##
-    PStore::new(app.pstore_readers_handlers).transaction do |ps|
+    PStore::new(app.pstore_ip_to_uid).transaction do |ps|
       ps[new_session_id] = uid
       ps.delete(old_session_id) unless old_session_id.nil?
       debug "= Actualisation du pointeur de session-id"
