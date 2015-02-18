@@ -107,12 +107,19 @@ class User
         ##
         user_id = app.session['user_id'].to_i
         u     = User::get user_id
+        
+        ## Cf. N0001
+        if u.get(:session_id) != app.session.id
+          debug "Session-ID différent du session-id enregistré à l'identification -> retour à la page d'identification."
+          app.session['user_id'] = nil
+          flash "Merci de vous identifier à nouveau."
+          redirect_to :login
+          return
+        end
+        
         User::current = u
         u.uid = app.session['reader_uid']
-        if u.get(:session_id) == app.session.id
-          app.session['user_id'] = user_id
-          u.instance_variable_set('@is_identified', true)
-        end
+        u.instance_variable_set('@is_identified', true)
       elsif app.session['follower_mail'].to_s != ""
         debug "-> Follower reconnu"
         u.uid = app.session['reader_uid']

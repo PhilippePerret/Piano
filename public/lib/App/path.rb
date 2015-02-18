@@ -36,9 +36,7 @@ class App
   def pstore_connexions
     @pstore_connexions ||= File.join(folder_pstore, 'connexions.pstore')
   end
-  def pstore_connexions_courantes
-    @pstore_connexions_courantes ||= File.join(folder_pstore, 'connexions_courantes.pstore')
-  end
+
   def pstore_followers
     @pstore_followers ||= File.join(folder_pstore, 'followers.pstore')
   end

@@ -68,14 +68,6 @@ class App
       @pstore_all ||= File.join('.', 'data', 'pstore', 'connexions.pstore')
     end
     
-    ##
-    #
-    # Pstore des connexions courantes (en activité)
-    #
-    #
-    def pstore_courantes
-      @pstore_courantes ||= File.join('.', 'data', 'pstore', 'connexions_courantes.pstore')
-    end
   end
   
 end

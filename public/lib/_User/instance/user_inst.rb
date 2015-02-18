@@ -102,6 +102,13 @@ class User
   #
   def login
     User::current = self
+
+    ## Cf. N0001
+    set :session_id => app.session.id
+    
+    ##
+    ## Données dans le pstore-session provisoire
+    ##
     store( 
       :session_id => app.session.id,
       :user_type  => :membre,
