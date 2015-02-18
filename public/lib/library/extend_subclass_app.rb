@@ -20,7 +20,7 @@ class ExtensionSubclassApp
     def error mess_error;   app.error mess_error  end
     def flash mess;         app.flash mess        end
     def last_time key;      app.last_time key     end
-    def set_last_time key;  app.set_last_time key end
+    def set_last_time key, time = nil;  app.set_last_time key, time end
     def param key;          app.param key         end
     def name;               app.name              end
     def short_name;         app.short_name        end

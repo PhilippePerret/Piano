@@ -1,7 +1,13 @@
 form
-	cursor:			pointer
 	width:			100%
 	
+	&[onclick]
+		cursor:			pointer
+
+	&.btn
+		border:				1px solid
+		padding:			0.2em 0.5em 0.18em
+		
 	textarea, input[type="text"], input[type="password"]
 		width:				100%
 		font-family:	inherit

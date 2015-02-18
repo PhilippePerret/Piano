@@ -200,7 +200,7 @@ class Fichier
       end
       
       if tloc != tdis && !options[:no_button]
-        mess << (button_download + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + button_upload).in_div
+        mess << (button_download + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + button_upload).in_div(class: 'small right', style:'margin-top:1em')
       end
     else
       if tloc == tdis

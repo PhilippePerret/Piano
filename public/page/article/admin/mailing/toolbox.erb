@@ -1,0 +1,20 @@
+<% 
+##
+## Boite à outil de la section administration Mailing-list
+##
+%>
+<fieldset id="boite_a_outils">
+  <legend onclick="$('div#mailing_toolbox').toggle()">Boite à outils</legend>
+  <div id="mailing_toolbox" style="display:none">
+    <%= bouton_operation "Voir synchro", 'show_synchro' %>
+  </div>
+  
+</fieldset>
+<%
+##
+## Si un outil est défini (par un bouton opération ci-dessus), on l'affiche
+##
+unless App::Mailing::outil.nil?
+%>
+  <%= App::Mailing::outil %>
+<% end %>

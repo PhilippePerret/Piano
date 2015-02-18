@@ -5,6 +5,7 @@
 * [Lien vers un article](#lien_vers_un_article)
 * [Créer un nouveau dossier article](#creer_nouveau_dossier_article)
 * [Méthodes “raccourcis” pour les vues](#methode_raccourcis)
+* [Cotes de l'article](#cotes_de_larticle)
 
 
 
@@ -70,12 +71,10 @@ Mettre les options en troisième paramètre.
 ##Créer un nouveau dossier article
 
 * Créer le dossier dans `./public/page/article/`
-* Créer le fichier `_body_.erb` dans ce dossier avec le code minimum suivant&nbsp;:
+* Créer le fichier `_body_.erb` dans ce dossier avec le code minimum suivant qui créera une page conforme à toutes les autres, avec tous les outils nécessaires (liens vers tables des matières, commentaires, formulaire de vote, etc.) &nbsp;:
 
-      <h1>TITRE DE CE DOSSIER</h1>
-      <%= link_to_tdm %>
-      <%= article.view %>
-      <%= link_to_tdm %>
+      <%= article.body_content "<titre section>" %>
+
 * Créer le fichier `_tdm_.erb` qui va contenir la table des matières du dossier d'articles. Dans ce fichier, il suffit de coller&nbsp;:
 
     <%=
@@ -98,7 +97,6 @@ Mettre les options en troisième paramètre.
 cf. le fichier "Article_redaction.md"
 
 
-* [Cotes de l'article](#cotes_de_larticle)
 <a name='cotes_de_larticle'></a>
 ##Cotes de l'article
 
@@ -134,5 +132,5 @@ En valeur est retourné un `Hash` qui définit&nbsp;:
       c:      {Fixnum} La note de clareté de 0 à 4 attribuée par l'user
       n:      {Fixnum} Le niveau en théorie de l'user, de 0 à 4
       at:     {Fixnum} Timestamp de la date de la cote
-      u:      {Fixnum} UID absolu de l'user (retourné par <user>.uid)
+      u:      {Fixnum} UID absolu du Reader (retourné par <user>.uid)
     }

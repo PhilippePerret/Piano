@@ -20,6 +20,29 @@ class App
   end
   
   ##
+  #
+  # Pour insérer un bouton lançant une opération
+  # cf. RefBook > Article_redaction.md
+  #
+  # Alias: def bouton_operation
+  def button_operation button_name, operation, options = nil
+    options ||= {}
+    art = options.delete(:article) || article
+    btn_class = ['btn_ope']
+    btn_class << options[:btn_class] if options.has_key? :btn_class
+    
+    form_class = ['alink btn']
+    form_class << options[:form_class] if options.has_key? :form_class
+    
+    f = ""
+    f << art.idpath.in_hidden(name: 'a')
+    f << operation.in_hidden(name: 'operation')
+    f << button_name.in_span( class: btn_class.join(' ') )
+    f.in_form onclick: "this.submit()", class: form_class.join(' '), id: options[:form_id]
+  end
+  alias :bouton_operation :button_operation
+  
+  ##
   # Pour insérer un bouton "Suivant"
   #
   # Par défaut, c'est un bouton qui porte le titre "Suivant" et s'insert

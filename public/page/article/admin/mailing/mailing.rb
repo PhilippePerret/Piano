@@ -11,111 +11,24 @@ class App
     class << self
       
       ##
-      #
-      # @return le code de tous les membres
-      #
-      #
-      def show_membres
-        raise "Inaccessible en ONLINE" if online?
-        @all_mails = {}
-        all_li = []
-        User::each do |user|
-          htime = Time.at(user.created_at).strftime("%d %m %Y - %H:%M")
-          cbid = "cb-#{user.id}-membre"
-          all_li << (
-            "&nbsp;&nbsp;#{user.pseudo} - #{user.mail} (#{htime})".in_checkbox(id: cbid, name: cbid, class: 'membre')
-          ).in_li
-          @all_mails.merge! user.mail => true
-        end
-        all_li.join("\n").in_ul(id: 'membres', style: "list-style:none;")
-      end
+      ## Outil à afficher dans la page
       ##
+      attr_reader :outil
+      
+      # ---------------------------------------------------------------------
       #
-      # Procédure qui affiche tous les followers
+      #   Méthodes opérations
       #
-      def show_followers
-        raise "Inaccessible en ONLINE" if online?
-        followers.collect do |id, duser|
-          next if @all_mails.has_key? duser[:mail]
-          htime = Time.at(duser[:created_at]).strftime("%d %m %Y - %H:%M")
-          cbid = "cb-#{id}-follower"
-          (
-            "&nbsp;&nbsp;#{duser[:pseudo]} - #{duser[:mail]} (#{htime})".in_checkbox(id: cbid, name: cbid, class: 'follower')
-          ).in_li
-        end.join("\n").in_ul(id: 'followers', style: "list-style:none;")
-      end
+      # ---------------------------------------------------------------------
       
       ##
       #
-      # Procédure qui retourne les données de tous les followers
+      # Opération qui affiche l'état de la synchro et permet d'uploader
+      # ou de downloader les fichiers.
       #
-      def followers
-        raise "Inaccessible en ONLINE" if online?
-        @followers ||= begin
-          download_pstore_if_needed
-          h = {}
-          PStore::new(pstore_followers).transaction do |ps|
-            keys = ps.roots.reject{|e| e == :last_id}
-            keys.each do |key|
-              h.merge! key => ps[key]
-            end
-          end
-          h
-        end
-      end
-      
-      # ##
-      # #
-      # # @return TRUE si le follower de mail +umail+ existe
-      # #
-      # def follower_exists? umail
-      #   PStore::new(pstore_followers).transaction do |ps|
-      #     ps.roots.include? umail
-      #   end
-      # end
-      
-      ##
-      #
-      # @return un follower d'après son mail
-      #
-      # Retourne NIL si le follower n'existe pas
-      #
-      def follower umail
-        PStore::new(pstore_followers).transaction do |ps|
-          ps.fetch(umail, nil)
-        end
-      end
-      
-      ##
-      #
-      # Retourne le message pré-formaté pour annoncer un
-      # nouvel article.
-      #
-      # Note : la procédure vérifie aussi que l'article se trouve
-      # bien à jour sur le site
-      #
-      #
-      def message_new_article
-        art = App::Article::new( param('article_id').to_i )
-        fichier = Fichier::new( art.fullpath )
-        unless fichier.uptodate?
-          fichier.upload
-          flash "L'article “#{art.titre}” a été actualisé online."
-        end
-        flash "Penser à <ol><li>indiquer que l'article n'est plus en projet dans la section administration</li><li>Enlever le “true” dans la table des matières du dossier contenant l'article.</li></ol>"
-        <<-HTML
-Bonjour <%= pseudo %>,
-
-J'ai le plaisir de vous annoncer la publication d'un nouvel article&nbsp;:
-
-<%= link_to_article(#{art.id}) %>
-
-Bonne lecture à vous&nbsp;!
-
-Pianistiquement vôtre,
-
-LCP
-        HTML
+      def exec_show_synchro
+        fic = Fichier::new app.pstore_followers
+        @outil = fic.fieldset_synchro :no_check => true
       end
       
       ##
@@ -299,8 +212,113 @@ LCP
         bt = e.backtrace.join("\n")
         debug "### ERREUR : #{err_mess}\n\n#{bt}"
       end
-      
+ 
       # ---------------------------------------------------------------------
+      #
+      #   Méthode d'helper
+      #
+      # ---------------------------------------------------------------------
+      ##
+      #
+      # @return le code de tous les membres
+      #
+      #
+      def show_membres
+        raise "Inaccessible en ONLINE" if online?
+        @all_mails = {}
+        all_li = []
+        User::each do |user|
+          htime = Time.at(user.created_at).strftime("%d %m %Y - %H:%M")
+          cbid = "cb-#{user.id}-membre"
+          all_li << (
+            "&nbsp;&nbsp;#{user.pseudo} - #{user.mail} (#{htime})".in_checkbox(id: cbid, name: cbid, class: 'membre')
+          ).in_li
+          @all_mails.merge! user.mail => true
+        end
+        all_li.join("\n").in_ul(id: 'membres', style: "list-style:none;")
+      end
+      ##
+      #
+      # Procédure qui affiche tous les followers
+      #
+      def show_followers
+        raise "Inaccessible en ONLINE" if online?
+        followers.collect do |id, duser|
+          next if @all_mails.has_key? duser[:mail]
+          htime = Time.at(duser[:created_at]).strftime("%d %m %Y - %H:%M")
+          cbid = "cb-#{id}-follower"
+          (
+            "&nbsp;&nbsp;#{duser[:pseudo]} - #{duser[:mail]} (#{htime})".in_checkbox(id: cbid, name: cbid, class: 'follower')
+          ).in_li
+        end.join("\n").in_ul(id: 'followers', style: "list-style:none;")
+      end
+      
+      ##
+      #
+      # Procédure qui retourne les données de tous les followers
+      #
+      def followers
+        raise "Inaccessible en ONLINE" if online?
+        @followers ||= begin
+          download_pstore_if_needed
+          h = {}
+          PStore::new(pstore_followers).transaction do |ps|
+            keys = ps.roots.reject{|e| e == :last_id}
+            keys.each do |key|
+              h.merge! key => ps[key]
+            end
+          end
+          h
+        end
+      end
+            
+      ##
+      #
+      # @return un follower d'après son mail
+      #
+      # Retourne NIL si le follower n'existe pas
+      #
+      def follower umail
+        PStore::new(pstore_followers).transaction do |ps|
+          ps.fetch(umail, nil)
+        end
+      end
+      
+      ##
+      #
+      # Retourne le message pré-formaté pour annoncer un
+      # nouvel article.
+      #
+      # Note : la procédure vérifie aussi que l'article se trouve
+      # bien à jour sur le site
+      #
+      #
+      def message_new_article
+        art = App::Article::new( param('article_id').to_i )
+        fichier = Fichier::new( art.fullpath )
+        unless fichier.uptodate?
+          fichier.upload
+          flash "L'article “#{art.titre}” a été actualisé online."
+        end
+        flash "Penser à <ol><li>indiquer que l'article n'est plus en projet dans la section administration</li><li>Enlever le “true” dans la table des matières du dossier contenant l'article.</li></ol>"
+        <<-HTML
+Bonjour <%= pseudo %>,
+
+J'ai le plaisir de vous annoncer la publication d'un nouvel article&nbsp;:
+
+<%= link_to_article(#{art.id}) %>
+
+Bonne lecture à vous&nbsp;!
+
+Pianistiquement vôtre,
+
+LCP
+        HTML
+      end
+      
+     
+      # ---------------------------------------------------------------------
+      
       
       ##
       #
@@ -308,13 +326,16 @@ LCP
       #
       def download_pstore_if_needed
         return false if pstore_uptodate?
+        now = Time.now.to_i
         `scp piano@ssh.alwaysdata.com:www/#{relpath_pstore} ./#{relpath_pstore}`
-        set_last_time :download_pstore_followers
+        set_last_time :download_pstore_followers, now
         return true
       end
 
       def upload_pstore
+        now = Time.now.to_i
         `scp ./#{relpath_pstore} piano@ssh.alwaysdata.com:www/#{relpath_pstore}`
+        set_last_time :upload_pstore_followers, now
       end
       
       ##
