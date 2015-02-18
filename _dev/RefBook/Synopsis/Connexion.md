@@ -69,6 +69,10 @@ Un `user connu` signifie que&nbsp;:
         n'a rien à voir avec lui, il doit en déduire ce qui se passe.
       Le site NE DOIT PAS MODIFIER LES POINTEURS, ce qui associerait l'autre
       reader au membre.
+      EN FAIT, LE PROBLÈME EST RÉGLÉ MAINTENANT AVEC L'UTILISATION D'UN PSTORE
+      UNIQUE POUR LA SESSION : Une fois que l'user est identifié, le pstore est
+      associé au membre, et plus aucune trace de sa connexion depuis un autre
+      ordinateur.
       
 
 <a name='exemple_particulier_deux_users_meme_remote_ip'></a>

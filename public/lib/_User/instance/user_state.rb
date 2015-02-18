@@ -7,6 +7,7 @@ class User
   #
   # ---------------------------------------------------------------------
  
+
   ##
   #
   # Return TRUE si l'user courant est "trustable", c'est-à-dire
@@ -28,8 +29,10 @@ class User
   #
   def membre?
     return false if false == @is_trustable || id.nil?
-    PStore::new(self.class.pstore).transaction do |ps|
-      ps.fetch(id, nil) != nil
+    @is_membre ||= begin
+      PStore::new(self.class.pstore).transaction do |ps|
+        ps.fetch(id, nil) != nil
+      end
     end
   end
   
@@ -39,8 +42,10 @@ class User
   #
   def follower?
     return false if false == @is_trustable || @mail.nil?
-    PStore::new(app.pstore_followers).transaction do |ps|
-      ps.roots.include? mail
+    @is_follower ||= begin
+      PStore::new(app.pstore_followers).transaction do |ps|
+        ps.roots.include? mail
+      end
     end
   end
   
@@ -67,10 +72,6 @@ class User
   def can_submit_subject?
     return false unless cu.membre?
     return (grade_as_level & User::LEVEL_SUGGEST_IDEAS) > 0
-  end
-  
-  def grade_as_level
-    User::GRADES[grade][:level]
   end
   
 end

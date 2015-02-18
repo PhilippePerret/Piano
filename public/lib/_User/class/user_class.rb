@@ -92,26 +92,79 @@ class User
     # sa session.
     #
     def retrieve_current
-      unless app.session['user_id'].to_s == ""
+      
+      debug "[retrieve_current]"
+      debug "app.session['user_id'] : #{app.session['user_id'].inspect}"
+      debug "app.session['follower_mail'] : #{app.session['follower_mail'].inspect}"
+      debug "app.session['reader_uid'] : #{app.session['reader_uid'].inspect}"
+      debug "app.session['session_id'] : #{app.session['session_id'].inspect}"
+      
+      if app.session['user_id'].to_s != ""
+        debug "-> User identifié"
+        ##
+        ## Ce n'est pas la première connexion de cette
+        ## session
+        ##
         user_id = app.session['user_id'].to_i
-        u = User::get(user_id)
+        u     = User::get user_id
+        User::current = u
+        u.uid = app.session['reader_uid']
         if u.get(:session_id) == app.session.id
           app.session['user_id'] = user_id
           u.instance_variable_set('@is_identified', true)
         end
+      elsif app.session['follower_mail'].to_s != ""
+        debug "-> Follower reconnu"
+        u.uid = app.session['reader_uid']
       else
         u = User::new
+        User::current = u # nécessaire pour define_uid
+        if app.session['session_id'].to_s != ""
+          debug "-> Rechargement simple reader"
+          ##
+          ## Ce n'est pas la première connexion de cette
+          ## session
+          ##
+          u.uid = app.session['reader_uid']
+        else
+          debug "-> Toute première connexion"
+          ##
+          ## C'est la toute première connexion de cette
+          ## session
+          ##
+         
+          ##
+          ## On définit l'UID du visiteur seulement quand il
+          ## arrive sur le site.
+          ##
+          u.define_uid
+          
+          ##
+          ## On met l'ID de la session en session
+          ##
+          app.session['session_id'] = app.session.id
+          
+          ##
+          ## On enregistre les données de connexion
+          ##
+          u.store( 
+            connexion:      Time.now.to_i,
+            remote_ip:      app.cgi.remote_addr,
+            trustable:      app.cgi.remote_addr.to_s != "",
+            reader_uid:     u.uid,
+            user_type:      nil,
+            membre_id:      nil,
+            follower_mail:  nil,
+            reader_uid:     nil
+            )
+        end
       end
-      User::current = u
+      
       ##
-      ## On définit l'UID, peut-être en le récupérant dans
-      ## la session
-      ##
-      u.define_uid
-      ##
-      ## On indique la date de dernière connexion
+      ## On store la date de dernière connexion
       ##
       u.set_last_connexion
+      debug "[/retrieve_current]"
     end
     
     ##

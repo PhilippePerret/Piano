@@ -15,8 +15,8 @@ begin
   app.traite_ticket_if_any if param('ti').to_s != "" && param('tp').to_s != ""
   
   ##
-  ## On essaie de reconnaitre le visiteur courant s'il
-  ## est loggué
+  ## On récupère l'user courant ou on le crée si c'est une
+  ## tout première connexion.
   ##
   User::retrieve_current
   

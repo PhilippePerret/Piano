@@ -8,80 +8,73 @@ class User
   
   ##
   #
+  # = main =
+  #
+  # Enregistre des valeurs dans le pstore readers.pstore
+  #
+  # Noter qu'en général, il vaut mieux enregistrer dans le
+  # pstore provisoire de l'user. Mais certaines valeurs, comme
+  # par exemple le vote pour l'ordre des articles ou les
+  # articles déjà notés nécessitent d'avoir une "vraie" valeur
+  #
+  def store_reader hdata
+    return nil unless trustable?
+    PStore::new(app.pstore_readers).transaction do |ps|
+      hdata.each { |k, v| ps[uid][k] = v }
+    end
+  end
+  
+  ##
+  #
+  # = main = 
+  #
+  # Retourne une valeur se trouvant dans le pstore
+  # readers.pstore, en se servant de l'UID de l'user
+  #
+  def destore_reader key
+    return nil unless trustable?
+    PStore::new(app.pstore_readers).transaction do |ps|
+      ps[uid][key]
+    end
+  end
+  
+  ##
+  #
   # Retourne les données de l'User en tant que lecteur, c'est-à-dire
   # membre, follower ou même simple user trustable
   #
   def data_reader
     return nil unless trustable?
     @data_reader ||= begin
-      d = PStore::new(app.pstore_readers).transaction { |ps| ps.fetch uid, nil }
-      if d.nil?
-        create_as_reader
-        d = PStore::new(app.pstore_readers).transaction { |ps| ps.fetch uid, nil }
-      end
-      d
+      PStore::new(app.pstore_readers).transaction { |ps| ps.fetch uid, nil }
     end
   end
-  
-  ##
-  #
-  # Définit des données de lecteur
-  #
-  def set_as_reader hdata
-    return unless trustable?
-    PStore::new(app.pstore_readers).transaction do |ps|
-      hdata.each { |k,v| ps[uid][k] = v }
-    end
-  end
-  alias :set_data_reader :set_as_reader
-  
+    
   ##
   #
   # Crée l'user comme lecteur et retourne son UID
   #
+  # Noter que la méthode n'est appelée que lors de la
+  # toute première connexion de SESSION de l'user.
+  # Quel que soit l'utiliser, un reader est créé, qui
+  # pourra ensuite être détruit (par cron) si on le
+  # reconnait comme user connu.
+  #
   def create_as_reader
     return nil unless trustable?
-    
-    is_membre   = true == membre?
-    is_follower = true == follower?
-    
     ##
-    ## ID qui sera consigné (id membre, mail follower ou nil)
+    ## Définir un nouvel UID de lecteur
     ##
-    id_intbl = case true
-    when is_membre    then id
-    when is_follower  then mail
-    else nil
-    end
-  
-    ##
-    ## Type du lecteur
-    ##
-    type_intbl = case true
-    when is_membre    then :membre
-    when is_follower  then :follower
-    else nil
-    end
-    
-    new_uid   = @uid # il peut être défini, en cas d'erreur
+    new_uid = nil
     PStore::new(app.pstore_readers).transaction do |ps|
       if new_uid.nil?
         new_uid = ps.fetch(:last_uid, 0) + 1 
         ps[:last_uid] = new_uid
       end
-      
       ##
       ## Données enregistrées comme lecteur
-      ## 
-      ## Note : elle pourront être modifiées lorsque le simple user
-      ## change de statut (-> follower -> membre)
       ##
-      @uid = new_uid
-      ps[new_uid] = default_data.merge(
-        type:       type_intbl,
-        membre:     is_membre,
-        follower:   is_follower
-      )
+      ps[new_uid] = default_data.merge(uid: new_uid)
     end
     
     return new_uid
@@ -93,9 +86,9 @@ class User
   def default_data
     now = Time.now.to_i
     {
-      uid:            @uid,
-      type:           nil,        # :membre, :follower ou nil
-      id:             nil,     # id (membre) mail (follower) ou nil
+      uid:            nil,
+      type:           nil,      # :membre, :follower ou nil
+      id:             nil,      # id (membre) mail (follower) ou nil
       membre:         false,
       follower:       false,
       last_connexion: now,
@@ -105,21 +98,34 @@ class User
       created_at:     now
     }
   end
+  
   ##
   #
-  # Enregistre les pointeurs vers l'UID après l'avoir déterminé
+  # Retourne l'UID reader vers lequel pointe l'IP de l'user
+  # ou NIL si cet IP est inconnu
   #
-  def create_pointeurs
+  # Note: Cette méthode n'est appelée qu'à la toute première
+  # connexion (début session) de l'user
+  #
+  def get_uid_via_pointeur_ip
     return nil unless trustable?
-    raise "@uid devrait être défini pour créer les pointeurs…" if uid.nil?
-    is_membre   = true == membre?
-    is_follower = true == follower?
-    session_id  = app.session.id
     PStore::new(app.pstore_readers_handlers).transaction do |ps|
-      ps[remote_ip]   = uid
-      ps[session_id]  = uid unless session_id.nil? # tests
-      ps[id]          = uid if is_membre
-      ps[mail]        = uid if is_membre || is_follower
+      ps.fetch( remote_ip, nil)
+    end
+  end
+  
+  ##
+  #
+  # Enregistre les pointeurs IP -> UID
+  #
+  # Note : la méthode n'est appelée que si le pointeur IP n'a
+  # pas été trouvé.
+  #
+  def create_pointeur_ip
+    return nil unless trustable?
+    PStore::new(app.pstore_readers_handlers).transaction do |ps|
+      ps[remote_ip] = uid
+      debug "Nouveau pointeur #{remote_ip} (remote_ip) -> #{uid} (uid)"
     end
   end
  
@@ -132,6 +138,8 @@ class User
   # dans les données lecteurs, il faut actualiser aussi le pointeur 
   # (qui porte en clé la dernière session de l'user) et détruire
   # l'ancien pointeur session-id
+  #
+  # N'EST PLUS APPELÉE POUR LE MOMENT
   #
   def update_session_id_if_needed
     ##
@@ -185,6 +193,9 @@ class User
   # Note: la méthode est le plus naturelle appelée par un
   # ticket appelé par un lien dans le mail
   #
+  # Note : On ne détruit pas son pointeur IP, pour garder
+  # sa donnée reader
+  #    
   def unsubscribe
     debug "-> unsubscribe"
     
@@ -197,27 +208,6 @@ class User
         debug "= Suppression de table des followers OK"
       end
     end
-    
-    ##
-    ## Destruction dans la table des pointeurs de lecteurs
-    ##
-    session_id = app.session.id
-    PStore::new(app.pstore_readers_handlers).transaction do |ps|
-      unless ps.fetch(remote_ip, :unfound) == :unfound
-        ps.delete remote_ip
-        debug "= Suppression de pointeur remot_ip"
-      end
-      unless ps.fetch(mail, :unfound) == :unfound
-        ps.delete mail
-        debug "= Suppression de pointeur mail"
-      end
-      unless ps.fetch(session_id, :unfound) == :unfound
-        ps.delete session_id
-        debug "= Suppression de pointeur session-id"
-      end
-    end
-    debug "= Fin de suppression des pointeurs"
-    
     
     flash "Votre désinscription a bien été prise en compte. Désolé de ne plus vous compter parmi nous."
   end

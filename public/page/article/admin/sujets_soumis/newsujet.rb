@@ -42,7 +42,7 @@ class App
         ##
         ## On ré-initiliase la date de vote de l'user
         ##
-        submiter.set_as_reader( :last_vote => nil )
+        submiter.store_reader( :last_vote => nil )
         
         flash "Sujet validé. Le submitter a été prévenu et sa date de vote a été ré-initialisée."
       end

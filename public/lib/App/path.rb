@@ -55,6 +55,11 @@ class App
   #
   # ---------------------------------------------------------------------
 
+  # Folder contenant les pstore-sessions provisoires
+  def folder_pstore_session
+    @folder_pstore_session ||= File.join(folder_tmp, 'pstore_session')
+  end
+
   # Sub-sub
   def folder_ticket
     @folder_ticket ||= File.join(folder_data, 'ticket')
@@ -80,6 +85,9 @@ class App
   end
   def folder_data
     @folder_data ||= File.join(folder, 'data')
+  end
+  def folder_tmp
+    @folder_tmp ||= File.join(folder, 'tmp')
   end
   # Main
   def folder

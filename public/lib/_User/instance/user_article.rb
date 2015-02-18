@@ -12,11 +12,7 @@ class User
   # l'user
   #
   def articles_noted
-    @articles_noted ||= begin
-      PStore::new(app.pstore_readers).transaction do |ps|
-        ps[uid][:articles_noted]
-      end
-    end
+    @articles_noted ||= destore_reader( :articles_noted )
   end
   
   ##
@@ -25,10 +21,9 @@ class User
   #
   def add_article_noted art_id
     return unless trustable?
-    PStore::new(app.pstore_readers).transaction do |ps|
-      ps[uid][:articles_noted] << art_id
-      @articles_noted = ps[uid][:articles_noted]
-    end
+    @articles_noted = destore_reader(:articles_noted)
+    @articles_noted << art_id
+    store_reader :articles_noted => @articles_noted
   end
   
   ##
@@ -55,9 +50,7 @@ class User
   # Retourne la date de dernier vote
   #
   def last_time_vote
-    @last_time_vote ||= begin
-      data_reader[:last_vote]
-    end
+    @last_time_vote ||= destore_reader(:last_vote)
   end
   
   ##
@@ -65,7 +58,7 @@ class User
   # Définit la dernière date de vote du reader
   #
   def set_last_time_vote
-    set_data_reader :last_vote => Time.now.to_i
+    store_reader :last_vote => Time.now.to_i
   end
   
 end

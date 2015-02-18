@@ -1,19 +1,12 @@
 # encoding: UTF-8
+=begin
+
+Noter que ces méthodes ne sont utilisables que pour un user reconnu
+comme membre ou comme follower.
+
+=end
 require 'digest/md5'
 class User
-     
-  ##
-  #
-  # Return l'UID de l'user, quel qu'il soit. Mais il faut utiliser
-  # seulement la méthode-propriété `uid' qui créera l'user s'il
-  # n'existe pas encore.
-  #
-  def get_uid_with uref
-    return nil unless trustable?
-    PStore::new(app.pstore_readers_handlers).transaction do |ps|
-      ps.fetch(uref, nil)
-    end
-  end
   
   ##
   #
@@ -26,7 +19,7 @@ class User
   
   ##
   #
-  # Définit des données du membre
+  # Définit des données du membre (dans le pstore membres.pstore)
   #
   #
   def set hdata
@@ -56,6 +49,15 @@ class User
   def cpassword;    @cpassword    ||= data[:cpassword]    end
   def updated_at;   @updated_at   ||= data[:updated_at]   end
   def created_at;   @created_at   ||= data[:created_at]   end
+  
+  ##
+  #
+  # Retourne le grade comme un nombre (bit)
+  # Cf. user_constantes.rb pour les valeurs
+  #
+  def grade_as_level
+    User::GRADES[grade][:level]
+  end
   
   
   ##
