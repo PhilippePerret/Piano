@@ -134,7 +134,6 @@ class App
     # path fourni.
     #
     def transform_to_article
-      debug "-> transform_to_article"
       raise NewSujetError, "Il faut définir le path…" if path.to_s == ""
       raise NewSujetError, "Un article de même nom existe…" if File.exist? path
 
@@ -150,7 +149,10 @@ class App
         ## Si l'article a été créé, on peut détruire ce sujet
         ##
         remove
-        flash "L'article a été créé et le sujet détruit."
+        ##
+        ## Message de confirmation
+        ##
+        flash "L'article a été créé et le sujet détruit. L'article est affiché, vous pouvez <b>utiliser le lien “[edit]” pour le modifier</b>. Il faudra également penser à le mettre dans une table des matières pour qu'il soit accessible, et une annonce pourra être faite aux followers."
         redirect_to path
       else
         error "Le fichier n'a pas pu être créé… Impossible de trouver le fichier."

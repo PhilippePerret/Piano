@@ -1,1 +1,1 @@
-Mon blog piano.
+Le blog piano du <a href="http://piano.alwaysdata.net" style="font-weight:bold;font-variante:small-caps;">Cercle pianistique</a>.

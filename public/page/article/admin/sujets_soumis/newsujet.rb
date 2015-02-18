@@ -44,7 +44,7 @@ class App
         ##
         submiter.set_as_reader( :last_vote => nil )
         
-        flash "Sujet validé. Le submitter a été prévenu."
+        flash "Sujet validé. Le submitter a été prévenu et sa date de vote a été ré-initialisée."
       end
       
       def invalider
@@ -63,7 +63,7 @@ class App
           ## Il faut valider l'article si ça n'est pas encore
           ## fait
           ##
-          self.class.valider unless sujet.valided
+          valider unless sujet.valided
           ##
           ## On peut transformer le sujet en article
           ##

@@ -125,13 +125,19 @@ class App
   ##
   #
   # Retourne un lien textmate pour éditer l'article courant
+  # ou l'article ({App::Article}) fourni en argument.
   #
-  #
-  def link_offline_to_edit_article
+  def link_offline_to_edit_article art = nil, titre = nil
     return "" if online?
-    href  = "txmt://open/?url=file://#{article.fullpath}"
-    lk    = "<a href='#{href}'>[edit]</a>"
+    lk = link_textmate art, titre
     "<div class='right small'>#{lk}</div>"
+  end
+  
+  def link_textmate art = nil, titre = nil
+    art     ||= article
+    titre   ||= "[edit]"
+    href  = "txmt://open/?url=file://#{art.fullpath}"
+    "<a href='#{href}'>#{titre}</a>"
   end
   
 end

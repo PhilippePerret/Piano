@@ -1,6 +1,10 @@
 <h2>Soumettre un sujet d'article</h2>
 
-
+<% if offline? %>
+<p class='warning small'>
+Pour soumettre un nouveau sujet, il vaut mieux se trouver online. Sinon, on risque de perdre des sujets fournis. Ou alors, synchroniser les fichiers distant et local et les re-synchroniser tout de suite après l'ajout du nouveau sujet.
+</p>
+<% end %>
 <% 
 if cu.membre?
 %>
@@ -13,7 +17,7 @@ if cu.membre?
     ##
     App::NewSujet::send(param(:operation).to_sym) if param(:operation).to_s != ""
     %>
-    <%= app.link_ancre "Sujets déjà enregistrés", 'sujets_saved' %>
+    <%= app.link_ancre( "Liste des sujets déjà enregistrés", 'sujets_saved').in_div(class: 'right') %>
     <% 
     ##
     ## Formulaire pour soumettre un sujet

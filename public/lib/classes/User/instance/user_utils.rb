@@ -109,7 +109,9 @@ class User
     ##
     modified = false
     PStore::new(app.pstore_readers).transaction do |ps|
-      dlec = ps[uid]
+      dlec = ps.fetch( uid, nil )
+      ps[uid] = dlec = default_data if dlec.nil?
+
       unless dlec[:type] == :membre
         ps[uid][:type] = :membre
         debug "= :type du membre mis à :membre dans les data lecteur"

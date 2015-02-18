@@ -8,6 +8,10 @@ Méthodes d'instance pour l'état de l'article
 class App
   class Article
     
+    def exist?
+      File.exist? fullpath
+    end
+    
     ##
     #
     # @return TRUE si c'est un article administrateur

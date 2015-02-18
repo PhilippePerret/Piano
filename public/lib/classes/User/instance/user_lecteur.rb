@@ -76,22 +76,34 @@ class User
       ## Note : elle pourront être modifiées lorsque le simple user
       ## change de statut (-> follower -> membre)
       ##
-      now = Time.now.to_i
-      ps[new_uid] = {
-        uid:            new_uid,
-        type:           type_intbl,   # :membre, :follower ou nil
-        id:             id_intbl,     # id (membre) mail (follower) ou nil
-        membre:         is_membre,
-        follower:       is_follower,
-        last_connexion: now,
-        last_vote:      nil,
-        articles_noted: [],
-        session_id:     app.session.id,
-        created_at:     now
-      }
+      @uid = new_uid
+      ps[new_uid] = default_data.merge(
+        type:       type_intbl,
+        membre:     is_membre,
+        follower:   is_follower
+      )
     end
     
     return new_uid
+  end
+  
+  ##
+  # Données par défaut pour le reader
+  #
+  def default_data
+    now = Time.now.to_i
+    {
+      uid:            @uid,
+      type:           nil,        # :membre, :follower ou nil
+      id:             nil,     # id (membre) mail (follower) ou nil
+      membre:         false,
+      follower:       false,
+      last_connexion: now,
+      last_vote:      nil,
+      articles_noted: [],
+      session_id:     app.session.id,
+      created_at:     now
+    }
   end
   ##
   #
