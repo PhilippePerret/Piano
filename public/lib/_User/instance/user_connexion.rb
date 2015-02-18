@@ -35,15 +35,17 @@ class User
   #     * {Hash} => valeur mise dans le hash, en valeur
   #     * {Array} => liste des clés qu'on renvoie sous forme de Hash
   #       avec les valeurs relevées
-  # +default_value+ Valeur par défaut à attribuer à toutes les clés
-  # inconnues du pstore.
+  # +default_value+ Valeur par défaut à attribuer seulement si ce n'est
+  # pas un Hash. Si c'est un Hash, les valeurs fournies restent les
+  # valeurs par défaut.
   #
   def destore hkey, default_value = nil
     case hkey
     when Hash
       PStore::new(pstore_session).transaction do |ps|
         hkey.dup.each do |k, v|
-          hkey.merge! k => ps.fetch(k, default_value)
+          value = ps.fetch(k, :unfounded_value)
+          hkey.merge!( k => value ) unless value == :unfounded_value
         end
       end
       hkey

@@ -149,13 +149,14 @@ class User
           ##
           u.store( 
             connexion:      Time.now.to_i,
+            deconnexion:    nil,
             remote_ip:      app.cgi.remote_addr,
             trustable:      app.cgi.remote_addr.to_s != "",
             reader_uid:     u.uid,
+            articles:       {}, # articles lus au cours de cette session
             user_type:      nil,
             membre_id:      nil,
-            follower_mail:  nil,
-            reader_uid:     nil
+            follower_mail:  nil
             )
         end
       end

@@ -12,6 +12,18 @@
 [TRAITEMENT DU PSTORE PROVISOIRE]
   :deconnexion    
     Cette donnée est définie si c'était un membre identifié, et qu'il s'est déconnecté.
+  :articles
+    Contient toutes les données des articles lus au cours de cette
+    session. C'est un Hash avec en clé l'ID de l'article et en 
+    valeur :
+      {
+        id:       ID article,
+        start:    Début de première lecture au cours de la session
+        end:      Fin de la dernière lecture au cours de la session
+        duree:    La durée totale de lecture
+        discontinous:   Mis à TRUE si l'article a été plusieurs fois atteint
+                        au cours de la session.
+      }
 
 * Mettre en place le fait qu'on crée un pstore propre à l'user (de nom session-id), dans lequel on enregistre tout.
   Ensuite, au cours de la nuit, on remet ces données dans les pstores généraux.
