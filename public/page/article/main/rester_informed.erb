@@ -8,20 +8,9 @@ end
 %>
 
 <% if param(:operation) == 'add_to_mailing_list' && no_error? %>
-
-  <p>
-  <%= param(:user_pseudo) %>, vous avez été ajouté à la mailing-list du <%= short_name %>.
-  </p>
-  <p>
-  Vous serez informé de tout nouvel article.
-  </p>
-  <p>
-  Un grand merci de votre intérêt&nbsp;! Et bon piano&nbsp;!
-  </p>
+  <%= app.view('article/main/rester_informed/confirmation') %>
 <% elsif cu.membre? %>
-<p class='grand_air'>
-En tant que membre du <%= short_name %>, <%= cu.pseudo %>, vous êtes automatiquement averti des nouvelles publications du site.
-</p>
+  <%= app.view('article/main/rester_informed/when_membre') %>
 <% else %>
   <p>
   Pour être informé des nouvelles publications du site “<%= name %>”, communiquez-nous votre adresse mail ci-dessous. Nous nous ferons un plaisir de vous avertir dès qu'un nouvel article paraitra.

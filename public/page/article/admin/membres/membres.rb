@@ -4,6 +4,43 @@
 Module chargé par la vue admin/membres.erb
 
 =end
+class User
+  ##
+  ## Méthode appelée après l'enregistrement de l'User quand c'est
+  ## un nouveau membre
+  ##
+  ## La méthode procède à ces opérations :
+  ##
+  ##    * Avertit le nouveau membre (cf. mail_new_membre.erb)
+  ##    * Détruit le follower si le membre était un follower
+  ##
+  ## Noter que lorsque cette méthode est appelée le nouveau membre
+  ## a été enregistré et un nouveau ID lui a été fourni
+  ##
+  def create_as_new_membre
+    ##
+    ## Envoi du mail
+    ##
+    data_mail = {
+      subject:    "Votre candidature a été accepté",
+      message:    app.view('article/admin/membres/mail_new_membre', self.bind)
+    }
+    debug "Mail envoyé : #{data_mail[:message]}"
+    send_mail data_mail
+    
+    ##
+    ## Retrait de la liste des followers (if any)
+    ##
+    if follower?
+      PStore::new(app.pstore_followers).transaction { |ps| ps.delete mail }
+      debug "User supprimé comme follower."
+    end
+    
+    flash "#{pseudo} a été créé comme nouveau membre. Voir le détail dans le débug."
+    flash "Puisque vous êtes OFFLINE, il faut tout de suite actualiser les pstores followers.pstore et membres.pstore." if offline?
+  end
+end
+
 class App
   current::require_library 'extend_subclass_app'
   class Membres < ExtensionSubclassApp

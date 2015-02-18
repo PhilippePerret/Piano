@@ -20,9 +20,13 @@ class App
   # +options+
   #   form:           Si TRUE (par défaut), retourne un lien sous forme de 
   #                   formulaire (pour adresse "invisible")
+  #   class:          Soit la classe du lien <a> ou du formulaire
   #   full_url:       Si TRUE utilise des URL complètes (pour mail par exemple)
   #   na:
   #   next_article:   Article suivant quand une opération est demandée
+  #   mail:           Si TRUE, alors on retourne un lien <a> au lieu d'un
+  #                   formulaire et des url complète. Correspond donc à
+  #                   form: true, full_url: true
   #
   #   ----------
   #   Toutes les autres valeurs seront considérées comme des données à passer
@@ -47,9 +51,15 @@ class App
       relpath_art = dshortcut[:relpath]
     end
     
-    with_full_urls  = options.delete(:full_url) || use_full_urls
+    for_mail        = options.delete(:mail)
+    with_full_urls  = options.delete(:full_url) || use_full_urls || for_mail
     as_form         = options.delete(:form) == true
+    as_form = false if for_mail
     next_article    = options.delete(:next_article) || options.delete(:na)
+    
+    class_css = ['alink']
+    class_css << options.delete(:class) if options.has_key? :class
+    class_css = class_css.join(' ')
     
     # L'URL à utiliser
     full_url = with_full_urls ? App::FULL_URL : ""
@@ -67,7 +77,7 @@ class App
       ##
       ## Construction du formulaire final
       ##
-      "<form class='alink' action='index.rb' method='POST' onclick='this.submit()'>"+
+      "<form class='#{class_css}' action='index.rb' method='POST' onclick='this.submit()'>"+
         (next_article.nil? ? "" : next_article.in_hidden(name:'na')) +
         other_hiddens + 
         relpath_art.in_hidden(name: 'article') +
@@ -92,7 +102,7 @@ class App
       ##
       ## Le lien retourné
       ##
-      "<a href=\"#{full_url}?#{qs}\">#{titre}</a>"
+      "<a href=\"#{full_url}?#{qs}\" class='#{class_css}'>#{titre}</a>"
     end
   end
   

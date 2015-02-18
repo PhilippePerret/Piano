@@ -59,5 +59,15 @@ end
   <%= row("Chaine YouTube", user.chaine_yt.to_s.in_input_text(name: 'user_chaine_yt', placeholder: 'Chaine YouTube')) %>
   <%= row("Site perso",     user.site.to_s.in_input_text(name: 'user_site', placeholder: 'Site')) %>
   <%= row("Description",    user.description.in_textarea(name: 'user_description', placeholder: 'Description', style: "height:200px;")) %>
-  <%= row("", "Enregistrer".in_submit, {class: 'buttons'}) %>
+
+  <% 
+  if edition_membres
+    ## Bouton pour resetter le formulaire
+    btn_reset = "Reset".in_a(class: 'btn small', onclick: "$.proxy(Membres,'reset_form')()")
+  else
+    btn_reset = ""
+  end
+  
+  %>
+  <%= row( btn_reset, "Enregistrer".in_submit, {class: 'buttons'}) %>
 </form>

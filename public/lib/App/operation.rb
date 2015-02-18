@@ -7,10 +7,15 @@ peuvent pas être gérées par les vues elles-même)
 =end
 class App
   
+  ##
+  #
+  # Exécute une opération "o" (cf. RefBook)
+  #
   def opere
     return if param('o').to_s == ""
-    require_module 'operations_o'
-    App::Operation::send( param('o').to_sym )
+    op = param('o').to_sym
+    require_module "operation_o/#{op}"
+    App::Operation::send op
   end
   
   ##

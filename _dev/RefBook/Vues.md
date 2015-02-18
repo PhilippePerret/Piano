@@ -1,6 +1,7 @@
 #Les Vues
 
 * [Chargement automatique des css, js et rb](#chargement_automatique_elements)
+* [Vues pour des mails](#vues_de_mail)
 
 Cette partie concerne les articles (qui sont des vues ERB) au niveau des fichiers.
 
@@ -27,3 +28,8 @@ Il en va de même pour les fichiers qui portent le même affixe que la vue mais 
 Mais il vaut mieux utiliser un dossier de nom correspondant à l'affixe de la vue.
 
 Note&nbsp;: Les modules ruby ne sont pas traités par ce biais, il faut obligatoirement les mettre dans un dossier au nom de l'affixe du fichier de la vue.
+
+<a name='vues_de_mail'></a>
+##Vues pour des mails
+
+Cf. le fichier RefBook > Mails.md

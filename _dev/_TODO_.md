@@ -1,9 +1,7 @@
-* Au lieu de fonctionner avec un gros module operation_o, faire un dossier et ranger les opérations à exécuter dedans. COmme ça, seule l'opération est chargée.
+* Mettre en place le fait qu'on crée un pstore propre à l'user (de nom session-id), dans lequel on enregistre tout.
+  Ensuite, au cours de la nuit, on remet ces données dans les pstores généraux.
 
-* Supprimer un membre de la mailing-list quand il était follower et qu'il
-  est devenu membre.
-  cf. une méthode create_membre
-  
-* Comment se passe le fait que deux followers partagent le même ordinateur, donc la même IP ?
-  Et un membre et un follower ?
-  S'assurer qu'il n'y ait pas de conflits et que les références ne soient pas toujours modifiées.
+* Même sans que je m'identifie, le site (local) me reconnait
+  > Il ne faut pas. Il faut me laisser en reader.
+  > Voir si c'est toujours le cas depuis que logout détruit plus de choses
+

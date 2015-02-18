@@ -1,0 +1,1 @@
+window.Membres={reset_form:function(){var e;$("form#user_edit_form > div.row *").map(function(){switch(e=$(this),e[0].tagName){case"TEXTAREA":case"INPUT":"submit"!=e.attr("type")&&e.val("")}}),$('select[name="user_grade"]').val("veilleur")}};

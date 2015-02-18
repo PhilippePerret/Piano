@@ -1,0 +1,21 @@
+<% 
+##
+## Contenu du mail envoyé à un nouveau membre
+##
+%>
+Bonjour <%= pseudo %>,
+
+J'ai le plaisir de vous annoncer que votre candidature au <%= app.short_name %> a été acceptée au grade de <%= hgrade %>&nbsp;!
+
+<i>Notez que vous pouvez connaitre les privilèges de votre grade sur la page <%= link_to_article 'main/grades', mail: true %>.</i>
+
+Vous pouvez vous identifier sur le site grâce à votre mail (<%= mail %>) et le code secret provisoire&nbsp;:
+
+<div style='text-align:center'><%= get :password %></div>
+
+Vous pouvez rejoindre <%= app.link_to "votre profil", :profil, {mail: true} %> sur le site et commencer par définir un nouveau mot de passe (code) personnel.
+
+Pianistiquement vôtre,
+
+LCP
+

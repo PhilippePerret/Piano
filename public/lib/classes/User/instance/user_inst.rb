@@ -96,7 +96,7 @@ class User
     else # si @uid est défini
       
       ##
-      ## Si l'UID en correspond pas à celui en session, on raise
+      ## Si l'UID ne correspond pas à celui en session, on raise
       ##
       if uid_session != nil && uid_session != @uid
         raise "Vous tentez de pirater le site ?"
@@ -179,10 +179,14 @@ class User
   #
   #
   def logout
-    User::current           = nil
-    set :session_id        => nil
-    app.session['user_id']  = nil
-    @is_identified          = false
+    User::current             = nil
+    set :session_id           => nil
+    app.session['user_id']    = nil
+    app.session['reader_uid'] = nil
+    @is_identified            = false
+    @uid  = nil
+    @id   = nil
+    define_uid
   end
   
   def app

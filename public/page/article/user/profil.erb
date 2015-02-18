@@ -23,8 +23,7 @@ end
 </div>
 
 <%= row( "Pseudo", cu.pseudo ) %>
-<%= row( "Grade",  cu.hgrade)  %>
-<%= row "", link_to( "Explication des grades", 'main/grades') %>
+<%= row( "Grade",  cu.hgrade + '&nbsp;&nbsp;(' + link_to( "explication des grades", 'main/grades', {class: 'small'}) + ')' )  %>
 <%= row( "Inscription", cu.created_at.as_human_date ) %>
 <%= row( "Mail", cu.mail ) %>
 <%= row( "Site", cu.site_as_link) %>

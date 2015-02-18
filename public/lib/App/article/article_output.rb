@@ -24,7 +24,7 @@ class App
       c << direct_link
       unless tdm? || en_projet?
         c << bottom_buttons
-        c << section_comments
+        c << section_comments unless article_admin?
       end
       return c
     end
@@ -69,6 +69,7 @@ class App
     # Lien vers l'article suivant
     #
     def bottom_link_to_next_article
+      return "" if article_admin?
       ne = self.next
       return "" unless ne
       p = ne.class == Hash ? ne[:path] : ne
@@ -85,6 +86,7 @@ class App
     # est trustable ou non
     #
     def links_to_ancres_evaluation
+      return "" if article_admin?
       links = []
       if cu.trustable? && cu.can_note_article?(id)
         links << link_to_ancre_noter_article

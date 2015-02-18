@@ -62,21 +62,28 @@ class User
   #
   # Méthode qui récupère les données du formulaire et les enregistre
   #
+  # La méthode est appelée aussi bien par le membre identifié pour modifier
+  # ses données que par l'administrateur pour enregistrer un nouveau membre
+  # Si c'est un nouveau membre, il faut faire un traitement particulier.
+  # Cf. la méthode create_as_new_membre dans le module 
+  # ../article/admin/membres/membres.rb
+  #
   #
   def get_and_save
     get_form_data
     check_data_or_raise
     @data = data.merge @new_data
-    debug "@data après merge : {\n"+ @data.collect{|k,v| "#{k.inspect} => #{v.inspect}"}.join("\n") +"\n}"
+    is_a_new_membre = @data[:id] == nil
     save
-    debug "New data : {\n"+ data.collect{|k,v| "#{k.inspect} => #{v.inspect}"}.join("\n") +"\n}"
+    debug "New data membre : {\n"+ data.collect{|k,v| "#{k.inspect} => #{v.inspect}"}.join("\n") +"\n}"
+    create_as_new_membre if is_a_new_membre
   rescue Exception => e
     app.error e.message
   end
   
   ##
   #
-  # Enregistre les données
+  # Enregistre les données du membre
   #
   #
   def save
@@ -101,6 +108,8 @@ class User
   ##
   #
   # Retourne toutes les données du pstore
+  # Si le membre n'existe pas encore, on retourne les données
+  # par défaut.
   #
   #
   def data
@@ -147,7 +156,7 @@ class User
   def check_data_or_raise
     h = @new_data
     errors = []
-    h[:id] = h[:id].to_i
+    h[:id] = h[:id] == "" ? nil : h[:id].to_i
     h[:pseudo] != "" || (errors <<  "Le pseudo est requis.")
     h[:mail]   != "" || (errors << "Le mail est requis.")
     new_data_check_site( :site ) || (errors << "Le site #{h[:site]} ne semble pas exister.")
