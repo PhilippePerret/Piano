@@ -39,14 +39,21 @@ class User
   ##
   #
   # Return TRUE si l'user est un follower
+  # Cf. N0002
   #
   def follower?
-    return false if false == @is_trustable || @mail.nil?
-    @is_follower ||= begin
-      PStore::new(app.pstore_followers).transaction do |ps|
-        ps.roots.include? mail
+    return false if false == @is_trustable
+    if @is_follower === nil
+      if @mail.nil?
+        # Cf. N0002
+        @is_follower = destore(:user_type) == :follower
+      else
+        PStore::new(app.pstore_followers).transaction do |ps|
+          @is_follower = ps.roots.include? mail
+        end        
       end
     end
+    @is_follower
   end
   
   ##

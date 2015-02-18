@@ -1,0 +1,43 @@
+<h2>Cron Job</h2>
+<% 
+##
+## Page permettant de jouer le cron-job depuis l'administration
+##
+App::CronAdmin::init
+%>
+
+<% 
+##
+## Si une opération est définie
+##
+if param(:operation).to_s != ""
+  App::CronAdmin::send(param(:operation).to_sym)
+end
+%>
+
+<form id="form_cron" action="index.rb" method="POST" accept-charset="utf-8">
+  <%= "admin/cron".in_hidden(name: 'a') %>
+  <%= "run_cron".in_hidden(name: 'operation') %>
+  <%= 
+    checked = param('cb_no_operation') == "on"
+    "Ne pas exécuter les opérations (voir seulement résultats)".in_checkbox(name: 'cb_no_operation', checked: checked).in_div 
+   %>
+  <%= 
+    checked = param('cb_full_infos') == "on"
+    "Infos complètes des pstores".in_checkbox(name: 'cb_full_infos', checked: checked).in_div
+   %>
+   
+   
+  <%= row("", "Lancer le cron".in_submit, {class: 'buttons'}) %>
+</form>
+
+<% 
+##
+## Si le cron a été lancé et des messages fournis
+##
+unless App::Cron::logs.nil?
+  %>
+  <pre class='black' style="white-space:pre;font-size:12pt;padding:8px;">
+    <%= App::Cron::logs.join("\n") %>
+  </pre>
+<% end %>

@@ -21,7 +21,11 @@
     ## Mail et explication
     ##
     %>
-    <% unless cu.identified? || cu.follower? %>
+    <% if cu.identified? %>
+    
+    <% elsif cu.follower? %>
+      <%= cu.destore(:follower_mail).to_s.in_hidden(name: 'user_mail') %>
+    <% else %>
       <div class='italic small'>Noter que pour laisser un commentaire vous devez impérativement être inscrit dans la mailing-list (cf. le lien ci-dessous) ou être identifié en tant que membre du cercle.</div>
       <%= row("Votre mail", param('user_mail').to_s.in_input_text(name: 'user_mail')) %>
     <% end %>
@@ -34,6 +38,6 @@
     <%= row("", "Envoyer".in_submit(class: 'btn'), {class: 'buttons'}) %>
   </form>
   <% unless cu.identified? || cu.follower? %>
-    <%= link_to "S'inscrire dans la mailing-list", :mailing %>
+    <%= link_to "S'inscrire dans la liste du Cercle", :mailing %>
   <% end %>
 </fieldset>

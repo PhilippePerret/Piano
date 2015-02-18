@@ -20,6 +20,10 @@ class User
   def store_reader hdata
     return nil unless trustable?
     PStore::new(app.pstore_readers).transaction do |ps|
+      if ps.fetch(uid, nil) == nil
+        ps[uid] = default_data.merge(uid: uid)
+        debug "= Les données reader ont dû être recréés dans le pstore reader…"
+      end
       hdata.each { |k, v| ps[uid][k] = v }
     end
   end
@@ -34,6 +38,10 @@ class User
   def destore_reader key
     return nil unless trustable?
     PStore::new(app.pstore_readers).transaction do |ps|
+      if ps.fetch(uid, nil) == nil
+        ps[uid] = default_data.merge(uid: uid)
+        debug "= Les données reader ont dû être recréés dans le pstore reader…"
+      end
       ps[uid][key]
     end
   end

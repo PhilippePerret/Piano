@@ -7,11 +7,12 @@ raise unless offline? || cu.admin?
 <%
 tdms = []
 ##
-## Les menus online
+## Les menus online et offline
 ##
 tdms += [
   ["Gestion des commentaires", 'comments'],
-  ["Consultation/édition des PStores", 'pstores']
+  ["Consultation/édition des PStores", 'pstores'],
+  ["Cron-job", 'cron']
 ]
 ##
 ## Les menus seulement offline

@@ -78,6 +78,33 @@ class User
   
   ##
   #
+  # Enregistre le reader courant comme follower
+  # Pour le moment, on ne le sait que lorsqu'il fournit son
+  # mail pour émettre un commentaire.
+  # On en profite pour vérifier si son IP est enregistrée, et on
+  # l'enregistre le cas échéant.
+  #
+  def store_as_follower
+    store( :follower_mail => mail, :user_type => :follower )
+    ##
+    ## On en profite pour voir si ses données de reader
+    ## indiquent qu'il est un follower
+    ##
+    data_to_set = {}
+    d = destore_reader( remote_ip: nil, id: nil, follower: nil )
+    ## On ne le fait que si l'IP n'est pas définie, ou que cet IP
+    ## enregistrée est bien celle du user courant, dans lequel cas
+    ## on est sûr qu'il s'agit de lui.
+    if d[:remote_ip].nil? || d[:remote_ip] == remote_ip
+      data_to_set.merge!(:remote_ip => remote_ip)   if d[:remote_ip].nil?
+      data_to_set.merge!(:id => mail)               if d[:id].nil?
+      data_to_set.merge!(:follower => true)         unless d[:follower]
+      store_reader data_to_set unless data_to_set.empty?
+    end
+  end
+  
+  ##
+  #
   # Le path du pstore dans lequel va être enregistré
   # toutes les transactions de l'user courant. Ce pstore
   # porte comme nom le session-id et sera détruit par un cron

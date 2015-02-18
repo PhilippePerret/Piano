@@ -16,9 +16,16 @@ class App
         unless cu.identified?
           umail = param('user_mail').to_s.strip
           raise CommentsError, "Vous devez fournir le mail de votre inscription sur la mailing-list." if umail == ""
-          u_com = User::get_by_mail umail
-          if u_com.nil?
-            raise CommentsError, "Désolé, mais je ne connais aucun follower du cercle avec l'adresse fournie."
+          u_com = User::get_as_follower umail
+          unless u_com.nil? # => détecté comme follower
+            # Cf. N0002
+            u_com.store_as_follower
+          else
+            # On essaie de le chercher comme membre
+            u_com = User::get_by_mail( umail )
+            if u_com.nil?
+              raise CommentsError, "Désolé, mais je ne connais aucun membre ni aucun follower du cercle avec l'adresse fournie."
+            end
           end
         else
           u_com = cu

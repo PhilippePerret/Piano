@@ -86,6 +86,15 @@ class User
     
     ##
     #
+    # Retourne l'UID d'user correspondant à l'IP +rip+
+    # ou nil
+    #
+    def get_uid_from_ip rip
+      PStore::new(app.pstore_ip_to_uid).transaction { |ps| ps.fetch rip, nil }
+    end
+    
+    ##
+    #
     # Essaie, à chaque chargement de page (required) de récupérer
     # l'utilisateur courant (s'il s'est identifié). Sinon, on
     # fait un user virtuel qui peut être reconnu par son IP ou
@@ -94,10 +103,10 @@ class User
     def retrieve_current
       
       debug "[retrieve_current]"
+      debug "app.session['session_id'] : #{app.session['session_id'].inspect}"
+      debug "app.session['reader_uid'] : #{app.session['reader_uid'].inspect}"
       debug "app.session['user_id'] : #{app.session['user_id'].inspect}"
       debug "app.session['follower_mail'] : #{app.session['follower_mail'].inspect}"
-      debug "app.session['reader_uid'] : #{app.session['reader_uid'].inspect}"
-      debug "app.session['session_id'] : #{app.session['session_id'].inspect}"
       
       if app.session['user_id'].to_s != ""
         debug "-> User identifié"
@@ -125,7 +134,7 @@ class User
         u.uid = app.session['reader_uid']
       else
         u = User::new
-        User::current = u # nécessaire pour define_uid
+        User::current = u
         if app.session['session_id'].to_s != ""
           debug "-> Rechargement simple reader"
           ##
@@ -133,6 +142,12 @@ class User
           ## session
           ##
           u.uid = app.session['reader_uid']
+          debug "= UID récupéré en session : #{u.uid.inspect}"
+          if u.uid.nil?
+            # Problème… encore et toujours… marre…
+            u.define_uid
+            debug "= UID redéfini (-> #{u.uid} / en session : #{app.session['reader_uid']})"
+          end
         else
           debug "-> Toute première connexion"
           ##
@@ -169,9 +184,12 @@ class User
       end
       
       ##
-      ## On store la date de dernière connexion
+      ## On store la date de dernière connexion (dans le pstore
+      ## session provisoire)
       ##
       u.set_last_connexion
+      
+      
       debug "[/retrieve_current]"
     end
     
