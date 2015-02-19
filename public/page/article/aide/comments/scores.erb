@@ -6,5 +6,357 @@
 <h2>Partitions dans les commentaires</h2>
 
 <p>
-Le site comporte une fonctionnalité unique et appropriée&nbsp;: la faculté de pouvoir être des partitions dans vos commentaires.
+Le site comporte une fonctionnalité unique et appropriée&nbsp;: la faculté de pouvoir écrire et insérer des bouts de partitions dans vos commentaires.
+</p>
+
+<ul style="list-style:none">
+  <li><%= link_to_ancre "Limitations préliminaires", 'limitations' %></li>
+  <li><%= link_to_ancre "Définir les notes", 'define_notes' %></li>
+  <li><%= link_to_ancre "Définir les hauteurs de notes", 'define_hauteurs'%></li>
+  <li><%= link_to_ancre "Définir des accords", 'define_accord' %></li>
+  <li><%= link_to_ancre "Définir la durée des notes", 'define_duree' %></li>
+  <li><%= link_to_ancre "Modifier l'octave", 'modify_octave_note' %></li>
+  <li><%= link_to_ancre "Ajouter des altérations", 'define_alterations' %></li>
+  <li><%= link_to_ancre "Définir l'armure", 'define_armure' %></li>
+  <li><%= link_to_ancre "Définir la métrique", 'define_metrique' %></li>
+  <li><%= link_to_ancre "Définir les liaisons de jeu", 'define_liaisons_jeu' %></li>
+  <li><%= link_to_ancre "Pour allez plus loin…", 'pour_aller_plus_loin' %></li>
+</ul>
+
+
+<%= ancre 'limitations' %>
+<h3>Limitations préliminaires</h3>
+
+<p>
+Cette fonctionnalité ne vise pas à être utilisée pour écrire de grands fragments de musique ou des partitions complètes. D'une part cela finirait par occuper une place considérable sur le serveur et d'autre part ça n'a pas vraiment de sens dans l'utilisation qui doit en être faite ici d'illustrer des commentaires. 
+</p>
+
+<p>
+Donc une limite de signes a été définie pour les codes musicaux, suffisamment grande pour permettre d'écrire plusieurs mesures simples mais pas trop dans le respect de ces limitations.
+</p>
+
+<%= ancre 'define_notes' %>
+<h3>Définir les notes</h3>
+
+<p>
+Vous entrez les notes <strong>en anglais</strong>. Si vous ne les connaissez pas, dites-vous simplement qu'il est toujours bon de les savoir. Avec un tout petit peu d'habitude, vous n'y penserez même plus :-).
+</p>
+<p>
+Voilà la table de correspondance&nbsp;:
+</p>
+<table border="0" cellspacing="5" cellpadding="5" class='center'>
+  <tr>
+<td>LA</td><td>SI</td><td>DO</td><td>RÉ</td><td>MI</td><td>FA</td><td>SOL</td>
+  </tr>
+  <tr>
+<td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td>
+  </tr>
+</table>
+
+<p>
+Par exemple, le code à la main droite&nbsp;:
+</p>
+<pre>c e g c</pre>
+<p>
+… produira&nbsp;:
+</p>
+<p class='center'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/c-e-g-c.png' />
+</p>
+
+<%= ancre 'define_hauteurs' %>
+<h3>Définir les hauteurs de notes</h3>
+
+<p>
+Par défaut, comme nous le voyons dans l'exemple précédente, la note est placée le plus bas possible à partir du DO ci-dessous dans la portée en SOL (main droite)&nbsp;:
+</p>
+<p class='center'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/c-reference.png' />
+</p>
+<p>
+… et à partir du FA ci-dessous dans la portée en FA (main gauche par défaut)&nbsp;:
+</p>
+<p class='center'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/f-reference.png' />
+</p>
+
+<p>
+Conformément à l'usage dans la fabuleuse application <a href="http://lilypond.org" target="_blank">Lilypond</a> (qui produit en tierce partie ces images, et donc la plupart des règles énoncées ici), la hauteur d'une note dépend toujours de la hauteur de la note précédente —&nbsp;comme pour la durée. 
+</p>
+<%= ancre 'regle_note_la_plus_proche' %>
+<p>
+La règle est la suivante&nbsp;: la note suivante est toujours placée sur la note la plus proche de la note précédente. Si on doit écrire DO - SOL, le SOL <em>en dessous</em> du DO est plus proche que le sol <em>au-dessus</em> du DO, c'est donc le SOL en dessous qui sera choisi&nbsp;:
+</p>
+
+<p class='center'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/g-sous-c.png' />
+</p>
+
+<p>
+Pour obtenir le SOL au-dessus du DO, consulter <%= link_to_ancre "le chapitre sur le changement d'octave", 'modify_octave_note' %>.
+</p>
+
+<p>
+Quand il y a ambiguïté (même intervalle), c'est la note supérieur qui est choisie. Par exemple, entre DO et FA#, il y a le même intervalle en dessous et au-dessus, c'est donc le FA# supérieur qui est choisi&nbsp;:
+</p>
+
+<p class='center'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/fd-sur-c.png' />
+</p>
+
+Pour modifier l'octave, cf. <%= link_to_ancre "Modifier l'octave", 'modify_octave_note' %>.
+
+<%= ancre 'define_alterations' %>
+<h3>Ajouter des altérations</h3>
+
+<p>
+Il est très simple de définir les altérations, puisqu'elles sont proches de la “réalité”&nbsp;:
+</p>
+
+<table border="0" cellspacing="5" cellpadding="5">
+  <colgroup>
+    <col />
+    <col class='center'>
+    <col />
+  </colgroup>
+  <tr><th>Valeur</th><th>Notation</th><th>Exemple</th></tr>
+  <tr>
+    <td>Dièse</td><td class='center'>#</td><td>c#</td>
+  </tr>
+  <tr>
+    <td>Double-dièse</td><td class='center'>x</td><td>dx</td>
+  </tr>
+  <tr>
+    <td>Bémol</td><td class='center'>b</td><td>eb (mi bémol)<br />bb (si bémol)</td>
+  </tr>
+  <tr>
+    <td>Double-bémol</td><td class='center'>bb</td><td>ab (la bémol)<br />bbb (si double-bémol)</td>
+  </tr>
+</table>
+
+<p class='small'>
+Notez, comme cela est expliqué dans la section <%= link_to_ancre "Définir l’armure", 'define_armure' %>, que même avec une armure définie, contrairement à une partition, cette armure n'affecte pas les notes que vous écrivez. Vous devez définir les altérations explicitement. On pourrait le regretter, c'est au contraire une bonne chose, parfois, de supprimer tout implicite.
+</p>
+
+<%= ancre 'define_accord' %>
+
+<p>
+Pour définir des accords, on met les notes entre le signe inférieur (“&lt;”) et le signe supérieur (“&gt;”)&nbsp;:
+</p>
+<pre>&lt;<em>les notes</em>></pre>
+
+<p>
+Le code&nbsp;:
+</p>
+
+<pre>&lt;c e g>8-. &lt;d f a>-. &lt;b d>-. &lt;g' d>-.</pre>
+
+<p>
+produira&nbsp;:
+</p>
+<p class='center'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/accords.png' />
+</p>
+
+<p class='small'>
+Plusieurs choses sont à noter à propos du code ci-dessus&nbsp;:
+</p>
+<ul style="list-style:none;" class='small'>
+  <li>D'abord, l'octave de la première note d'un accord est défini non pas par <em>la dernière note</em> de l'accord précédent, mais par <em>la première note</em> de cet accord précédent&nbsp;;</li>
+  <li>La durée de l'accord se met après la définition de l'accord, en dehors des signes &lt; et &gt;&nbsp;;</li>
+  <li>Même chose pour les modes de jeu, ici les notes piquées.</li>
+</ul>
+
+<%= ancre 'define_duree' %>
+<h3>Définir la durée des notes</h3>
+
+<p class='bold'>La durée par défaut d'une note est une noire.</p>
+
+<p>
+Pour modifier cette durée, on place <strong>après la note</strong> et <strong>après son octave</strong> un nombre indiquant cette durée.
+</p>
+
+<table border="0" cellspacing="5" cellpadding="5" class='center'>
+  <tr>
+    <th style='text-align:left;'>Valeur</th>
+    <td>Ronde</td><td>Blanche</td><td>Noire</td><td>Croche</td><td>Double-croche</td>
+  </tr>
+  <tr>
+    <th style='text-align:left;'>Nombre</th>
+    <td>1</td><td>2</td><td>4</td><td>8</td><td>16</td>
+  </tr>
+ <tr>
+   <th style='text-align:left;'>Exemple</th>
+   <td><pre>a'1</pre></td>
+   <td><pre>a'2</pre></td>
+   <td><pre>a'</pre></td>
+   <td><pre>a'8</pre></td>
+   <td><pre>a'16 a a a</pre></td>
+ </tr>
+  <tr>
+    <th style='text-align:left;'>Rendu</th>
+    <td>
+      <img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/la-ronde.png' />
+    </td>
+    <td>
+      <img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/la-blanche.png' />
+    </td>
+    <td>
+      <img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/la-noire.png' />
+    </td>
+    <td>
+      <img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/la-croche.png' />
+    </td>
+    <td>
+      <img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/la-double-croche.png' />
+    </td>
+  </tr>
+</table>
+<p>
+Etc.
+</p>
+
+<p>
+Noter que cette durée, une fois définie, <strong>affecte toutes les notes suivantes</strong>.
+</p>
+
+<p>
+On utilise, comme sur une partition, <strong>un point</strong> pour ajouter la moitié de la durée de la note. Le code&nbsp;:
+</p>
+
+
+
+
+<%= ancre 'modify_octave_note' %>
+<h3>Modifier l'octave de la note</h3>
+
+<p>
+Pour modifier l'octave de la note, on utilise des apostrophe simple pour passer à l'octave supérieure et des virgule pour passer à l'octave inférieure.
+</p>
+
+<p>
+Le code suivant à la main gauche&nbsp;:
+</p>
+
+<pre>c c c' c c, c</pre>
+
+<p>
+… produira&nbsp;:
+</p>
+
+<p class='center'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/autres-octaves.png' />
+</p>
+
+<p class='small'>
+Vous remarquerez ci-dessous comment on a fait passer le SOL au-dessus du DO, alors que “naturellement” (ie sans changement d'octave), il serait placé en dessous conformément à la <%= link_to_ancre "règle expliquée ici", 'regle_note_la_plus_proche' %>.
+</p>
+
+<%= ancre 'define_armure' %>
+<h3>Définir l'armure</h3>
+
+<p>
+L'armure se définit au tout début de l'extrait, par&nbsp;:
+</p>
+
+<pre>[armure:<em>tonalité en anglais</em>] <em>les notes</em></pre>
+
+<p>
+La note se marque toujours en capitale (“A” pour LA majeur, “Bb” pour SI bémol majeur, “C#” pour C# majeur, etc.).
+</p>
+<p>
+Par exemple, pour une tonalité de LA bémol majeur&nbsp;:
+</p>
+<pre>[armure:Ab] ab' c eb</pre>
+<p>
+… produira&nbsp;:
+</p>
+<p class='center'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/with-armure.png' />
+</p>
+
+<p class='small'>
+Noter un point très important ici&nbsp;: contrairement à une partition, <strong>l'armure n'affecte pas les notes que vous écrivez</strong>. Remarquez dans l'exemple ci-dessus que le LA est marqué bémol (“ab”), ainsi que le MI (“eb”). Dans le cas contraire, si vous oubliez les altérations, les notes seront bécarres. </p>
+<p>
+<p>
+Si nous avions écrit le code (sans les altérations)&nbsp;:
+</p>
+<pre>[armure:Ab] a' c e</pre>
+<p>
+… alors la partition produite serait&nbsp;:
+</p>
+<p class='center'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/with-armure-bad-alterations.png' />
+</p>
+<strong>Vous devez toujours écrire les notes telles qu'elles sont, quelle que soit l'armure</strong>.
+</p>
+
+<p class='small'>
+Vous devez également écrire l'armure <strong>avant</strong> la métrique —&nbsp;si vous la définissez aussi&nbsp;—, comme sur une partition.
+</p>
+
+<%= ancre 'define_metrique' %>
+<h3>Définir la métrique</h3>
+
+<p>
+La métrique s'indique comme pour l'armure et la partition&nbsp;: en début de texte entre crochet&nbsp;:
+</p>
+<pre>[metrique:<em>la métrique</em>] <em>les notes</em></pre>
+
+<p class='small'>Notez qu'il n'y a pas d'accent à “metrique” dans la balise.</p>
+<p>
+Par exemple&nbsp;:
+</p>
+
+<pre>[metrique:3/4] a b d c2 f4 a2.</pre>
+
+<p>
+Produira&nbsp;:
+</p>
+
+<p class='center'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/with-metrique.png' />
+</p>
+
+<p class='small'>
+Notez que le point à la fin du code ci-dessus, après le “a2” n'est pas un point de fin de phrase ;-) mais bien un point de durée qui allonge la durée note de la moitié de sa valeur.
+</p>
+
+<p class='small'>
+Vous devez impérativement écrire la métrique <strong>après</strong> l'armure —&nbsp;si vous la définissez aussi&nbsp;:
+</p>
+<pre>[armure:...][metrique:...] <em>notes</em></pre>
+
+<%= ancre 'define_liaisons_jeu' %>
+<h3>Définir les liaisons de jeu</h3>
+
+<p>
+C'est tellement plus beau, une partition avec des liaisons de jeu :-).
+</p>
+<p>
+Pour les indiquer dans Lilypond, on utilise les parenthèses. On pose la parenthèse ouvrante <strong>après</strong> la définition de la première note qui doit être liée et la parenthèse fermante également après la définition de la dernière note qui doit être liée.
+</p>
+<p>
+Le code&nbsp;:
+</p>
+
+<pre>c( d16\( e f g\) a8 d,) c'4</pre>
+
+<p>
+… produira le code&nbsp;:
+</p>
+
+<p class='center'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/liaisons.png' />
+</p>
+
+<p class='small'>
+Notez que pour des liaisons imbriquées —&nbsp;ici celle commençant après le premier RÉ (d16)&nbsp;— il faut ajouter un “\” avant la seconde parenthèse.
+</p>
+
+<%= ancre 'pour_aller_plus_loin' %>
+<h3>Pour aller plus loin…</h3>
+
+<p>
+Pour en apprendre plus sur la notation <a href="http://lilypond.org" target="_blank">Lilypond</a>, vous pouvez consulter <a href="http://lilypond.org/manuals.fr.html" target="_blank">sa documentation en ligne</a>.
 </p>

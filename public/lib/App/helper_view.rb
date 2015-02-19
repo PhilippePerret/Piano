@@ -195,6 +195,7 @@ class App
       titre.in_a(href: "?a=#{CGI::escape path_article}##{name}")
     end
   end
+  alias :link_to_ancre :link_ancre
   
   def signature
     "LCP"

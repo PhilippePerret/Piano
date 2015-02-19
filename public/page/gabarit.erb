@@ -12,6 +12,17 @@
     <title><%= name %> - <%= title %></title>
     <%= stylesheets %>
     <%= javascripts %>
+    <style type="text/css">
+      <% if logo_masked? %>
+        section#header{display:none;}
+      <% end %>
+      <% if titres_masked? %>
+        h1, h2 {display:none;}
+      <% end %>
+      <% if liens_tdm_masked? %>
+        div.link_to_tdm{display:none;}
+      <% end %>
+    </style>
   </head>
   <body>
     <%= view 'gabarit/header'   %>

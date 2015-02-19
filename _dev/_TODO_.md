@@ -1,6 +1,8 @@
-* rh et lh pour faire les deux mains
+* Il faut quand même attribuer un identifiant à l'image partition pour une utilisation simple dans les commentaires (sinon, on devrai prendre le path. Ou alors donner un path raccourci, depuis ./img/cp_score/).
+
+* L'AFFIXE de l'image doit être fourni par l'application, pas par l'user.
+
 * Un champ présentant la balises à copier
-  édition => pour article ()
   commentaire => balises score
   
 * Aperçu des commentaires

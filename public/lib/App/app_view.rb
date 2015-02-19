@@ -27,6 +27,16 @@ class App
     end
   end
   
+  def logo_masked?
+    titres_masked? || param('cb_mask_logo') == 'on'
+  end
+  def titres_masked?
+    param('cb_mask_titres') == 'on'
+  end
+  def liens_tdm_masked?
+    param('cb_mask_liens_tdm') == 'on'
+  end
+  
   # ---------------------------------------------------------------------
   #
   #   Class App::View
@@ -84,6 +94,9 @@ class App
     def dirname
       @dirname ||= File.dirname(path)
     end
+    
+    
+    
   end
  
 end

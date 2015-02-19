@@ -14,17 +14,51 @@
   <% end %>
   <%= row("Affixe image", param('img_affixe').to_s.in_input_text(name: 'img_affixe')) %>
   <%= row("Dans (Icare)", "./img/cp_score/" + param('img_folder').to_s.in_input_text(name: 'img_folder')) %>
+  
+  
+  <% 
+  ##
+  ## Champ de saisie des deux mains
+  ##
+  %>
   <div class='bold'>Main droite&nbsp;:</div>
-  <textarea name="img_right_hand" rows="4" style="width:100%"><%= param('img_right_hand').to_s %></textarea>
+  <textarea id="img_right_hand" name="img_right_hand" rows="2" style="width:100%" onkeypress="$.proxy(Score,'compte_signes')()"><%= param('img_right_hand').to_s %></textarea>
   <div class='bold'>Main gauche&nbsp;:</div>
-  <textarea name="img_left_hand" rows="4" style="width:100%"><%= param('img_left_hand').to_s %></textarea>
-  <div class='right'>
-  <%= "Mode débug (le dossier temporaire Icare sera conservé)".in_checkbox(name: 'cb_debug', class: 'small').in_div(class: 'fleft', style: "width:270px") %>
-  Opération : <select name="operation" id="operation" onchange="$.proxy(Score,'onchange_operation',this.value)()">
-    <option value="create_image">Créer l'image</option>
-    <option value="remove_image">Détruire l'image</option>
-  </select>
+  <textarea id="img_left_hand" name="img_left_hand" rows="2" style="width:100%" onkeypress="$.proxy(Score,'compte_signes')()"><%= param('img_left_hand').to_s %></textarea>
+  
+  <% 
+  ##
+  ## Options cachées
+  ##
+  %>
+  <%= 
+    (
+      link_to( "Mode d'emploi", 'aide/comments/scores', {form: false} ).in_div(class: 'fleft') +
+      "".in_div(class: 'fright small', id: 'signs_count') +
+      "Options".in_a(onclick: "$('div#div_options_form').toggle()")
+    ).in_div(class: 'center small') 
+  %>
+  <div id="div_options_form" style="display:none" class='small'>
+    <%= "Mode débug (le dossier temporaire Icare sera conservé)".in_checkbox(name: 'cb_debug', checked: (param('cb_debug') == 'on')).in_div %>
+    <%= "Masquer les titres".in_checkbox(name: 'cb_mask_titres', checked: titres_masked? ).in_div %>
+    <%= "Masquer les liens TDM".in_checkbox(name: 'cb_mask_liens_tdm', checked: liens_tdm_masked? ).in_div %>
   </div>
-  <%= row("", "Exécuter l'opération".in_submit(id: 'btn_exec_operation'), {class: 'buttons'}) %>
+
+  <% if Score::current != nil %>
+    <%= Score::current.as_image.in_input_text(onfocus: "this.select()", class: 'small').in_div(class: 'small') %>
+  <% end %>
+  
+  <% 
+  ##
+  ## Bouton et opération
+  ##
+  %>
+  <div class='row right'>
+    <select name="operation" id="operation" onchange="$.proxy(Score,'onchange_operation',this.value)()">
+     <option value="create_image">Créer l'image</option>
+     <option value="remove_image">Détruire l'image</option>
+   </select>
+   <%= "Créer la partition".in_submit(id: 'btn_exec_operation') %>
+  </div>
+  
 </form>
-<%= link_to "Mode d'emploi", 'aide/comments/scores' %>

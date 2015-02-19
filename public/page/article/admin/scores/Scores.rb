@@ -12,6 +12,14 @@ class ScoreError < StandardError; end
 class Score
 
   class << self
+    
+    ##
+    ## Score::Image courante
+    ##
+    ## Utiliser Score::current pour y faire appel dans les vues
+    ##
+    attr_accessor :current
+    
     # ---------------------------------------------------------------------
     #
     #   Opérations
@@ -25,6 +33,7 @@ class Score
     def create_image
       img = Score::Image::new
       img.create
+      self.current = img if img.ok?
     rescue ScoreError => e
       error e.message
     rescue Exception => e
@@ -38,6 +47,7 @@ class Score
     #
     def edit_image
       img = Score::Image::new param(:id)
+      self.current = img
       img.data_in_param
     end
     
@@ -218,6 +228,13 @@ class Score
 
     ##
     #
+    # @return TRUE si l'image est OK
+    #
+    def ok?
+      @is_ok
+    end
+    ##
+    #
     # Création de l'image
     #
     def create
@@ -242,6 +259,8 @@ class Score
           ## comme le follower qui l'a créée, etc.)
           ##
           Score::store_new_image resultat
+          @src = resultat[:img_src] # pour le champ balise
+          @is_ok = true
         end
       else
         error "L'image n'a pas pu être créée. Consulter le débug pour en comprendre la raison."
@@ -310,6 +329,7 @@ class Score
         @img_lh = param(:img_left_hand).to_s.strip
         @img_lh = nil if @img_lh == ""
         raise ScoreError, "Il faut donner les notes d'au moins une main !" if "#{@img_rh}#{@img_lh}" == ""
+        raise ScoreError, "Votre code est trop long." if "#{@img_rh}#{@img_lh}".length > 300
       when :remove
         @ticket = param(:img_ticket).to_s.strip
         raise ScoreError, "Il faut fournir le ticket de destruction de l'image (en l'éditant par exemple)" if @ticket == ""
@@ -375,6 +395,10 @@ class Score
       c << affixe.in_span(class: 'affixe')
       c << "[edit]".in_a(href: "?a=admin/scores&operation=edit_image&id=#{CGI::escape src}")
       c.in_li(class: 'li_img')
+    end
+    
+    def as_image
+      "<img src='#{src}' />"
     end
       
   end # / Score::Image
