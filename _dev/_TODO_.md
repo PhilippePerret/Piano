@@ -1,5 +1,10 @@
-* [cron] 
-  Poursuivre en définissant add_connexions aux instance App::Article
-  Et add_duree (je crois)
+* rh et lh pour faire les deux mains
+* Un champ présentant la balises à copier
+  édition => pour article ()
+  commentaire => balises score
+  
+* Aperçu des commentaires
 
-* Ne pas tenir compte des lectures de moins de 20 secondes
+* Possibilité de mettre des notes dans les commentaires
+
+

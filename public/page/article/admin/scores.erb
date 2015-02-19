@@ -1,0 +1,29 @@
+<h2>Production d'image de partition</h2>
+<% 
+##
+## Pour produire des images de partition simples depuis l'administration
+##
+%>
+
+<% 
+##
+## Si une opération est définie
+##
+if param(:operation).to_s != ""
+  Score::send(param(:operation).to_sym)
+end
+%>
+
+<% 
+##
+## Formulaire pour définir le score
+##
+%>
+<%= view('article/admin/scores/form_score.erb')%>
+
+<% 
+##
+## Liste des images existantes, pour édition
+##
+%>
+<%= view('article/admin/scores/listing.erb') %>

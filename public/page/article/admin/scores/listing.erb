@@ -1,0 +1,10 @@
+<% 
+##
+## Listing des images enregistrées
+##
+%>
+<ul id="score_list">
+  <% Score::each do |score| %>
+    <%= score.as_li %>
+  <% end %>
+</ul>

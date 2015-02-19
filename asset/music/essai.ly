@@ -46,7 +46,7 @@ bottom-margin = 0.8\in
   \relative c' {
     \time 4/4
     \override Fingering.direction = #UP
-    \hide Rest \hide Staff.BarLine c isis e f g <ges bes des>2
+    \hide Rest \hide Staff.BarLine c disis e f g <gis beses des>2
   }
 }
 

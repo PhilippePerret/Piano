@@ -60,6 +60,13 @@ Insérer dans le texte en remplaçant `<texte>` par le mot ou le texte qui doit 
 
 Pour fabriquer la partition, utiliser de préférence RLily. Cf ce programme pour l'aide.
 
+Mettre en entête de fichier, pour qu'un image simple sorte&nbsp;:
+
+    SCORE::output_format  = :png
+    SCORE::no_header      = true
+    
+*Note&nbsp;: Il est possible maintenant de faire une seule portée. Utiliser MD si on veut directement une clé de SOL ou MG si on veut une clé de FA (mais elles sont définissables aussi explicitement, cf. le manuel de RLilyl).*
+
 <a name='fabrication_dune_image_sonore'></a>
 ##Fabrication d'un bout de partition sonore
 

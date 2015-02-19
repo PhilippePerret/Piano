@@ -12,7 +12,7 @@ SCORE::verbose 				= true
 
 MD << hide([:rest, :bar])
 MD << "c dx e f g"
-MD << chord("ges bes des", duree: '2')
+MD << chord("g# bbb des", duree: '2')
 
 
 

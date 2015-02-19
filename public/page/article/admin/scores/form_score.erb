@@ -1,0 +1,30 @@
+<% 
+##
+## Formulaire pour créer une image
+##
+%>
+<form id="form_score" action="index.rb" method="POST" accept-charset="utf-8">
+  <% if param(:operation) == 'edit_image' %>
+    <p>Noter que si vous modifiez l'image en édition, au niveau des notes, et que vous redemandez sa création, l'image précédente sera détruite et remplacée par cette nouvelle.</p>
+  <% end %>
+  <%= "admin/scores".in_hidden(name: 'a') %>
+  <%= param('img_ticket').to_s.in_hidden(name: 'img_ticket') %>
+  <% if param('img_ticket').to_s != "" %>
+    <img src="http://www.atelier-icare.net/img/cp_score/<%= param('img_folder') %>/<%= param('img_affixe') %>.png" />
+  <% end %>
+  <%= row("Affixe image", param('img_affixe').to_s.in_input_text(name: 'img_affixe')) %>
+  <%= row("Dans (Icare)", "./img/cp_score/" + param('img_folder').to_s.in_input_text(name: 'img_folder')) %>
+  <div class='bold'>Main droite&nbsp;:</div>
+  <textarea name="img_right_hand" rows="4" style="width:100%"><%= param('img_right_hand').to_s %></textarea>
+  <div class='bold'>Main gauche&nbsp;:</div>
+  <textarea name="img_left_hand" rows="4" style="width:100%"><%= param('img_left_hand').to_s %></textarea>
+  <div class='right'>
+  <%= "Mode débug (le dossier temporaire Icare sera conservé)".in_checkbox(name: 'cb_debug', class: 'small').in_div(class: 'fleft', style: "width:270px") %>
+  Opération : <select name="operation" id="operation" onchange="$.proxy(Score,'onchange_operation',this.value)()">
+    <option value="create_image">Créer l'image</option>
+    <option value="remove_image">Détruire l'image</option>
+  </select>
+  </div>
+  <%= row("", "Exécuter l'opération".in_submit(id: 'btn_exec_operation'), {class: 'buttons'}) %>
+</form>
+<%= link_to "Mode d'emploi", 'aide/comments/scores' %>
