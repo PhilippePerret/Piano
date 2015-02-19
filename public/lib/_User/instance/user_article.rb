@@ -31,21 +31,34 @@ class User
     unless last_article === nil
       last_article[:end]    = Time.now.to_i
       last_article[:duree]  = last_article[:end] - last_article[:start]
+      
       ##
-      ## Peut-être l'article a été déjà lu au cours de
-      ## cette session (ça arrive pour plein de page). Dans ce
-      ## cas, on enregistre juste sa duree et sa date de fin
+      ## Si la durée est inférieure à 20 secondes, on n'enregistre
+      ## pas l'article, quelle que soit la situation, même si c'est
+      ## un rechargement d'une page (20 rechargements pendant 3 secondes
+      ## d'une page ne peuvent être considérés comme une lecture d'une
+      ## minute)
       ##
-      astored = if data_articles.has_key? last_article[:id]
-        astored = data_articles[last_article[:id]]
-        astored[:end]     = Time.now.to_i
-        astored[:duree]   += last_article[:duree]
-        astored.merge! :discontinous => true
+      if last_article[:duree] < 15
+        data_articles.delete last_article[:id]
+        debug "= Durée de lecture trop courte => suppression de l'article"
       else
-        last_article
+        ##
+        ## Peut-être l'article a été déjà lu au cours de
+        ## cette session (ça arrive pour plein de pages). Dans ce
+        ## cas, on enregistre juste sa duree et sa date de fin
+        ##
+        astored = if data_articles.has_key? last_article[:id]
+          astored = data_articles[last_article[:id]]
+          astored[:end]     = Time.now.to_i
+          astored[:duree]   += last_article[:duree]
+          astored.merge! :discontinous => true
+        else
+          last_article
+        end
+        data_articles.merge! last_article[:id] => astored
+        debug "= Lecture complète article enregistrée : #{astored.inspect}"
       end
-      data_articles.merge! last_article[:id] => astored
-      debug "= Lecture complète article enregistrée : #{astored.inspect}"
     end
     
     store(

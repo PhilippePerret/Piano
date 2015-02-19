@@ -3,18 +3,19 @@ SCORE::compositeur  = "Phil"
 SCORE::armure       = "C"
 SCORE::metrique     = "4/4"
 
-MD << hide([:rest, :bar])
-MD << chord("ges' bes des", duree: '2')
-MD << chord("ges beses des")
+##
+## Essai de sortie PNG
+##
+SCORE::output_format 	= :png
+SCORE::no_header			= true # supprimer titre, opus, etc.
+SCORE::verbose 				= true
 
-MG << hide(:all)
-MG << "r1 r"
+MD << hide([:rest, :bar])
+MD << "c dx e f g"
+MD << chord("ges bes des", duree: '2')
+
 
 
 # MD << chord('d f a', {duree: 2}) + "r"
-# MG << "d2 r"
-
-
 
 # MD << chord('d f# a') + "r"
-# MG << "d2 r"

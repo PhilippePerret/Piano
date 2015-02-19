@@ -12,6 +12,7 @@ Il peut être utiliser par en cron normal ou depuis la partie administration
     pour lancer les opérations
 
 =end
+MODE_CRON = false unless defined? MODE_CRON
 require './public/lib/required' # quand appelé seul
 class App
   class Cron
@@ -51,10 +52,28 @@ class App
       @logs ||= []
       datepref = no_date ? "" : "[#{Time.now.to_i.as_human_date(false, true)}] "
       normpref = no_pref ? "" : "--- "
-      @logs << "#{log_pref.nil? ? '' : log_pref}#{normpref}#{datepref}#{str}"
+      mess_log = "#{log_pref.nil? ? '' : log_pref}#{normpref}#{datepref}#{str}"
+      @logs << mess_log
+      mainlog str
+    end
+    
+    ##
+    def mainlog mess
+      return unless MODE_CRON
+      reflog.write "--- [#{Time.now}] #{mess}\n"
+    end
+    def log_error e
+      log e.message + "\n" + e.backtrace.join("\n")
+    end
+    def reflog
+      @reflog ||= File.open(log_path, 'a')
+    end
+    def log_path
+      @log_path ||= File.expand_path( File.join('..', 'cron.log') )
     end
     
     def run
+      mainlog "-> App::Cron::run"
       log "=== Lancement du cron job#{noop ? ' (MODE NO-OP)' : ''} ===\n\n"
       
       ##
@@ -63,6 +82,10 @@ class App
       ##
       dispatch_data_pstores_session
 
+      ##
+      ## On affiche quelques informations statistiques
+      ##
+      statistiques
 
       App::Cron::no_pref  = true
       App::Cron::no_date  = true
@@ -90,7 +113,68 @@ class App
       ##
       App::Cron::PStore::remove_pstores
       
+      
+      mainlog "<- App::Cron::run"
       log "\n\n=== Fin du cron job ===\n"
+    end
+    
+    ##
+    #
+    # Quelques informations statistiques
+    #
+    def statistiques
+      mainlog "-> App::Cron::statistiques"
+      
+      log "\n" + "-"*80
+      log "= Statistiques =\n"
+      
+      ##
+      ## Nombre d'IP enregistrées
+      ##
+      nb_ips = ::PStore::new(app.pstore_ip_to_uid).transaction { |ps| ps.roots.count }
+      log "Nombre d'IPs enregistrées : #{nb_ips}"
+
+      ##
+      ## Nombre de membres
+      ##
+      nb_membres = ::PStore::new(app.pstore_membres).transaction { |ps| ps.roots.count - 1 }
+      log "Nombre de membres : #{nb_membres}"
+      
+      ##
+      ## Nombre de followers
+      ##
+      nb_followers = ::PStore::new(app.pstore_followers).transaction { |ps| ps.roots.count - 1 }
+      log "Nombre de followers : #{nb_followers}"
+      
+      ##
+      ## Nombre de Readers
+      ##
+      nb_readers = ::PStore::new(app.pstore_readers).transaction { |ps| ps.roots.count - 1 }
+      log "Nombre de readers : #{nb_readers}"
+      
+      log "\n" + ("-"*80) + "\n"
+
+      mainlog "<- App::Cron::statistiques"
+    end
+    
+    ##
+    #
+    # On envoie un mail à l'administrateur avec le log
+    # des opérations
+    #
+    def result_to_admin
+      mainlog "-> App::Cron::result_to_admin"
+      app.require_library 'mail'
+      data_mail = {
+        subject:    "Résultat du cron-job du #{Time.now.to_i.as_human_date(true, true)}",
+        message:    <<-HTML
+Admin, voilà le résultat du cron-job courant :
+
+#{logs.join("\n")}
+        HTML
+      }
+      send_mail_to_admin data_mail
+      mainlog "<- App::Cron::result_to_admin"
     end
     
     
@@ -181,6 +265,7 @@ class App
         # (seulement si noop n'est pas true)
         #
         def remove_pstores
+          return if @instances.nil? || @instances.empty?
           @instances.each { |pstore| pstore.remove }
         end
       
@@ -339,7 +424,10 @@ class App
         # Enregistre les données dans le pstore des articles
         #
         def save_data
-          @instances ||= {}
+          if @instances.nil? || @instances.empty?
+            log "\nAucun article à traiter."
+            return
+          end
           
           log "\n\n"
           log "   === ARTICLES ==="
@@ -431,7 +519,10 @@ class App
         # Enregistre les données dans les données reader
         #
         def save_data
-          return if @instances.nil? || @instances.empty?
+          if @instances.nil? || @instances.empty?
+            log "\nAucun reader à traiter."
+            return 
+          end
           
           log "\n"
           log "          === READERS ==="

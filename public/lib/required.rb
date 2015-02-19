@@ -13,6 +13,7 @@ def require_folder fpath
 end
 
 require_folder 'App'
+require_folder 'Article'
 require_folder '_User'
 require_folder 'classes'
 require_folder 'extensions'

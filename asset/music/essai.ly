@@ -1,5 +1,11 @@
 
 \paper{
+    indent           = 0\mm
+  line-width       = 120\mm
+  oddFooterMarkup  = ##f
+  oddHeaderMarkup  = ##f
+  bookTitleMarkup  = ##f
+  scoreTitleMarkup = ##f
   annotate-spacing = ##f
 make-footer = ##f
 top-margin = 0.8\in
@@ -40,20 +46,11 @@ bottom-margin = 0.8\in
   \relative c' {
     \time 4/4
     \override Fingering.direction = #UP
-    \hide Rest \hide Staff.BarLine <ges' bes des>2 <ges beses des>
+    \hide Rest \hide Staff.BarLine c isis e f g <ges bes des>2
   }
 }
 
-  \new Staff {
   
-  \clef bass
-  \relative c {
-    \time 4/4
-    \override Fingering.direction = #DOWN
-    \hide Staff.BarLine \hide Stem \hide Rest \hide NoteHead \hide Slur \hide Beam \stopStaff r1 r
-  }
-}
-
 >>
 
   \layout{

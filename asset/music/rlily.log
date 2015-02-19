@@ -1,0 +1,5 @@
+notice: Commande lilypond : cd "/Users/philippeperret/Sites/AlwaysData/Piano/asset/music";echo "eliesalome" | sudo -S lilypond -dbackend=eps -dno-gs-load-fonts -dinclude-eps-fonts -dpixmap-format=pngalpha --png "/Users/philippeperret/Sites/AlwaysData/Piano/asset/music/essai.ly" 2>&1
+notice: 
+
+LA PARTITION A ÉTÉ PRODUITE AVEC SUCCÈS EN IMAGE PNG
+/Users/philippeperret/Sites/AlwaysData/Piano/asset/music/essai.png

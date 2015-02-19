@@ -20,6 +20,9 @@ class App
   #
   # ---------------------------------------------------------------------
   
+  def pstore_membres
+    @pstore_membres ||= File.join(folder_pstore, 'membres.pstore')
+  end
   def pstore_readers
     @pstore_readers ||= File.join(folder_pstore, 'readers.pstore')
   end

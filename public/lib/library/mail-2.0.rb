@@ -30,8 +30,10 @@ require 'net/smtp'
 # 
 class Mail
 
-  require File.join('.', 'data', 'secret', 'data_mail.rb')
-  require './data/secret/data_admin'
+  p = File.join('.', 'data', 'secret', 'data_mail.rb')
+  require p if File.exist? p
+  p = File.join('.', 'data', 'secret', 'data_admin.rb')
+  require p if File.exist? p
 
   DEFAUT_CONTENT_TYPE = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>'
 
@@ -217,8 +219,8 @@ Subject: #{subject}
     c
   end
  
-  def from;     @from     ||= MAIL_PHIL         end
-  def to;       @to       ||= MAIL_PHIL         end
+  def from;     @from     ||= MAIL_ADMIN         end
+  def to;       @to       ||= MAIL_ADMIN         end
   def subject
     @subject ||= Mail::no_subject
     "#{header_subject}#{@subject}"

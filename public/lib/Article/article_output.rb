@@ -8,6 +8,17 @@ pour un article.
 class App
   class Article
     
+    ##
+    #
+    # Confection du contenu (@content) de l'article
+    #
+    # Méthode principal, appelée par la vue `content.erb', qui définit
+    # le code de l'article et le place dans @content
+    #
+    def load
+      @content = app.view( "article/#{base}" )
+    end
+    
     
     ##
     #
