@@ -7,6 +7,13 @@
 
 <% 
 ##
+## Le script optionnel gérant les scores
+##
+require_optional_js 'score'
+%>
+
+<% 
+##
 ## Si une opération est définie
 ##
 if param(:operation).to_s != ""

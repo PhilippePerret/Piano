@@ -9,6 +9,7 @@ Un des plus (+) les plus importants du site est le recours dans les explications
   * [Partition avec “bouton” pour lancer le son](#partition_avec_bouton_pour_lancer_le_son)
   * [Mot du texte de l'article déclenchant le son d'une image](#inserer_mot_declenchant_une_image)
   * [Mot du texte déclenchant un son sans image](#mot_du_texte_declenchant_son_sans_image)
+* [Gestion du pstore des scores](#gestion_dans_pstore_scores)
 
 
 <a name='insertion_dans_la_page_ou_le_texte'></a>
@@ -99,3 +100,16 @@ Ensuite, créer un fichier son, par exemple avec Reason, le créer dans le dossi
 Exemple de code&nbsp;:
 
     <%= image('path/to/image/partition02.png', center: true, mp3: 'partition02') %>
+    
+
+<a name='gestion_dans_pstore_scores'></a>
+##Gestion du pstore des scores
+
+Les images de score, quelles qu'elles soient (fabriquées par l'admin ou l'user) sont consignés dans le pstore `scores.pstore`.
+
+Chaque image fait l'objet de deux enregistrements&nbsp;:
+
+    "<src>"   =>  <{data de l'image}>
+    <id>      => "<src>"
+
+On pourrait se passer de l'`<id>` mais c'est lui permet au reader de laisser des commentaires avec des partitions de façon simple (il indique simplement l'ID dans la balise `[score:<id>]`).

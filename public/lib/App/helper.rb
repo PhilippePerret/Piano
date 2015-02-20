@@ -10,6 +10,43 @@ class App
   
   ##
   #
+  # Requiert un JS du dossier 'js/optional'
+  #
+  def require_optional_js arr_js
+    arr_js = [arr_js] unless arr_js.class == Array
+    arr_js.each do |js|
+      p = path_optional_js js
+      if File.exist? p
+        add_js p
+      else
+        error "Le script optionel JS #{File.basename(p)} est introuvable."
+        error "Cherché dans path : #{p}" if offline?
+      end
+    end
+  end
+  
+  ##
+  # Retourne le path du script optionnel +js+ qui peut être fourni :
+  #   - explicitement "..._mini.js"
+  #   - seulement avec l'affixe simple (sans '_mini')
+  #   - en nom sans "_mini" (….js)
+  #
+  def path_optional_js js
+    dos = nil
+    if js.index('/')
+      dos = File.basename(js)
+      dos = nil if dos == "."
+    end
+    aff = File.basename(js, File.extname(js))
+    aff.concat("_mini") unless aff.end_with? "_mini"
+    arr = []
+    arr << dos unless dos.nil?
+    arr << "#{aff}.js"
+    File.join(folder_js, 'optional', *arr)
+  end
+  
+  ##
+  #
   # Retourne un lien (<a>) vers l'article de path relatif +relpath_art+ dans
   # le dossiser `./public/page/article`.
   #

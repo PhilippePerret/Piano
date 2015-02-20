@@ -65,6 +65,9 @@ class App
   def folder_ticket
     @folder_ticket ||= File.join(folder_data, 'ticket')
   end
+  def folder_js
+    @folder_js ||= File.join(folder_page, 'js')
+  end
   def folder_image
     @folder_image ||= File.join(folder_page, 'img')
   end

@@ -1,0 +1,1 @@
+window.hash=function(e,n,f){"undefined"==typeof n&&(n="name"),"undefined"==typeof f&&(f="value");for(var d,o,t,u={},a=0,i=e.length;i>a;++a)d=e[a],o=d[n],t=d[f],u[o]=t;return u};

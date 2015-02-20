@@ -1,11 +1,14 @@
 /**
   * @module ajax.js
-  * @version 2.1
+  * @version 2.2 (février 2015)
   *
   * Dépendances
   *   * Nécessite l'objet Flash pour l'affichage des messages d'erreur
   *     Doit obligatoirement retourner false (requête abandonnée) ou true
-  *
+	*		Si on soumet des formulaires par ajax avec `submit_form' ou par
+	*		on_submit_form :
+  *			* Requiert Object_extension.js
+	*			* Requiert String.js (pour capitalize())
   */
 window.Ajax = {
 	url:'./index.rb',
@@ -58,22 +61,6 @@ window.Ajax = {
   },
   
   /**
-    * Pour soumettre une formulaire
-    * @method submit_form
-    * @param {String}   form_id   ID html du formulaire (sans "form#") OU le formulaire lui-même
-    * @param {Function} fn_return [Optionnel] Fonction de retour, appelée au retour de la 
-    *                             soumission avec le résultat
-    */
-  submit_form:function(form_id, fn_return)
-  {
-    var form ;
-    if('string' == typeof form_id) form = $('form#'+form_id);
-    else form = form_id ;
-    var hdata = hash($(form).serializeArray()) ;
-    hdata.onreturn = fn_return ;
-    this.send( hdata );
-  },
-  /**
     * Traitement spécial des propriétés `message' et `error' si elles
     * existent dans le retour ajax
     * @method traite_messages_retour
@@ -102,39 +89,64 @@ window.Ajax = {
     })
   },
   /**
+    * Pour soumettre une formulaire
+    * @method submit_form
+    * @param {String}   form_id   ID html du formulaire (sans "form#") OU le formulaire lui-même
+    * @param {Function} fn_return [Optionnel] Fonction de retour, appelée au retour de la 
+    *                             soumission avec le résultat
+    */
+  submit_form:function(form_id, fn_return)
+  {
+		return this.on_submit_form( form_id, fn_return ) ;
+  },
+  /**
     * Les formulaires possédant l'attribut ajax="1" sont observés
     * et passent par ici. Si tout se passe bien ici, le formulaire est
     * soumis en Ajax, sinon le formulaire est soumis normalement.
     * 
-    * La route `r' définie dans le formulaire doit correspondre à la
-    * méthode de traitement du retour Ajax. Par exemple :
+    * Si la route `r' est définie dans le formulaire elle doit correspondre
+		* à la méthode de traitement du retour Ajax. Par exemple :
     *   r = "narration/show"
     *   => que la route ruby sera la méthode 'show' de l'objet Narration
     *   => que la méthode de traitement du retour Ajax en javascript sera
     *      aussi la méthode 'show' de l'objet Narration (noter la capitale)
-    *
+    * Sinon, la fonction de retour peut être définie dans le paramètre
+		*	'onreturn' avec la valeur "objet/méthode"
+		* Sinon, aucune méthode de retour ne sera appelée.
+		*
+		* +fn_return+ est défini quand c'est la méthode `submit_form'
+		* qui est invoquée
     */
-  on_submit_form:function(form){
+  on_submit_form:function(form, fct_return){
     try {
       var arr     = $(form).serializeArray() ;
       var hdata   = hash( arr ) ;
-      var droute  = hdata.r.split('/') ;
-      var dreturn ;
-      if('undefined' == typeof hdata.onreturn) {
-        dreturn = droute ;
-      } else {
-        // On fonction de retour stipulée explicitement
-        dreturn = hdata.onreturn ;
-      }
-      var objet   = dreturn[0].capitalize() ;
-      var method  = dreturn[1] ;
-      var fct_return = $.proxy(window[objet], method) ;
-      hdata.onreturn = fct_return ;
+			var droute, dreturn, fct_return ;
+			if('undefined' != typeof hdata.r){
+	      droute  = hdata.r.split('/') ;
+			}
+			if( ! fct_return ){
+	      if('undefined' == typeof hdata.onreturn) {
+					// Fonction de retour définie par "r"
+	        dreturn = droute ;
+	      } else {
+	        // Fonction de retour stipulée explicitement
+	        dreturn = hdata.onreturn.split('/') ;
+	      }
+				if( dreturn ){
+		      var objet   = dreturn[0].capitalize() ;
+		      var method  = dreturn[1] ;
+		      fct_return 	= $.proxy(window[objet], method) ;
+				}
+			}
+      hdata.onreturn 	= fct_return ;
+			hdata.ajax 			= "1" ;
+			hdata.ajx				= "1" ;
       this.send( hdata ) ;
       return false ; // pour court-circuiter le formulaire
     } catch (err) {
       // Si une erreur s'est produite, on charge la page normalement
-      // if(console) console.error( err ) ;
+      if(console) console.error( err ) ;
       F.error("Une erreur est survenue : " + err) ;
       return false ;
     }

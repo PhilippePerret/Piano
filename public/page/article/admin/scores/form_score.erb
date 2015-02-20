@@ -7,11 +7,29 @@
   <% if param(:operation) == 'edit_image' %>
     <p>Noter que si vous modifiez l'image en édition, au niveau des notes, et que vous redemandez sa création, l'image précédente sera détruite et remplacée par cette nouvelle.</p>
   <% end %>
+  
+  <% 
+  ##
+  ## Champs cachés
+  ##
+  %>
   <%= "admin/scores".in_hidden(name: 'a') %>
+  <%= 
+    # Pour donner à javascript la méthode de retour
+    "Score/retour_operation".in_hidden(name: 'onreturn') 
+    %>
+  <%= param('img_id').to_s.in_hidden(name: 'img_id', id: 'image_id') %>
   <%= param('img_ticket').to_s.in_hidden(name: 'img_ticket') %>
-  <% if param('img_ticket').to_s != "" %>
-    <img src="http://www.atelier-icare.net/img/cp_score/<%= param('img_folder') %>/<%= param('img_affixe') %>.png" />
-  <% end %>
+  
+  
+  <% 
+  ##
+  ## Affichage de l'image si elle existe, mais on met toujours
+  ## la balise pour traitement par ajax.
+  ##
+  %>
+  <img id="balise_img_edited_image" src="<%= param('img_src') %>" />
+
   <%= row("Affixe image", param('img_affixe').to_s.in_input_text(name: 'img_affixe')) %>
   <%= row("Dans (Icare)", "./img/cp_score/" + param('img_folder').to_s.in_input_text(name: 'img_folder')) %>
   
@@ -42,6 +60,8 @@
     <%= "Mode débug (le dossier temporaire Icare sera conservé)".in_checkbox(name: 'cb_debug', checked: (param('cb_debug') == 'on')).in_div %>
     <%= "Masquer les titres".in_checkbox(name: 'cb_mask_titres', checked: titres_masked? ).in_div %>
     <%= "Masquer les liens TDM".in_checkbox(name: 'cb_mask_liens_tdm', checked: liens_tdm_masked? ).in_div %>
+    <%= "Pas de limite sur la taille du code".in_checkbox(name: 'cb_no_limit_code', checked: (param('cb_no_limit_code') == "on")).in_div %>
+    <%= "Ne pas utiliser Ajax".in_checkbox(name: 'cb_not_ajax', id: 'cb_not_ajax', checked: (param('cb_not_ajax') == "on")).in_div %>
   </div>
 
   <% if Score::current != nil %>
@@ -58,7 +78,7 @@
      <option value="create_image">Créer l'image</option>
      <option value="remove_image">Détruire l'image</option>
    </select>
-   <%= "Créer la partition".in_submit(id: 'btn_exec_operation') %>
+   <%= "Créer cette partition".in_submit(id: 'btn_exec_operation', onclick: "return $.proxy(Score, 'submit_operation')()") %>
   </div>
   
 </form>

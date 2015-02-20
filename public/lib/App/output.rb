@@ -26,8 +26,10 @@ class App
   def output_ajax
     require 'json'
     self.data_ajax ||= {}
+    ##
+    ## Mettre les messages ET les erreurs dans :message
+    ##
     self.data_ajax.merge!(:message => messages) unless messages == ''
-    # self.data_ajax.merge!(:css => ajouts_css.as_relative_paths) unless ajouts_css.nil? || ajouts_css.empty?
     STDOUT.write "Content-type: application/json; charset:utf-8;\n\n"
     STDOUT.write self.data_ajax.to_json
   end
