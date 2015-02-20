@@ -18,7 +18,7 @@
     # Pour donner à javascript la méthode de retour
     "Score/retour_operation".in_hidden(name: 'onreturn') 
     %>
-  <%= param('img_id').to_s.in_hidden(name: 'img_id', id: 'image_id') %>
+  <%= param('img_id').to_s.in_hidden(name: 'img_id', id: 'img_id') %>
   <%= param('img_ticket').to_s.in_hidden(name: 'img_ticket') %>
   
   
@@ -66,9 +66,7 @@
     <%= "Ne pas utiliser Ajax".in_checkbox(name: 'cb_not_ajax', id: 'cb_not_ajax', checked: (param('cb_not_ajax') == "on")).in_div %>
   </div>
 
-  <% if Score::current != nil && Score::current.id != nil %>
-    <%= Score::current.as_image.in_input_text(id: 'img_balise_img', onfocus: "this.select()", class: 'small').in_div(class: 'small') %>
-  <% end %>
+  <%= "".in_input_text(id: 'code_balise_score', onfocus: "this.select()", class: 'small').in_div(id: 'balise_image_admin', class: 'small', style: "display:none") %>
   
   <% 
   ##
@@ -76,6 +74,8 @@
   ##
   %>
   <div class='row right'>
+    <%= "Reset all".in_a(id: "btn_autre_image", onclick: "$.proxy(Score, 'reset_form')()") %> | 
+    <%= "Reset only ID (nouvelle image)".in_a(onclick: "$('input#img_id').val('');F.show('ID initilalisé')")%>
     <select name="operation" id="operation" onchange="$.proxy(Score,'onchange_operation',this.value)()">
      <option value="create_image">Créer l'image</option>
      <option value="remove_image">Détruire l'image</option>

@@ -8,6 +8,8 @@ Dans le vue ERB, on peut simplement les appeler par `<méthode name>`.
 =end
 class App
   
+  LOREM_IPSUM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse dignissim metus quam. Sed dignissim euismod leo. Mauris vitae arcu ullamcorper, malesuada velit a, sagittis dolor. Proin et arcu eget eros volutpat pellentesque a euismod turpis. Donec eu erat rhoncus, aliquet massa eu, aliquam elit. Aenean consectetur vel est at aliquet. Vestibulum eget nulla id odio malesuada posuere. Nulla eget interdum libero."
+
   ##
   #
   # Requiert un JS du dossier 'js/optional'

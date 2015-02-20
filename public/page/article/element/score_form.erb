@@ -60,8 +60,14 @@ end
     ).in_div(class: 'small') 
   %>
   <div class='row right'>
-    <div id="cadre_score_reader" style="display:none">
-      <img id="balise_img_edited_image" src="<%= param('img_src') %>" />
+    <div id="cadre_score_reader" style="display:none" class="comment">
+      <div class="c_comment">
+        <p><%= App::LOREM_IPSUM[0..150] + '…' %></p>
+        <div id="exemple_commentaire" class="score centre">
+          <img id="balise_img_edited_image" src="<%= param('img_src') %>" />
+        </div>
+        <p><%= App::LOREM_IPSUM[151..300] %></p>
+      </div>
       <div id="cadre_score_infos">
         <div class='small'>Copier-coller ce code tel quel dans le texte du commentaire&nbsp;:</div>
         <input type="text" name="code_balise_score" value="" id="code_balise_score" onfocus="this.select()" />

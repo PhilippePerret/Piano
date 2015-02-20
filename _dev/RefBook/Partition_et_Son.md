@@ -10,6 +10,9 @@ Un des plus (+) les plus importants du site est le recours dans les explications
   * [Mot du texte de l'article déclenchant le son d'une image](#inserer_mot_declenchant_une_image)
   * [Mot du texte déclenchant un son sans image](#mot_du_texte_declenchant_son_sans_image)
 * [Gestion du pstore des scores](#gestion_dans_pstore_scores)
+* [[PROGRAMME] Modification du traitement des notes](#modify_traitement_note)
+
+
 
 
 <a name='insertion_dans_la_page_ou_le_texte'></a>
@@ -113,3 +116,11 @@ Chaque image fait l'objet de deux enregistrements&nbsp;:
     <id>      => "<src>"
 
 On pourrait se passer de l'`<id>` mais c'est lui permet au reader de laisser des commentaires avec des partitions de façon simple (il indique simplement l'ID dans la balise `[score:<id>]`).
+  
+  
+<a name='modify_traitement_note'></a>
+##[PROGRAMME] Modification du traitement des notes
+
+Ce n'est pas dans ce programme (Cercle pianistique) que sont traités les notes envoyées, mais sur Icare, dans le script-xextra 'rlily'. Exactement dans la méthode&nbsp;:
+
+     rlily/Note/note_inst.rb#traite_notes

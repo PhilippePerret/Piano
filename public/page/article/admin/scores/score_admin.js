@@ -13,4 +13,15 @@ $.extend(window.Score,{
 		$('input[type="submit"]#btn_exec_operation').val(btn) ;
 	},
 	
+	/**
+	  * Retourne le code à copier-coller.
+		* Noter que cette méthode surclasse la méthode générale
+		* pour l'user.
+	  *  
+	  */
+	code_balise_score:function(){
+		return "<img src='"+this.src+"' />" ;
+	},
+	
+	
 })

@@ -5,33 +5,34 @@
 if('undefined'==typeof window.Score){window.Score={}}
 $.extend(window.Score,{
 	form_enabled: true,
+	form_admin: null,			// true si c'est le formulaire admin
 	/*
 	 *  Méthode appelée quand on soumet le formulaire de
 	 *  création de l'image.
 	 *
 	 */
 	submit_operation:function(){
-		console.log("-> submit_operation");
+		this.form_admin = $('div#balise_image_admin').length > 0 ;
 		if($('input#cb_not_ajax').is(':checked')) return true ;
 		UI.spinner_start("Merci de patienter en attendant la fin de l'opération. Elle peut prendre plusieurs dizaines de secondes en fonction de la taille de votre image.");
-		var op 				= $('*#operation').val();
-		var image_id 	= $('input#image_id').val();
-		return Ajax.submit_form($('form#form_score'), $.proxy(Score, 'retour_operation', op, image_id));
+		var op 			= $('*#operation').val();
+		var img_id 	= $('input#img_id').val();
+		return Ajax.submit_form($('form#form_score'), $.proxy(Score, 'retour_operation', op, img_id));
 	},
-	retour_operation:function(op, image_id, rajax){
+	retour_operation:function(op, img_id, rajax){
 		console.dir(rajax);
 		var img = $('img#balise_img_edited_image') ;
 		if(op == 'create_image'){
 			// Afficher l'image
 			var img_data = rajax.img_data ;
 			if(img_data){
-				this.set_data_image_and_show(img_data, image_id) ;
+				this.set_data_image_and_show(img_data, img_id) ;
 			}else{
 				F.error("Un problème est survenu… Désolé.");
 			}
 		} else if (op == 'remove_image'){
 			// Destruction de l'image
-			$("li#li_img-" + image_id).remove();
+			$("li#li_img-" + img_id).remove();
 			img.hide();
 			this.reset_form();
 		}
@@ -43,19 +44,20 @@ $.extend(window.Score,{
 	 *  Règle les données de l'image après sa création
 	 *  
 	 */
-	set_data_image_and_show:function(img_data, image_id){
+	set_data_image_and_show:function(img_data, img_id){
 		var img = $('form#form_score img#balise_img_edited_image') ;
+		this.src = img_data.src ; // pour le lien administrateur
 		img.attr('src', img_data.src + "?" + img_data.updated_at) ;
 		$('form#form_score input#img_id').val(img_data.id) ;
 		$('form#form_score input#img_ticket').val(img_data.ticket) ;
 		$('form#form_score input#img_affixe').val(img_data.affixe) ;
 		img.show();
+		/** Régler la balise à copier-coller */
+	  this.on_change_position_score() ;
 		if($('div#cadre_score_reader').length){
 			/** Afficher le cadre qui contient tout ce qu'il faut pour 
 			  * insérer l'image dans le commentaire */
 			$('div#cadre_score_reader').show();
-			/** Régler la balise à copier-coller */
-		  this.on_change_position_score() ;
 			/** Changer le nom du bouton */
 			this.set_submit_name("Modifier le score") ;
 			/** Faire apparaitre le bouton pour créer une nouvelle image */
@@ -68,7 +70,12 @@ $.extend(window.Score,{
 	  * de l'image.
 	  */
 	on_change_position_score:function(){
-	  $('input#code_balise_score').val(this.code_balise_score()) ;
+	  $('input#code_balise_score').val( this.code_balise_score() ) ;
+		$('div#balise_image_admin').show() ; // seulement section administration
+		$('div#exemple_commentaire').attr('class', "score " + this.position_score() );
+	},
+	position_score:function(){
+		return $('form#form_score select#position_score').val() ;
 	},
 	/**
 	  * Retourne le code de la balise reader à copier dans le
@@ -78,7 +85,7 @@ $.extend(window.Score,{
 	code_balise_score:function(){
 		var code = "[score:" ;
 		code += $('form#form_score input#img_id').val() ;
-		code += ":" + $('form#form_score select#position_score').val() ;
+		code += ":" + this.position_score() ;
 		code += "]" ;
 		return code ;
 	},
@@ -96,6 +103,7 @@ $.extend(window.Score,{
 		$('a#btn_autre_image').show();
 	},
 	hide_bouton_autre_image:function(){
+		if(this.form_admin) return ;
 		$('a#btn_autre_image').hide();
 	},
 	/**

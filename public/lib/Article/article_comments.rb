@@ -117,7 +117,7 @@ class App
           next unless dcom[:ok]
           (
             (dcom[:ps] + ', le ' + dcom[:at].as_human_date).in_div(class: 'c_info') +
-            dcom[:c].in_div(class: 'c_content')
+            traite_comments(dcom[:c]).in_div(class: 'c_content') + "".in_div(class: 'clear')
           ).in_div(class: 'comment')
         end.join('')
       else
@@ -127,6 +127,39 @@ class App
       return hc
     end
     
+    ##
+    #
+    # Méthode qui met en forme le texte du commentaire
+    #
+    # Pour le moment, seule les scores sont traités.
+    #
+    # @return le texte corrigé
+    def traite_comments str
+      debug "Code original :#{str.gsub(/</, '&lt;')}"
+      if str.index("\r")
+        if str.index("\n")
+          str.gsub!(/\r/, '')
+        else
+          str.gsub!(/\r/, "\n")
+        end
+      end
+      debug "Retours corrigés :#{str.gsub(/</, '&lt;')}"
+      
+      str = str.split("\n\n").collect{ |p| "<p>#{p}</p>" }.join('')
+      
+      
+      if str.index('[score:')
+        debug "Il y a des scores"
+        str.gsub!(/\[score:([0-9]*):([a-z]*)\]/){
+          tout = $&
+          score_id = $1.to_i
+          position = $2.to_s
+          Score::div_score_for_comments score_id, position
+        }
+      end
+      
+      return str
+    end    
     
   end # Article
 end # App

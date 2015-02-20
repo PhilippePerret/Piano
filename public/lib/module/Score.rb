@@ -151,13 +151,6 @@ class Score
       @base_url ||= "http://icare.alwaysdata.net/xextra.rb?sc=rlily&"
     end
     
-    ##
-    #
-    # Pstore contenant toutes les informations sur les images
-    #
-    def pstore
-      @pstore ||= File.join(app.folder_pstore, 'scores.pstore')
-    end
   end
 
 
@@ -423,7 +416,6 @@ class Score
     
     def data
       @data ||= begin
-        debug "[data] @src:#{@src.inspect} / @id: #{@id.inspect}"
         if @src.nil? && @id.nil? # après la destruction
           {}
         else

@@ -20,6 +20,8 @@ Le site comporte une fonctionnalité unique et appropriée&nbsp;: la faculté de
   <li><%= link_to_ancre "Définir l'armure", 'define_armure' %></li>
   <li><%= link_to_ancre "Définir la métrique", 'define_metrique' %></li>
   <li><%= link_to_ancre "Définir les liaisons de jeu", 'define_liaisons_jeu' %></li>
+  <li><%= link_to_ancre "Ajouter du texte", 'add_some_texte' %></li>
+  <li><%= link_to_ancre "Divers autres définitions", 'define_autres' %></li>
   <li><%= link_to_ancre "Pour allez plus loin…", 'pour_aller_plus_loin' %></li>
 </ul>
 
@@ -353,6 +355,87 @@ Le code&nbsp;:
 <p class='small'>
 Notez que pour des liaisons imbriquées —&nbsp;ici celle commençant après le premier RÉ (d16)&nbsp;— il faut ajouter un “\” avant la seconde parenthèse.
 </p>
+
+<%# --------------------------------------------------------------------- %>
+
+<%= ancre 'add_some_texte' %>
+<h3>Ajouter du texte</h3>
+
+<p>
+Pour ajouter du texte au-dessus on utilise le circonflexe seul “^” (qui pointe “vers le haut”) et le trait plat “_” (qui s'écrit “en bas”)
+</p>
+<table border="0">
+  <colgroup><col width="300" /><col width="300" /></colgroup>
+  <tr>
+    <td>Le code&nbsp;:</td><td>…produira&nbsp;:</td>
+  </tr>
+  <tr>
+    <td class='right'><pre>&lt;c eb g&gt;^Cm</pre></td>
+    <td class='right'>
+  <img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/texte-au-dessus.png' />
+    </td>
+  </tr>
+</table>
+
+<table border="0">
+  <colgroup><col width="300" /><col width="300" /></colgroup>
+  <tr>
+    <td>Le code&nbsp;:</td><td>…produira&nbsp;:</td>
+  </tr>
+  <tr>
+    <td class='right'><pre>&lt;c eb g&gt;_I</pre></td>
+    <td class='right'>
+  <img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/texte-en-dessous.png' />
+    </td>
+  </tr>
+</table>
+
+<p>
+Pour la main gauche —&nbsp;sans que je sache pourquoi…&nbsp;—, il faut laisser une espace avant le trait plat&nbsp;:
+</p>
+<table border="0">
+  <colgroup><col width="300" /><col width="300" /></colgroup>
+  <tr>
+    <td>Le code&nbsp;:</td><td>…produira&nbsp;:</td>
+  </tr>
+  <tr>
+    <td class='right'><pre>(MD) &lt;c eb g&gt;</pre><pre>(MG) g _"I 4/6"</pre></td>
+    <td class='right'>
+  <img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/texte-en-dessous-MG.png' />
+    </td>
+  </tr>
+</table>
+<p class='small'>
+Notez que lorsque le texte contient autre chose que des lettres ou des chiffres, par exemple des espaces ou des balances, il faut l'entourer de guillemets doubles.
+</p>
+
+
+<%# --------------------------------------------------------------------- %>
+
+
+<%= ancre 'define_autres' %>
+<h3>Autres définitions</h3>
+
+<p>
+Trouver ci-dessous d'autres définitions possibles, qui sont propres au site (comprendre&nbsp;: qui n'existent pas en ces termes dans Lilypond).
+</p>
+
+<h4>Répétition “pourcentage”</h4>
+
+<pre>2xX { <em>notes de la mesure</em> }</pre>
+
+<p class='small'>
+Le “2” ci-dessus peut être remplacé par un nombre de 2 à 99.
+</p>
+<p>Exemple&nbsp;: le code&nbsp;:</p>
+<pre>2xX { &lt;c f ab&gt;1 } 4xX { c4 f ab f }</pre>
+<p>… retournera&nbsp;:</p>
+<p class='center'><img src='http://icare.alwaysdata.net/img/cp_score/test/essai.png' /></p>
+
+<p class='small'>
+Noter que le nombre désigne le nombre de mesures, pas le nombre de signes pourcentage à utiliser
+</p>
+
 
 <%= ancre 'pour_aller_plus_loin' %>
 <h3>Pour aller plus loin…</h3>
