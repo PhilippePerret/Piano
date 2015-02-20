@@ -1,0 +1,85 @@
+<% 
+##
+## Formulaire pour créer une image (READER)
+##
+## Noter que c'est une version simplifiée du formulaire administration
+## Les deux sont trop différent pour les partager avec des petits
+## aménagements.
+##
+
+##
+## Module pour la gestion des scores
+##
+app.require_module 'Score'
+if param('operation') == 'create_image' || param('operation') == 'remove_image'
+  Score::send(param(:operation).to_sym, true)
+  show_fieldset = 'block'
+else
+  show_fieldset = 'none'
+end
+%>
+
+<% 
+##
+## Fieldset du formulaire
+##
+%>
+<fieldset id="fs_insert_score" class="" style="display:<%= show_fieldset %>">
+<form id="form_score" action="index.rb" method="POST" accept-charset="utf-8">
+  <% 
+  ##
+  ## Champs cachés pour revenir à l'article (si sans ajax)
+  %>
+  <%= article.idpath.in_hidden(name: 'a') %>
+  <%= article.id.to_s.in_hidden(name: 'aid')%>
+  <%= "create_image".in_hidden(name: 'operation', id: 'operation') %>
+  <% 
+  ##
+  ## Champs cachés pour l'image
+  ##
+  %>
+  <%= param('img_id').to_s.in_hidden(name: 'img_id', id: 'img_id') %>
+  <%= param('img_ticket').to_s.in_hidden(name: 'img_ticket', id: 'img_ticket' ) %>
+  <%= param('img_affixe').to_s.in_hidden(name: 'img_affixe', id: 'img_affixe' ) %>
+
+  <% 
+  ##
+  ## Pour entrer les deux mains
+  ##
+  %>
+  <div id="notes_mains">
+    <div class='tiny italic'>Main droite&nbsp;:</div>
+    <textarea id="img_right_hand" name="img_right_hand" placeholder="Notes de la main droite (clé de sol) - Notes en anglais, minuscules (a b c d e f g)" onfocus="this.select()" rows="2" onkeypress="$.proxy(Score,'compte_signes')()"><%= param('img_right_hand').to_s %></textarea>
+    <div class='tiny small'>Main gauche&nbsp;: <%= "Ouvrir".in_a(onclick: "$('textarea#img_left_hand').toggle();", class: 'small') %></div>
+    <textarea id="img_left_hand" name="img_left_hand" placeholder="Notes de la main gauche (clé de fa) - Notes en anglais, minuscules (a b c d e f g)" onfocus="this.select()" rows="2" style="display:none" onkeypress="$.proxy(Score,'compte_signes')()"><%= param('img_left_hand').to_s %></textarea>
+  </div>
+  <%= 
+    (
+      "".in_div(class: 'fright small', id: 'signs_count') +
+      link_to( "Mode d'emploi (dans une autre fenêtre)", 'aide/comments/scores', {form: false, target: '_blank'} ).in_div
+    ).in_div(class: 'small') 
+  %>
+  <div class='row right'>
+    <div id="cadre_score_reader" style="display:none">
+      <img id="balise_img_edited_image" src="<%= param('img_src') %>" />
+      <div id="cadre_score_infos">
+        <div class='small'>Copier-coller ce code tel quel dans le texte du commentaire&nbsp;:</div>
+        <input type="text" name="code_balise_score" value="" id="code_balise_score" onfocus="this.select()" />
+        <select name="position_score" id="position_score" onchange="$.proxy(Score, 'on_change_position_score')()">
+          <option value="centre">Centré sur une ligne</option>
+          <option value="fgauche">Flottant à gauche</option>
+          <option value="fdroite">Flottant à droite</option>
+        </select>
+      </div>
+    </div>
+    <%
+      ##
+      ## Boutons pour soumettre le formulaire + IMAGE
+      ##
+      submit_name = param('img_id').to_s != "" ? "Modifier le score" : "Créer le score"
+    %>
+    <%= "Autre image".in_a(id: "btn_autre_image", style: "display:none", onclick: "$.proxy(Score, 'reset_form')()")%>
+    <%= submit_name.in_submit(id: "score_btn_submit", class: 'btn small', onclick: "return $.proxy(Score, 'submit_operation')()") %>
+  </div>
+</form>
+</fieldset>

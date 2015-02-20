@@ -1,1 +1,1 @@
-div.row span.libelle{width:20%}div.row span.value{width:78%}div.row span.value input[type="text"][name="img_folder"]{width:68%}ul#score_list{list-style:none}ul#score_list li.li_img{height:auto}ul#score_list li.li_img img{vertical-align:middle !important;margin-right:1em}ul#score_list li.li_img span.affixe{margin-right:1em}
+div.row span.value input[type="text"][name="img_folder"]{width:68%}ul#score_list li.li_img{height:auto;display:block}ul#score_list li.li_img img{vertical-align:middle !important;margin-right:1em}ul#score_list li.li_img span.affixe{margin-right:1em}

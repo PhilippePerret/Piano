@@ -1,6 +1,6 @@
 <% 
 ##
-## Formulaire pour créer une image
+## Formulaire pour créer une image (ADMINISTRATEUR)
 ##
 %>
 <form id="form_score" action="index.rb" method="POST" accept-charset="utf-8">
@@ -39,10 +39,12 @@
   ## Champ de saisie des deux mains
   ##
   %>
-  <div class='bold'>Main droite&nbsp;:</div>
-  <textarea id="img_right_hand" name="img_right_hand" rows="2" style="width:100%" onkeypress="$.proxy(Score,'compte_signes')()"><%= param('img_right_hand').to_s %></textarea>
-  <div class='bold'>Main gauche&nbsp;:</div>
-  <textarea id="img_left_hand" name="img_left_hand" rows="2" style="width:100%" onkeypress="$.proxy(Score,'compte_signes')()"><%= param('img_left_hand').to_s %></textarea>
+  <div id="notes_mains">
+    <div class='bold small'>Main droite&nbsp;:</div>
+    <textarea id="img_right_hand" name="img_right_hand" rows="2" style="width:100%" onkeypress="$.proxy(Score,'compte_signes')()"><%= param('img_right_hand').to_s %></textarea>
+    <div class='bold small'>Main gauche&nbsp;:</div>
+    <textarea id="img_left_hand" name="img_left_hand" rows="2" style="width:100%" onkeypress="$.proxy(Score,'compte_signes')()"><%= param('img_left_hand').to_s %></textarea>
+  </div>
   
   <% 
   ##
@@ -64,8 +66,8 @@
     <%= "Ne pas utiliser Ajax".in_checkbox(name: 'cb_not_ajax', id: 'cb_not_ajax', checked: (param('cb_not_ajax') == "on")).in_div %>
   </div>
 
-  <% if Score::current != nil %>
-    <%= Score::current.as_image.in_input_text(onfocus: "this.select()", class: 'small').in_div(class: 'small') %>
+  <% if Score::current != nil && Score::current.id != nil %>
+    <%= Score::current.as_image.in_input_text(id: 'img_balise_img', onfocus: "this.select()", class: 'small').in_div(class: 'small') %>
   <% end %>
   
   <% 

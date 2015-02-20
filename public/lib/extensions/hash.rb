@@ -28,15 +28,15 @@ class Hash
   # @param  retrait {Fixnum|String}
   #         Le retrait à appliquer à chaque donnée
   def pretty_inspect retrait = nil
-    retrait = case retrait.class.to_s
-    when 'Fixnum'   then "  " * retrait
-    when 'String'   then retrait
+    retrait = case retrait
+    when Fixnum   then "  " * retrait
+    when String   then retrait
     else ""
     end
     str = "{\n"
     self.each do |k, v|
       str += retrait + "#{k.inspect} => " +
-      case v.class.to_s
+      case v
       when Hash then "\n" + v.pretty_inspect(retrait + 1)
       else
         v.inspect

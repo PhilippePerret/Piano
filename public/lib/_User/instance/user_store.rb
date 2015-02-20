@@ -85,6 +85,7 @@ class User
   # l'enregistre le cas échéant.
   #
   def store_as_follower
+    return unless trustable?
     store( :follower_mail => mail, :user_type => :follower )
     ##
     ## On en profite pour voir si ses données de reader

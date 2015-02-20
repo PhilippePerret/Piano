@@ -15,13 +15,15 @@ class App
   def require_optional_js arr_js
     arr_js = [arr_js] unless arr_js.class == Array
     arr_js.each do |js|
-      p = path_optional_js js
-      if File.exist? p
-        add_js p
-      else
-        error "Le script optionel JS #{File.basename(p)} est introuvable."
-        error "Cherché dans path : #{p}" if offline?
-      end
+      p = path_optional js, :js
+      add_js p if File.exist? p
+    end
+  end
+  def require_optional_css arr_css
+    arr_css = [arr_css] unless arr_css.class == Array
+    arr_css.each do |css|
+      p = path_optional css, :css
+      add_js p if File.exist? p
     end
   end
   
@@ -31,18 +33,26 @@ class App
   #   - seulement avec l'affixe simple (sans '_mini')
   #   - en nom sans "_mini" (….js)
   #
-  def path_optional_js js
+  def path_optional js_or_css, type
     dos = nil
-    if js.index('/')
-      dos = File.basename(js)
+    if js_or_css.index('/')
+      dos = File.basename(js_or_css)
       dos = nil if dos == "."
     end
-    aff = File.basename(js, File.extname(js))
-    aff.concat("_mini") unless aff.end_with? "_mini"
+    aff = File.basename(js_or_css, File.extname(js_or_css))
+    if type == :js
+      aff.concat("_mini") unless aff.end_with? "_mini"
+    end
     arr = []
     arr << dos unless dos.nil?
-    arr << "#{aff}.js"
-    File.join(folder_js, 'optional', *arr)
+    arr << "#{aff}.#{type}"
+    p = File.join(app.send("folder_#{type}".to_sym), 'optional', *arr)
+    unless File.exist? p
+      chose = type == :js ? "Le script JS optionnel" : "La CSS optionnelle"
+      error "#{chose} #{File.basename(p)} est introuvable."
+      error "Cherché dans path : #{p}" if offline?
+    end
+    return p
   end
   
   ##
@@ -93,6 +103,7 @@ class App
     as_form         = options.delete(:form) == true
     as_form = false if for_mail
     next_article    = options.delete(:next_article) || options.delete(:na)
+    target          = options.delete(:target) || '_self'
     
     class_css = ['alink']
     class_css << options.delete(:class) if options.has_key? :class
@@ -114,7 +125,7 @@ class App
       ##
       ## Construction du formulaire final
       ##
-      "<form class='#{class_css}' action='index.rb' method='POST' onclick='this.submit()'>"+
+      "<form class='#{class_css}' target='#{target}' action='index.rb' method='POST' onclick='this.submit()'>"+
         (next_article.nil? ? "" : next_article.in_hidden(name:'na')) +
         other_hiddens + 
         relpath_art.in_hidden(name: 'article') +
@@ -139,7 +150,7 @@ class App
       ##
       ## Le lien retourné
       ##
-      "<a href=\"#{full_url}?#{qs}\" class='#{class_css}'>#{titre}</a>"
+      "<a href=\"#{full_url}?#{qs}\" target='#{target}' class='#{class_css}'>#{titre}</a>"
     end
   end
   

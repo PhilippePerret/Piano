@@ -29,15 +29,28 @@
       <div class='italic small'>Noter que pour laisser un commentaire vous devez impérativement être inscrit dans la mailing-list (cf. le lien ci-dessous) ou être identifié en tant que membre du cercle.</div>
       <%= row("Votre mail", param('user_mail').to_s.in_input_text(name: 'user_mail')) %>
     <% end %>
+    
     <% 
     ##
     ## Champ pour entrer et soumettre le commentaire
     ##
     %>
     <%= row("Commentaire", param('user_comments').to_s.in_textarea(name: 'user_comments', style: 'height:100px')) %>
-    <%= row("", "Envoyer".in_submit(class: 'btn'), {class: 'buttons'}) %>
+    <div class='right'>
+      <div class='small fleft'>
+        <%= "Insérer des notes de musique".in_a(onclick: "$('fieldset#fs_insert_score').toggle()", class: 'block') %>
+        <div style="height:8px"></div>
+        <% unless cu.identified? || cu.follower? %>
+          <%= link_to "S'inscrire dans la liste du Cercle", :mailing, {form: false} %>
+        <% end %>
+      </div>
+      <%= "Envoyer".in_submit(class: 'btn') %>
+    </div>
   </form>
-  <% unless cu.identified? || cu.follower? %>
-    <%= link_to "S'inscrire dans la liste du Cercle", :mailing %>
-  <% end %>
+  <% 
+  ##
+  ## Formulaire pour créer des notes (Score)
+  ##
+  %>
+  <%= view('article/element/score_form.erb') %>
 </fieldset>

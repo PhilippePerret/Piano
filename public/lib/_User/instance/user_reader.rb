@@ -35,15 +35,20 @@ class User
   # Retourne une valeur se trouvant dans le pstore
   # readers.pstore, en se servant de l'UID de l'user
   #
-  def destore_reader key
+  def destore_reader hkey
     return nil unless trustable?
+    uniq_key = hkey.class == Hash ? nil : hkey
+    hkey = {hkey => nil} unless uniq_key.nil?
     PStore::new(app.pstore_readers).transaction do |ps|
       if ps.fetch(uid, nil) == nil
         ps[uid] = default_data.merge(uid: uid)
         debug "= Les données reader ont dû être recréés dans le pstore reader…"
       end
-      ps[uid][key]
+      hkey.dup.each do |k, v|
+        hkey.merge! k => ps[uid][k]
+      end
     end
+    uniq_key ? hkey[uniq_key] : hkey
   end
   
   ##

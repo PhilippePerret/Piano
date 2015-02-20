@@ -9,9 +9,10 @@ form
 		padding:			0.2em 0.5em 0.18em
 		
 	textarea, input[type="text"], input[type="password"]
-		width:				100%
+		width:				100%    // sauf dans fieldset cf. ci-dessous
 		font-family:	inherit
 		font-size:		inherit
+	
 	
 	textarea
 		padding:				12px
@@ -32,3 +33,10 @@ form
 
 				input[type="submit"]
 					font-size:			17pt
+					
+
+fieldset
+	form
+		textarea
+			width:				90%
+					

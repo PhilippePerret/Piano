@@ -68,6 +68,9 @@ class App
   def folder_js
     @folder_js ||= File.join(folder_page, 'js')
   end
+  def folder_css
+    @folder_css ||= File.join(folder_page, 'css')
+  end
   def folder_image
     @folder_image ||= File.join(folder_page, 'img')
   end
