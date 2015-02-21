@@ -348,7 +348,11 @@ class Score
         @img_lh = param(:img_left_hand).to_s.strip
         @img_lh = nil if @img_lh == ""
         raise ScoreError, "Il faut donner les notes d'au moins une main !" if "#{@img_rh}#{@img_lh}" == ""
-        raise ScoreError, "Votre code est trop long." if "#{@img_rh}#{@img_lh}".length > 300 && param('cb_no_limit_code') != "on"
+        raise ScoreError, "Votre code est trop long." if "#{@img_rh}#{@img_lh}".length > 300 && param('cb_no_limit_code') != "on" && !cu.admin?
+        ##
+        ## Si les "mains" sont bonnes, on les nettoie
+        ##
+        nettoyer_les_mains
       when :remove
         @img_id = param(:img_id).to_s.strip
         raise ScoreError, "Il faut l'ID de l'image pour la détruire." if @img_id == ""
@@ -359,6 +363,18 @@ class Score
       
     end
     
+    def nettoyer_les_mains
+      [:img_rh, :img_lh].each do |id_main|
+        main = instance_variable_get("@#{id_main}")
+        next if main.nil?
+        ##
+        ## Suppression des retours-chariot et des espaces
+        ## superflues.
+        ##
+        main = main.gsub(/[\n\r]/, ' ').gsub(/  +/, ' ').strip
+        instance_variable_set("@#{id_main}", main)
+      end
+    end
     # ---------------------------------------------------------------------
     #
     #     Méthodes data

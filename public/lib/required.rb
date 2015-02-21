@@ -8,6 +8,8 @@ require 'cgi'
 require 'pstore'
 require 'erb'
 
+require './public/lib/_config'
+
 def require_folder fpath
   Dir["./public/lib/#{fpath}/**/*.rb"].each{|m| require m}
 end

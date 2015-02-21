@@ -3,20 +3,35 @@
 
 Module définissant la classe App::Cron qui permet de lancer les cron-jobs
 
-Il peut être utiliser par en cron normal ou depuis la partie administration
+Il peut être utiliser par en cron normal ou depuis la section
+administration (section “Cron-Job”)
 
 @usage
 
     Appeller
-     App::Cron::run
+       App::Cron::run
     pour lancer les opérations
 
 =end
+
+##
+## Constante qui est mise à true lorsque le cron est lancé de façon
+## automatique, pas forcé depuis l'administration.
+##
+
 MODE_CRON = false unless defined? MODE_CRON
+
 require './public/lib/required' # quand appelé seul
+
 class App
   class Cron
   class << self
+    
+    # Dossier "cron" au même niveau que ce cron.rb
+    def folder
+      @folder ||= File.join('.', 'public', 'lib', 'module', 'cron')
+    end
+    
     ##
     ## Si TRUE, le cron ne fait rien mais dit simplement
     ## ce qu'il ferait. Principalement en mode administration
@@ -74,7 +89,14 @@ class App
     
     def run
       mainlog "-> App::Cron::run"
+
+      ##
+      ## Initialisation
+      ##
+      init_cron
+
       log "=== Lancement du cron job#{noop ? ' (MODE NO-OP)' : ''} ===\n\n"
+      
       
       ##
       ## Dispatche dans les articles les données enregistrées au
@@ -113,6 +135,10 @@ class App
       ##
       App::Cron::PStore::remove_pstores
       
+      ##
+      ## Nettoyage du site
+      ##
+      clean_up
       
       mainlog "<- App::Cron::run"
       log "\n\n=== Fin du cron job ===\n"
@@ -177,6 +203,27 @@ Admin, voilà le résultat du cron-job courant :
       mainlog "<- App::Cron::result_to_admin"
     end
     
+    # ---------------------------------------------------------------------
+    #
+    #   Méthodes fonctionnelles
+    #
+    # ---------------------------------------------------------------------
+    
+    ##
+    #
+    # Méthode appelée au début du run
+    #
+    def init_cron
+      require_all_modules
+    end
+    
+    ##
+    #
+    # Requiert tous les modules du dossier /cron
+    #
+    def require_all_modules
+      Dir["#{folder}/**/*.rb"].each { |m| require m }
+    end
     
     # ---------------------------------------------------------------------
     #
@@ -185,16 +232,20 @@ Admin, voilà le résultat du cron-job courant :
     # ---------------------------------------------------------------------
     
     def dispatch_data_pstores_session
+      log "\n\n*** Dispatch des données des pstores-sessions ***\n"
+      log "INFO: Seuls sont traités les pstores-sessions dont la date\n" +
+          "      de dernière modification est supérieure à l'heure\n"+
+          "      courante.\n"
       il_y_a_une_heure = Time.now.to_i - 3600
       @log_pref = "    "
       Dir["./tmp/pstore_session/**"].each do |path|
         ps = App::Cron::PStore::new path
         if ps.updated_at < il_y_a_une_heure
-          log "\n>>> TRAITEMENT DE #{ps.affixe}"
+          log "\n>>> #{ps.affixe} : TRAITEMENT"
           traite_pstore_session ps
           App::Cron::PStore << ps
         else
-          log "\n--- TROP JEUNE : #{ps.affixe}"
+          log "\n--- #{ps.affixe} : TROP JEUNE"
           ps.log_pretty_data if full_infos
         end
       end

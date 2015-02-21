@@ -134,7 +134,7 @@ class App
             value = case value
             when Hash   then value_as_hash(value, 1)
             when Fixnum then treate_fixnum_value value, key
-            else value.inspect
+            else displayable_value(value)
             end
             c << "#{key.inspect} => #{value}".in_div
           end
@@ -156,11 +156,16 @@ class App
           v = case v
           when Hash   then value_as_hash(v, tab + 1)
           when Fixnum then treate_fixnum_value v, k
-          else v.inspect
+          else displayable_value(v)
           end
           "#{retrait}#{k.inspect} => #{v}".in_div
         end.join('').prepend("{").concat("}")
       end
+      
+      def displayable_value value
+        value.inspect.gsub(/</, '&lt;').gsub(/>/,'&gt;')
+      end
+      
       ##
       #
       # @return le menu select pour les pstores
