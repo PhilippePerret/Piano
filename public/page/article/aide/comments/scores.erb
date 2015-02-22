@@ -11,6 +11,10 @@ Le site comporte une fonctionnalité unique et appropriée&nbsp;: la faculté de
 
 <ul style="list-style:none">
   <li><%= link_to_ancre "Limitations préliminaires", 'limitations' %></li>
+  <li><%= link_to_ancre "Utilisation de l'interface", 'interface' %></li>
+</ul>
+<p class='bold'>Aide pour la conception de l'extrait de partition</p>
+<ul style="list-style:none">
   <li><%= link_to_ancre "Définir les notes", 'define_notes' %></li>
   <li><%= link_to_ancre "Définir les hauteurs de notes", 'define_hauteurs'%></li>
   <li><%= link_to_ancre "Définir des accords", 'define_accord' %></li>
@@ -37,14 +41,38 @@ Cette fonctionnalité ne vise pas à être utilisée pour écrire de grands frag
 Donc une limite de signes a été définie pour les codes musicaux, suffisamment grande pour permettre d'écrire plusieurs mesures simples mais pas trop dans le respect de ces limitations.
 </p>
 
+
+<%= ancre 'interface' %>
+<h3>Utilisation de l'interface</h3>
+
+<p>
+Une boite sous le formulaire de commentaire permet de concevoir les extraits de partition que vous voulez utiliser dans votre commentaire. On ouvre cette boite en cliquant sur le lien “Insérer des notes de musique”.
+</p>
+<p>
+À l'ouverture, la boite ne contient que le champ pour entrer la main droite, mais on peut ouvrir l'autre champ pour la main gauche en cliquant sur “Ouvrir” à côté de “Main gauche” sous le champ de la main droite.
+</p>
+<p>
+Une fois les notes entrées et vérifiées, cliquez sur le bouton “Créer le score” pour fabriquer l'extrait. Si votre code est valide, l'image est construite. Dans le cas contraire, un message vous annonce qu'il y a eu un problème et vous invite à corriger votre code.
+</p>
+<p>
+Corrigez le code et redemandez la création de l'image jusqu'à obtenir l'extrait désiré.
+</p>
+<p>
+Si tout s'est bien passé, l'image est affichée en bas de la boite de création de l'extrait, dans un texte témoin. Vous pouvez choisir la position de l'image dans le texte de votre commentaire grâce au menu situé sous l'illustration.
+</p>
+<p>
+Une fois l'image placée comme vous le désirez, il suffit de copier-coller à l'intérieur de votre commentaire le code fourni, qui ressemble à “[score:12:centre]”.
+</p>
+
 <%= ancre 'define_notes' %>
 <h3>Définir les notes</h3>
 
-<p>
-Vous entrez les notes <strong>en anglais</strong>. Si vous ne les connaissez pas, dites-vous simplement qu'il est toujours bon de les savoir. Avec un tout petit peu d'habitude, vous n'y penserez même plus :-).
+<p class='small'>
+Composez votre extrait par petits groupes de notes, en demandant chaque fois la création de l'image, afin de pouvoir déceler plus rapidement les erreurs inévitables.
 </p>
+
 <p>
-Voilà la table de correspondance&nbsp;:
+Vous entrez les notes <strong>en anglais</strong> et <strong>en minuscules</strong>. Voilà la table de correspondance avec les notes italiennes&nbsp;:
 </p>
 <table border="0" cellspacing="5" cellpadding="5" class='center'>
   <tr>
@@ -53,17 +81,19 @@ Voilà la table de correspondance&nbsp;:
   <tr>
 <td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td>
   </tr>
+  <tr><th colspan="7">Dans votre code&nbsp;:</th></tr>
+  <tr>
+<td>a</td><td>b</td><td>c</td><td>d</td><td>e</td><td>f</td><td>g</td>
+  </tr>
 </table>
 
 <p>
 Par exemple, le code à la main droite&nbsp;:
 </p>
 <pre>c e g c</pre>
-<p>
+<p style="width:400px;margin-bottom:4em">
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/c-e-g-c.png' class='fright' />
 … produira&nbsp;:
-</p>
-<p class='center'>
-<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/c-e-g-c.png' />
 </p>
 
 <%= ancre 'define_hauteurs' %>
@@ -83,7 +113,7 @@ Par défaut, comme nous le voyons dans l'exemple précédente, la note est plac�
 </p>
 
 <p>
-Conformément à l'usage dans la fabuleuse application <a href="http://lilypond.org" target="_blank">Lilypond</a> (qui produit en tierce partie ces images, et donc la plupart des règles énoncées ici), la hauteur d'une note dépend toujours de la hauteur de la note précédente —&nbsp;comme pour la durée. 
+Conformément à l'usage dans la fabuleuse application <a href="http://lilypond.org" target="_blank">Lilypond</a> (qui produit en tierce partie ces images, et donc la plupart des règles énoncées ici), <strong>la hauteur d'une note dépend toujours de la hauteur de la note précédente</strong> —&nbsp;il en va de même pour la durée. 
 </p>
 <%= ancre 'regle_note_la_plus_proche' %>
 <p>
@@ -99,7 +129,7 @@ Pour obtenir le SOL au-dessus du DO, consulter <%= link_to_ancre "le chapitre su
 </p>
 
 <p>
-Quand il y a ambiguïté (même intervalle), c'est la note supérieur qui est choisie. Par exemple, entre DO et FA#, il y a le même intervalle en dessous et au-dessus, c'est donc le FA# supérieur qui est choisi&nbsp;:
+Quand il y a ambiguïté (même intervalle), c'est la note supérieure qui est choisie. Par exemple, entre DO et FA#, il y a le même intervalle en dessous et au-dessus, c'est donc le FA# supérieur qui est choisi&nbsp;:
 </p>
 
 <p class='center'>
@@ -108,11 +138,15 @@ Quand il y a ambiguïté (même intervalle), c'est la note supérieur qui est ch
 
 Pour modifier l'octave, cf. <%= link_to_ancre "Modifier l'octave", 'modify_octave_note' %>.
 
+<p class='small'>
+N'hésitez pas à tâtonner au début, à ne pas changer d'octave afin de prendre l'habitude de la position de la note suivante.
+</p>
+
 <%= ancre 'define_alterations' %>
 <h3>Ajouter des altérations</h3>
 
 <p>
-Il est très simple de définir les altérations, puisqu'elles sont proches de la “réalité”&nbsp;:
+Il est très simple de définir les altérations, puisqu'elles sont proches de la “réalité” (ceci n'est pas une convention de Lilypond, vous ne pouvez l'utiliser que dans ces commentaires, mais nous ajoutons également la notation Lilypond que vous pouvez tout à fait utiliser)&nbsp;:
 </p>
 
 <table border="0" cellspacing="5" cellpadding="5">
@@ -121,18 +155,18 @@ Il est très simple de définir les altérations, puisqu'elles sont proches de l
     <col class='center'>
     <col />
   </colgroup>
-  <tr><th>Valeur</th><th>Notation</th><th>Exemple</th></tr>
+  <tr><th>Valeur</th><th>Notation</th><th class='center'>Lilypond</th><th class='center'>Exemple</th></tr>
   <tr>
-    <td>Dièse</td><td class='center'>#</td><td>c#</td>
+    <td>Dièse</td><td class='center'>#</td><td class='center'>is</td><td class='right'>c#</td>
   </tr>
   <tr>
-    <td>Double-dièse</td><td class='center'>x</td><td>dx</td>
+    <td>Double-dièse</td><td class='center'>x</td><td class='center'>isis</td><td class='right'>dx</td>
   </tr>
   <tr>
-    <td>Bémol</td><td class='center'>b</td><td>eb (mi bémol)<br />bb (si bémol)</td>
+    <td>Bémol</td><td class='center'>b</td><td class='center'>es</td><td class='right'>eb (mi bémol)<br />bb (si bémol)</td>
   </tr>
   <tr>
-    <td>Double-bémol</td><td class='center'>bb</td><td>ab (la bémol)<br />bbb (si double-bémol)</td>
+    <td>Double-bémol</td><td class='center'>bb</td><td class='center'>eses</td><td class='right'>ab (la bémol)<br />bbb (si double-bémol)</td>
   </tr>
 </table>
 
@@ -156,8 +190,9 @@ Vous pouvez indiquer les <em>altérations de précaution</em> en plaçant un “
     </td>
   </tr>
 </table>
-<%= ancre 'define_accord' %>
 
+<%= ancre 'define_accord' %>
+<h3>Définir des accords (ou tierces, etc.)</h3>
 <p>
 Pour définir des accords, on met les notes entre le signe inférieur (“&lt;”) et le signe supérieur (“&gt;”)&nbsp;:
 </p>
@@ -235,11 +270,11 @@ Etc.
 </p>
 
 <p>
-Noter que cette durée, une fois définie, <strong>affecte toutes les notes suivantes</strong>.
+Noter que cette durée, une fois définie, <strong>affecte toutes les notes suivantes</strong> jusqu'à la prochaine indication de durée.
 </p>
 
 <p>
-On utilise, comme sur une partition, <strong>un point</strong> pour ajouter la moitié de la durée de la note. Le code&nbsp;:
+On utilise, comme sur une partition, <strong>un point</strong> pour ajouter la moitié de la durée de la note.
 </p>
 
 
@@ -249,25 +284,30 @@ On utilise, comme sur une partition, <strong>un point</strong> pour ajouter la m
 <h3>Modifier l'octave de la note</h3>
 
 <p>
-Pour modifier l'octave de la note, on utilise des apostrophe simple pour passer à l'octave supérieure et des virgule pour passer à l'octave inférieure.
+Pour modifier l'octave de la note, on utilise des apostrophes simples pour passer à l'octave supérieure et des virgules pour passer à l'octave inférieure.
+</p>
+<p class='small'>
+Notez la logique visuelle de ces choix de Lilypond&nbsp;: l'apostrophe pointe vers le haut (+ 1 octave), la virgule pointe vers le bas (- 1 octave).
+</p>
+<p>
+Pour monter ou descendre de plusieurs octaves, il faut utiliser autant d'apostrophes ou de virgules.
 </p>
 
 <p>
-Le code suivant à la main gauche&nbsp;:
+Le code suivant à la main droite&nbsp;:
 </p>
 
 <pre>c c c' c c, c</pre>
 
-<p>
+<p style='width:400px;margin-bottom:3em'>
+<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/autres-octaves.png'  class='fright' />
 … produira&nbsp;:
 </p>
 
-<p class='center'>
-<img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/autres-octaves.png' />
-</p>
+
 
 <p class='small'>
-Vous remarquerez ci-dessous comment on a fait passer le SOL au-dessus du DO, alors que “naturellement” (ie sans changement d'octave), il serait placé en dessous conformément à la <%= link_to_ancre "règle expliquée ici", 'regle_note_la_plus_proche' %>.
+Vous remarquerez ci-dessus comment on a fait passer le SOL au-dessus du DO, alors que “naturellement” (ie sans changement d'octave), il serait placé en dessous conformément à la <%= link_to_ancre "règle expliquée ici", 'regle_note_la_plus_proche' %>.
 </p>
 
 <%= ancre 'define_armure' %>
@@ -310,7 +350,7 @@ Si nous avions écrit le code (sans les altérations)&nbsp;:
 </p>
 
 <p class='small'>
-Vous devez également écrire l'armure <strong>avant</strong> la métrique —&nbsp;si vous la définissez aussi&nbsp;—, comme sur une partition.
+Vous devez également écrire l'armure <strong>avant</strong> la métrique —&nbsp;si vous la définissez aussi&nbsp;— comme sur une partition.
 </p>
 
 <%= ancre 'define_metrique' %>
@@ -369,7 +409,7 @@ Le code&nbsp;:
 </p>
 
 <p class='small'>
-Notez que pour des liaisons imbriquées —&nbsp;ici celle commençant après le premier RÉ (d16)&nbsp;— il faut ajouter un “\” avant la seconde parenthèse.
+Notez que pour des liaisons imbriquées —&nbsp;ici celle commençant après le premier RÉ (d16)&nbsp;— il faut ajouter une balance “\” avant la seconde parenthèse.
 </p>
 
 <%# --------------------------------------------------------------------- %>
@@ -446,7 +486,7 @@ Le “2” ci-dessus peut être remplacé par un nombre de 2 à 99.
 <p>Exemple&nbsp;: le code&nbsp;:</p>
 <pre>2xX { &lt;c f ab&gt;1 } 4xX { c4 f ab f }</pre>
 <p>… retournera&nbsp;:</p>
-<p class='center'><img src='http://icare.alwaysdata.net/img/cp_score/test/essai.png' /></p>
+<p class='center'><img src='http://icare.alwaysdata.net/img/cp_score/aide/comments/2xX.png' /></p>
 
 <p class='small'>
 Noter que le nombre désigne le nombre de mesures, pas le nombre de signes pourcentage à utiliser
