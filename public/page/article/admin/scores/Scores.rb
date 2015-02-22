@@ -11,6 +11,23 @@ Extension administration seulement
 class Score
   app.require_module 'Score'
   class << self
+    attr_reader :logs
+    ##
+    #
+    # Retourne pour affichage les messages de l'opération
+    # demandées si elle utilise le log
+    #
+    def display_logs
+      if @logs.nil? || @logs.empty?
+        "Aucun message n'a été généré."
+      else
+        @logs.collect { |m| m.in_div }.join("")
+      end
+    end
+    def log str
+      @logs ||= []
+      @logs << str
+    end
     ##
     #
     # Demande d'édition d'une image
@@ -19,6 +36,16 @@ class Score
       img = Score::Image::new param(:img_id).to_i
       self.current = img
       img.data_in_param
+    end
+    
+    ##
+    #
+    # Rappatrie le fichier ONLINE
+    #
+    def download_online_pstore
+      fichier = Fichier::new Score::pstore
+      fichier.download
+      flash "Le pstore serveur a été ramené avec succès."
     end
     
     ##
@@ -36,12 +63,20 @@ class Score
         h.merge! root => ps[root]
       end
       ##
-      ## On regarde celles qui n'existe plus
+      ## On regarde celles qui n'existent plus
       ##
       h.dup.each do |score_src, score_data|
-        res = `curl -h "#{score_src}"`
-        debug "\n*** #{score_src}\nCURL: #{res}"
+        cmd = "curl #{score_src}"
+        res = `#{cmd}`
+        if res.index("404 Not Found")
+          log "Image #{score_src} introuvable".in_span(class: 'warning')
+        else
+          log "Image #{score_data[:affixe]} OK"
+          h.delete score_src
+        end
+        # debug "\n*** #{cmd}\nCURL: #{res}"
       end
+      
       ##
       ## On détruit celles qui restent
       ##
@@ -50,12 +85,15 @@ class Score
       ##
       PPStore::new(pstore).transaction do |ps|
         h.each do |score_src, score_data|
-          debug "Il FAUDRAIT détruire l'image ##{score_data[:id]} #{score_src}"
+          log "Il FAUDRAIT détruire l'image ##{score_data[:id]} #{score_src}"
           # ps.delete score_src
           # ps.delete score_data[:id]
         end
       end
     end
+        
+    # Traitée dans la vue
+    def show_list; end
     
   end # << self Score
   

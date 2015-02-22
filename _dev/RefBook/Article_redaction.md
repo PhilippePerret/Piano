@@ -1,11 +1,11 @@
 #Rédaction des articles
 
 
-* [Insérer un article dans l'article courant](#inserer_article_in_article)
+* [Insérer un autre article dans l'article courant](#inserer_article_in_article)
 * [Insérer des images](#inserer_images)
 * [Insérer une ancre](#inserer_balise_aname)
 * [Insérer un lien vers une ancre](#link_to_ancre)
-* [Bouton pour lancer une opération (non "o")](#bouton_to_run_operation)
+* [Bouton pour lancer une opération (NON "o")](#bouton_to_run_operation)
 * [Lien vers la page suivante](#lien_to_page_suivante)
 
 

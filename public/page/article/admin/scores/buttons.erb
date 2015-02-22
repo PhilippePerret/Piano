@@ -1,0 +1,24 @@
+<% 
+##
+## Boutons utilitaires pour la section d'administration des images
+##
+%>
+<h3>Boutons utilitaires pour les images</h3>
+<% unless Score::logs.nil? %>
+  <div class='air'>
+    <h4>Retour de l'opération</h4>
+    <%= Score::display_logs %>
+  </div>
+<% end %>
+<section id="score_buttons" class='left'>
+  <div>
+  <%= button_operation "Check des images", 'check_scores' %>
+  <%= button_operation "Liste des images", 'show_list' %>
+  </div>
+  <div class='air'>
+    
+  </div>
+  <div>
+  <%= button_operation "Downloader le pstore ONLINE", 'download_online_pstore' %>
+  </div>
+</section>
