@@ -144,7 +144,7 @@ class Score
     end
     
     def h2qs hdata # pour “Hash to Query-String”
-      hdata.collect { |k, v| "#{k}=#{CGI::escape v}" }.join('&')
+      hdata.collect { |k, v| "#{k}=#{CGI::escape v.to_s}" }.join('&')
     end
     
     def base_url
@@ -166,10 +166,12 @@ class Score
     ##
     attr_reader :id
     
+    # Les données envoyées à la fabrication de l'image
     attr_reader :img_affixe
     attr_reader :img_folder
     attr_reader :img_rh
     attr_reader :img_lh
+    attr_reader :img_resolution
     
     ##
     #
@@ -232,7 +234,8 @@ class Score
       
       data = {
         i:    img_affixe,
-        f:    img_folder
+        f:    img_folder,
+        r:    (img_resolution || '')
       }
       data.merge!( rh: img_rh ) unless img_rh.nil?
       data.merge!( lh: img_lh ) unless img_lh.nil?
@@ -343,6 +346,7 @@ class Score
       
       case op
       when :create
+        @img_resolution = param(:img_resolution).to_i if cu.admin?
         @img_rh = param(:img_right_hand).to_s.strip
         @img_rh = nil if @img_rh == ""
         @img_lh = param(:img_left_hand).to_s.strip
@@ -394,7 +398,7 @@ class Score
     #
     def data_in_param
       hdata = {}
-      [:id, :src, :ticket, :folder, :affixe, :right_hand, :left_hand].each do |key|
+      [:id, :src, :ticket, :folder, :affixe, :right_hand, :left_hand, :resolution].each do |key|
         if data.nil?
           hdata.merge! "img_#{key}" => ""
         else
@@ -429,6 +433,7 @@ class Score
     def reader_uid;   @reader_uid   ||= data[:reader_uid]   end
     def right_hand;   @right_hand   ||= data[:right_hand]   end
     def left_hand;    @left_hand    ||= data[:left_hand]    end
+    def resolution;   @resolution   ||= data[:resolution]   end
     
     def data
       @data ||= begin
@@ -503,6 +508,7 @@ class Score
         id:             rd[:img_id],
         affixe:         rd[:image_affixe],
         src:            rd[:img_src],
+        resolution:     rd[:resolution] || rd[:img_resolution],
         ticket:         rd[:ticket_authentification],
         folder:         rd[:local_folder],
         reader_uid:     cu.uid,

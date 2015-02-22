@@ -63,9 +63,9 @@ class Hash
   # Remplace les "true", "false", "null" par true, false, nil
   def values_str_to_real
     self.each do |k,v|
-      v = case v.class.to_s
-      when 'Hash', 'Array' then v.values_str_to_real
-      when 'String' then
+      v = case v
+      when Hash, Array then v.values_str_to_real
+      when String then
         case v
         when "true" then true
         when "false" then false

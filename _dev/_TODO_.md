@@ -1,6 +1,6 @@
-* Essayer la méthode check_score de Score.rb
-
 * Essayer de définir la taille du PNG que sort Lilypond
+  => dresolution
+  > Ajouter un menu en admin
 
 * Automator pour faire le fichier SON (depuis le AIFF jusqu'au MP3 dans un bon dossier où le fichier sera automatiquement chargé — cf. ci-dessous)
 

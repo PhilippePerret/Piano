@@ -86,6 +86,7 @@ class Score
       PPStore::new(pstore).transaction do |ps|
         h.each do |score_src, score_data|
           log "Il FAUDRAIT détruire l'image ##{score_data[:id]} #{score_src}"
+          log "(POUR LE MOMENT ÇA N'EST PAS ENCORE IMPLÉMENTÉ, IL FAUDRAIT POUVOIR CONFIRMER)"
           # ps.delete score_src
           # ps.delete score_data[:id]
         end

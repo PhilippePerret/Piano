@@ -18,7 +18,9 @@
   <div class='air'>
     
   </div>
-  <div>
-  <%= button_operation "Downloader le pstore ONLINE", 'download_online_pstore' %>
-  </div>
+  <% if offline? %>
+    <div>
+    <%= button_operation "Downloader le pstore ONLINE", 'download_online_pstore' %>
+    </div>
+  <% end %>
 </section>

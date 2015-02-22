@@ -48,6 +48,19 @@
   
   <% 
   ##
+  ## Pour le choix de la résolution
+  ##
+  param(:img_resolution => "72") unless param(:img_resolution).to_s != ""
+  %>
+  <%=
+  "Résolution " + (40..300).collect do |ires|
+    ires.to_s.in_option(value: ires, selected: (ires == param(:img_resolution).to_i))
+  end.join('').in_select(name: 'img_resolution', id: 'img_resolution') +
+  " (72 = petit, 150-200 = article, 300 = haute qualité)".in_span(class: 'small')
+  %>
+  
+  <% 
+  ##
   ## Options cachées
   ##
   %>
