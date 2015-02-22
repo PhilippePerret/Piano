@@ -59,16 +59,14 @@ class App
     #
     # Tous les articles définis (donc au moins visités une fois)
     #
+    # Sauf les articles administration (dossier "admin/")
+    #
     def articles
       @articles ||= begin
         h = {}
-        PStore::new(pstore_articles).transaction do |ps|
-          keys = ps.roots.dup
-          keys.delete :last_id
-          keys.each do |idart|
-            next if ps[idart][:idpath].start_with? 'admin/'
-            h.merge! idart => ps[idart]
-          end
+        PPStore::new(pstore_articles).each_root(except: :last_id) do |ps, idart|
+          next if ps[idart][:idpath].start_with? 'admin/'
+          h.merge! idart => ps[idart]
         end
         h
       end

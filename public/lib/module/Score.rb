@@ -91,7 +91,7 @@ class Score
     def instances
       @instances ||= begin
         h = {}
-        PStore::new(pstore).transaction do |ps|
+        PPStore::new(pstore).transaction do |ps|
           ps.roots.each do |img_src|
             ##
             ## Pour ne prendre que les sources (src)
@@ -267,7 +267,7 @@ class Score
     #
     def define_id
       new_id = nil
-      PStore::new(Score::pstore).transaction do |ps|
+      PPStore::new(Score::pstore).transaction do |ps|
         new_id = ps.fetch( :last_id, 0 ) + 1
         ps[:last_id] = new_id
       end
@@ -317,12 +317,12 @@ class Score
       # pstore qui serait verrouillé (ci-dessous)
       image_data = data
       nb_avant, nb_apres = nil, nil # pour control
-      PStore::new(Score::pstore).transaction do |ps| 
+      PPStore::new(Score::pstore).transaction do |ps| 
         nb_avant = ps.roots.count.to_i
         ps.delete image_data[:src]
         ps.delete image_data[:id]
       end
-      PStore::new(Score::pstore).transaction do |ps| 
+      PPStore::new(Score::pstore).transaction do |ps| 
         nb_apres = ps.roots.count.to_i
       end
       debug "= Destruction du score dans le pstore #{image_data[:id]}/#{image_data[:src]}"
@@ -435,7 +435,7 @@ class Score
         if @src.nil? && @id.nil? # après la destruction
           {}
         else
-          PStore::new(Score::pstore).transaction do |ps|
+          PPStore::new(Score::pstore).transaction do |ps|
             @src = ps[@id] if @src.nil? && @id != nil
             @src != nil || raise( "Le :src de l'image devrait être défini pour pouvoir relever ses data…" )
             ps[@src]
@@ -477,7 +477,7 @@ class Score
     def store_new_image
       data_image_from_data_curl_returned
       debug "[store_new_image] @data : #{@data.pretty_inspect}"
-      PStore::new(Score::pstore).transaction do |ps|
+      PPStore::new(Score::pstore).transaction do |ps|
         if id.nil?
           ##
           ## Nouvel clé/ID

@@ -14,12 +14,8 @@ class App
     #
     def set hdata
       hdata.merge! :updated_at => Time.now.to_i
-      PStore::new(App::Article::pstore).transaction do |ps|
-        hdata.each do |prop, value|
-          ps[id][prop] = value
-          self.instance_variable_set("@#{prop}", value)
-        end
-      end
+      ppstore self.class.pstore, hdata
+      hdata.each { |k, v| self.instance_variable_set("@#{k}", v) }
     end
     
     ##
@@ -27,14 +23,7 @@ class App
     # Retourne la valeur de la propriété +key+
     #
     def get key
-      PStore::new(App::Article::pstore).transaction do |ps|
-        dart = ps.fetch(id, nil)
-        unless dart.nil?
-          dart[key]
-        else
-          nil
-        end
-      end
+      data.nil? ? nil : data[key]
     end
     
     # ---------------------------------------------------------------------
@@ -67,11 +56,7 @@ class App
     # Retourne toutes les données pstore de l'article
     #
     def data
-      @data ||= begin
-        PStore::new(App::Article::pstore).transaction do |ps|
-          dart = ps.fetch(id, nil)
-        end
-      end
+      @data ||= ppdestore( self.class.pstore, id )
     end
     
 

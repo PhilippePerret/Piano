@@ -73,7 +73,7 @@ class App
     # ci-dessus
     #
     def add_cote dcote
-      PStore::new(self.class.pstore_cotes).transaction do |ps|
+      PPStore::new(self.class.pstore_cotes).transaction do |ps|
         unless ps.roots.include? id
           ps[id] = {cote_finale: nil, cotes: [], updated_at: nil}
         end
@@ -91,7 +91,7 @@ class App
     # des cotes.
     #
     def set_cote_finale dcotef
-      PStore::new(self.class.pstore_cotes).transaction do |ps|
+      PPStore::new(self.class.pstore_cotes).transaction do |ps|
         ps[id][:cote_finale] = dcotef
         ps[id][:updated_at]  = Time.now.to_i
       end

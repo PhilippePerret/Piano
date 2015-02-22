@@ -24,7 +24,7 @@ class App
     #
     def valider_comments comments_id
       raise "Pirate !" unless cu.admin?
-      PStore::new(self.class.pstore_comments).transaction do |ps|
+      PPStore::new(self.class.pstore_comments).transaction do |ps|
         ps[id][comments_id][:ok] = true
       end
     end
@@ -37,7 +37,7 @@ class App
     #
     def invalider_comments comments_id
       raise "Pirate !" unless cu.admin?
-      PStore::new(self.class.pstore_comments).transaction do |ps|
+      PPStore::new(self.class.pstore_comments).transaction do |ps|
         ps[id][comments_id][:ok] = false
       end
     end
@@ -51,7 +51,7 @@ class App
     #
     def kill_comment comments_id
       raise "Pirate !" unless cu.admin?
-      PStore::new(self.class.pstore_comments).transaction do |ps|
+      PPStore::new(self.class.pstore_comments).transaction do |ps|
         ps[id][comments_id] = {killed: true, ok: false, i: comments_id}
       end
     end
@@ -153,7 +153,7 @@ class App
         only_article_id = filtre.delete(:article)
         only_unvalided  = filtre.delete(:unvalided)
         only_valided    = filtre.delete(:valided)
-        PStore::new(App::Article::pstore_comments).transaction do |ps|
+        PPStore::new(App::Article::pstore_comments).transaction do |ps|
           ps.roots.each do |art_id|
             if only_article_id
               next unless art_id == only_article_id

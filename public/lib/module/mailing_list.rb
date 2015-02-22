@@ -48,7 +48,7 @@ class App
         ##
         ## On ajoute l'utilisateur dans le pstore des followers
         ##
-        nombre_followers = PStore::new(pstore_followers).transaction do |ps|
+        nombre_followers = PPStore::new(pstore_followers).transaction do |ps|
           last_id = ps.fetch(:last_id, 0) + 1
           ps[umail]   = {
             id:         last_id, 
@@ -103,9 +103,7 @@ class App
       ##
       # @return TRUE si le follower de mail +umail+ existe
       def follower_exists? umail
-        PStore::new(pstore_followers).transaction do |ps|
-          ps.roots.include? umail
-        end
+        ppdestore( pstore_followers, umail ) != nil
       end
       def pstore_followers; @pstore_followers ||= App::current::pstore_followers end      
     end # << self Mailing

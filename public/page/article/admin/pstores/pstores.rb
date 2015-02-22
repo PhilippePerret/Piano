@@ -25,7 +25,7 @@ class App
         code = param('code_to_eval').to_s.strip
         raise "Il faut définir le code à évaluer" if code == ""
         raise "Il faut choisir le pstore courant dans le menu" if current_pstore.nil?
-        PStore::new(current_pstore_path).transaction do |ps|
+        PPStore::new(current_pstore_path).transaction do |ps|
           eval code
         end
       rescue Exception => e
@@ -128,7 +128,7 @@ class App
       def show_data_current
         return "" if current_pstore.nil?
         c = ""
-        PStore::new(current_pstore_path).transaction do |ps|
+        PPStore::new(current_pstore_path).transaction do |ps|
           ps.roots.each do |key|
             value = ps[key]
             value = case value

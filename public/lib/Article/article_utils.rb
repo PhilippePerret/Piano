@@ -8,12 +8,7 @@ class App
     #
     def remove_data
       raise "Pirate !" unless offline?
-      removed = false
-      PStore::new(App::Article::pstore).transaction do |ps|
-        ps.delete id
-        removed = ps.fetch(id,nil) === nil
-      end
-      return removed
+      ppstore_remove( self.class.pstore, id )
     end
     
     
@@ -23,8 +18,9 @@ class App
     # crée
     #
     def check_existence_article_data
-      PStore::new(self.class.pstore).transaction do |ps|
-        ps[id] = default_data if ps.fetch(id, nil).nil?
+      if ppdestore(self.class.pstore, @id).nil?
+        # raise "SITE EN D&Eacute;BUGGAGE PENDANT UNE HEURE. Merci de votre patience."
+        ppstore(self.class.pstore, @id => default_data)
       end
     end
     
@@ -36,26 +32,27 @@ class App
     # pas trouvé.
     #
     def get_id_in_table_or_create
-      id = nil
-      PStore::new(App::Article::pstore_idpath_to_id).transaction do |ps|
-        id = ps.fetch( idpath, nil )
-        return id unless id.nil?
-
-        # Cet article n'a pas encore été consigné
-        id = ps.fetch(:last_id, 0) + 1
-        ps[:last_id] = id
-        ps[id]      = idpath
-        ps[idpath]  = id
+      @id = ppdestore self.class.pstore_idpath_to_id, idpath
+      if @id.nil?
+        ##
+        ## Un article qui n'a pas encore été consigné
+        ##
+        PPStore::new(self.class.pstore_idpath_to_id).transaction do |ps|
+          @id = ps.fetch(:last_id, 0) + 1
+          ps[:last_id]  = @id
+          ps[@id]       = idpath
+          ps[idpath]    = @id
+        end
       end
-
-      @id = id
-
       ##
-      ## Force la création des données de l'article
+      ## Force la création des données de l'article si nécessaire.
+      ## Note : On ne fait pas ça dans la transaction précédente parce
+      ## qu'il peut arriver par erreur que l'ID soit défini et pas les
+      ## données de l'article…
       ##
       check_existence_article_data
-
-      return id
+      
+      return @id
     end
     
     

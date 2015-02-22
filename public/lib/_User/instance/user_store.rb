@@ -16,8 +16,7 @@ class User
   # +hdata+ est un {Hash} contenant les données à consigner
   #
   def store hdata
-    hdata.merge! updated_at: Time.now.to_i
-    PStore::new(pstore_session).transaction { |ps| hdata.each { |k, v| ps[k] = v } }
+    ppstore pstore_session, hdata
   end
   
   ##
@@ -42,7 +41,7 @@ class User
   def destore hkey, default_value = nil
     case hkey
     when Hash
-      PStore::new(pstore_session).transaction do |ps|
+      PPStore::new(pstore_session).transaction do |ps|
         hkey.dup.each do |k, v|
           value = ps.fetch(k, :unfounded_value)
           hkey.merge!( k => value ) unless value == :unfounded_value
@@ -51,14 +50,14 @@ class User
       hkey
     when Array
       h = {}
-      PStore::new(pstore_session).transaction do |ps|
+      PPStore::new(pstore_session).transaction do |ps|
         hkey.each do |k|
           h.merge! k => ps.fetch(k, default_value)
         end
       end
       h
     else
-      PStore::new(pstore_session).transaction do |ps|
+      PPStore::new(pstore_session).transaction do |ps|
         ps.fetch hkey, default_value
       end
     end

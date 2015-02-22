@@ -27,6 +27,22 @@ pianistique.
     ppstore_remove <key>
       Détruit (sans pitié) une clé dans le pstore.
 
+  Pour exécuter une opération plus complexe :
+
+    PPStore::new(<path>).transaction do |ps|
+      ... code à exécuter dans le pstore ...
+    end
+
+  Pour exécuter une action sur toutes les clés
+
+    PPStore::new(<path>).each_root[(except: [...])] do |ps, root|
+      ... code à exécuter ...
+    end
+
+    Noter que le block retourne toutes les valeurs passées en revue,
+    sauf la valeur interne :updated_at.
+    
+
 @explication
 
   Au lieu d'utiliser PStore::new etc. pour les transactions, on fait appel
@@ -84,7 +100,8 @@ class PPStore
     set_busy
     resultat = true
     pstore.transaction do |ps|
-      hdata.each do |k, v| ps[k] = v end
+      hdata.each { |k, v| ps[k] = v }
+      ps[:updated_at] = Time.now.to_i
       sleep sleep_time unless sleep_time.nil? # pour test
     end
   rescue Exception => e
@@ -108,6 +125,8 @@ class PPStore
     pstore.transaction do |ps|
       ps.delete key
       resultat = ps.fetch(key, :unfound) == :unfound
+      ps[:updated_at] = Time.now.to_i
+      sleep sleep_time unless sleep_time.nil?
     end
   rescue Exception => e
     debug e
@@ -139,6 +158,55 @@ class PPStore
     end
   end
   
+  ##
+  #
+  # = main =
+  #
+  # Méthode qui simule le transaction normal
+  #
+  def transaction sleep_time = nil
+    sleep 0.1 while busy?
+    set_busy
+    resultat = nil
+    pstore.transaction do |ps|
+      resultat = yield ps
+      sleep sleep_time unless sleep_time.nil?
+    end
+  rescue Exception => e
+    debug e
+  ensure
+    unset_busy
+    return resultat # bizarre : sans "return, ça ne retourne pas"
+  end
+  
+  ##
+  #
+  # = main =
+  #
+  # Permet une boucle sur chaque clé du pstore, avec un filtre possible
+  #
+  def each_root filtre = nil, sleep_time = nil
+    filtre ||= {except: []}
+    filtre.merge! except: [filtre[:except]] unless filtre[:except].class == Array
+    filtre[:except] << :updated_at unless filtre[:except].include? :updated_at
+    sleep 0.1 while busy?
+    set_busy
+    resultat = nil
+    pstore.transaction do |ps|
+      resultat = ps.roots.collect do |root|
+        next :_unexcepted_key if filtre[:except].include? root
+        yield ps, root
+      end.reject{ |e| e == :_unexcepted_key }
+      sleep sleep_time unless sleep_time.nil?
+    end
+  rescue Exception => e
+    unset_busy
+    raise e
+  ensure
+    unset_busy
+    return resultat # bizarre : sans "return, ça ne retourne pas"
+  end
+  
   # ---------------------------------------------------------------------
   #
   #     Méthodes d'état et de changement d'état
@@ -156,9 +224,11 @@ class PPStore
   
   def set_busy
     File.open(path_busy_file, 'wb'){|f| f.write Time.now.to_s }
+    pstore.transaction { |ps| ps.commit } # au cas où il aurait été bloqué
   end
   
   def unset_busy
+    pstore.transaction { |ps| ps.commit } # au cas où il aurait été bloqué
     File.unlink path_busy_file if File.exist? path_busy_file
   end
   
@@ -193,7 +263,9 @@ class PPStore
     @path ||= begin
       p = path_init.to_s
       p.concat(".pstore") unless p.end_with? ".pstore"
-      p.prepend("./") unless p.start_with? "./"
+      unless p.start_with? "/"
+        p.prepend("./") unless p.start_with? "./"
+      end
       File.expand_path p
     end
   end

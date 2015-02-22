@@ -48,11 +48,8 @@ class App
       def instances
         @instances ||= begin
           h = {}
-          PStore::new(app.pstore_new_sujets).transaction do |ps|
-            ps.roots.each do |art_id|
-              next if art_id == :last_id
-              h.merge! art_id => new( art_id )
-            end
+          PPStore::new(app.pstore_new_sujets).each_root(except: :last_id) do |ps, art_id|
+            h.merge! art_id => new( art_id )
           end
           h
         end
@@ -63,7 +60,7 @@ class App
       #
       def sujet_existe? sujet
         found = false
-        PStore::new(app.pstore_new_sujets).transaction do |ps|
+        PPStore::new(app.pstore_new_sujets).transaction do |ps|
           ps.roots.collect do |root|
             next if root == :last_id
             if ps[root][:titre] == sujet
@@ -120,12 +117,11 @@ class App
     end
     
     def save
-      data.merge! :updated_at => Time.now.to_i
-      PStore::new(app.pstore_new_sujets).transaction { |ps| ps[id] = data }
+      ppstore app.pstore_new_sujets, id => data
     end
     
     def remove
-      PStore::new(app.pstore_new_sujets).transaction { |ps| ps.delete id }
+      ppstore_remove app.pstore_new_sujets, id
     end
     
     ##
@@ -187,16 +183,14 @@ class App
     def path;         @path         ||= data[:path]           end
     
     def data
-      @data ||= begin
-        PStore::new(app.pstore_new_sujets).transaction { |ps| ps.fetch id, nil }
-      end
+      @data ||= ppdestore( app.pstore_new_sujets, id )
     end
     
     def set_valided
-      PStore::new(app.pstore_new_sujets).transaction { |ps| ps[id][:valided] = true }
+      PPStore::new(app.pstore_new_sujets).transaction { |ps| ps[id][:valided] = true }
     end
     def unset_valided
-      PStore::new(app.pstore_new_sujets).transaction { |ps| ps[id][:valided] = false }
+      PPStore::new(app.pstore_new_sujets).transaction { |ps| ps[id][:valided] = false }
     end
     
     def set_values

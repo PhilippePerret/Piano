@@ -4,14 +4,16 @@ begin
 
   
   require './public/lib/required'
+  debug "[LV-1] !!! -> main.rb" if LEVEL_DEBUG > 0
 
 
   ##
   ## On détruit la dernière session
   ##
-  debug "[LV-1] !!! main.rb --> app.session.delete_last" if LEVEL_DEBUG > 0
+  debug "[LV-1] main.rb --> app.session.delete_last" if LEVEL_DEBUG > 0
   app.session.delete_last
       
+  
   ##
   ## Si opération appelée par ticket
   ##
@@ -33,6 +35,7 @@ begin
   debug "[LV-1] main.rb --> app.oper" if LEVEL_DEBUG > 0
   app.opere
 
+
   ##
   ## On charge l'article avant de concevoir le code de la
   ## page pour avoir tous les éléments
@@ -50,6 +53,8 @@ begin
   ##
   debug "[LV-1] main.rb --> app.session['last_article'] = #{app.article.id}" if LEVEL_DEBUG > 0
   app.session['last_article'] = app.article.id
+
+  # raise "SITE EN D&Eacute;BUGGAGE PENDANT UNE HEURE. Merci de votre patience."
 
   # raise "SITE EN D&Eacute;BUGGAGE PENDANT UNE HEURE. Merci de votre patience."
 

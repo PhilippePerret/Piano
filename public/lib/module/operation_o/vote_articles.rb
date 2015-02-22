@@ -26,7 +26,7 @@ class App
         ## On peut enregistrer les votes sur les articles
         ##
         ordre = param('o1').split('-').collect{|e| e.to_i}
-        PStore::new(App::Article::pstore).transaction do |ps|
+        PPStore::new(App::Article::pstore).transaction do |ps|
           vote = 20
           ordre.each do |article_id|
             ps[article_id][:votes] += vote

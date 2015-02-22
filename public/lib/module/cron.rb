@@ -157,25 +157,25 @@ class App
       ##
       ## Nombre d'IP enregistrées
       ##
-      nb_ips = ::PStore::new(app.pstore_ip_to_uid).transaction { |ps| ps.roots.count }
+      nb_ips = ::PPStore::new(app.pstore_ip_to_uid).transaction { |ps| ps.roots.count }
       log "Nombre d'IPs enregistrées : #{nb_ips}"
 
       ##
       ## Nombre de membres
       ##
-      nb_membres = ::PStore::new(app.pstore_membres).transaction { |ps| ps.roots.count - 1 }
+      nb_membres = ::PPStore::new(app.pstore_membres).transaction { |ps| ps.roots.count - 1 }
       log "Nombre de membres : #{nb_membres}"
       
       ##
       ## Nombre de followers
       ##
-      nb_followers = ::PStore::new(app.pstore_followers).transaction { |ps| ps.roots.count - 1 }
+      nb_followers = ::PPStore::new(app.pstore_followers).transaction { |ps| ps.roots.count - 1 }
       log "Nombre de followers : #{nb_followers}"
       
       ##
       ## Nombre de Readers
       ##
-      nb_readers = ::PStore::new(app.pstore_readers).transaction { |ps| ps.roots.count - 1 }
+      nb_readers = ::PPStore::new(app.pstore_readers).transaction { |ps| ps.roots.count - 1 }
       log "Nombre de readers : #{nb_readers}"
       
       log "\n" + ("-"*80) + "\n"
@@ -427,16 +427,15 @@ Admin, voilà le résultat du cron-job courant :
       def affixe;       @affixe       ||= File.basename(path, File.extname(path)) end
       
       def get key, def_value = nil
-        ::PStore::new(path).transaction { |ps| ps.fetch key, def_value }
+        res = ppdestore path, {key => def_value}
+        res[key]
       end
       
       def data
         @data ||= begin
           h = {}
-          ::PStore::new(path).transaction do |ps|
-            ps.roots.each do |k|
-              h.merge! k => ps[k]
-            end
+          PPStore::new(path).each_root do |ps, root|
+            h.merge! root => ps[root]
           end
           h
         end

@@ -41,7 +41,6 @@ class User
       ##
       if last_article[:duree] < 15
         data_articles.delete last_article[:id]
-        debug "= Durée de lecture trop courte => suppression de l'article"
       else
         ##
         ## Peut-être l'article a été déjà lu au cours de

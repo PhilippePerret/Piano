@@ -77,8 +77,7 @@ class Fichier
     # @return la date de dernier upload/download
     #
     def get_last_time_of path, sens = :upload
-      key = "#{path}-#{sens}"
-      PStore::new(pstore).transaction { |ps| ps.fetch key, nil }
+      ppdestore pstore, "#{path}-#{sens}"
     end
     
     ##
@@ -86,8 +85,7 @@ class Fichier
     # Retourne la date de modification du fichier
     #
     def get_last_mtime_of path
-      key = "#{path}-mtime"
-      PStore::new(pstore).transaction { |ps| ps.fetch( key, 0 ).to_i }
+      ppdestore(pstore, "#{path}-mtime") || 0
     end
     
     ##
@@ -102,7 +100,7 @@ class Fichier
     #
     def set_last_times_of path, sens = :upload, time = nil
       mtime = File.stat(path).mtime.to_i
-      PStore::new(pstore).transaction do |ps| 
+      PPStore::new(pstore).transaction do |ps| 
         ps["#{path}-#{sens}"] = time || Time.now.to_i 
         ps["#{path}-mtime"]   = mtime
       end

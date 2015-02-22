@@ -31,9 +31,7 @@ class User
     # Retourne NIL si le follower n'existe pas
     #
     def get_as_follower umail
-      udata = PStore::new(app.pstore_followers).transaction do |ps|
-        ps.fetch umail, nil
-      end
+      udata = ppdestore app.pstore_followers, umail
       return nil if udata.nil?
       u = User::new
       udata[:id] += 1000000 # pour éviter les problèmes
@@ -49,9 +47,7 @@ class User
     #
     def get_by_mail umail
       user_found = nil
-      PStore::new(table_mail_to_id).transaction do |ps|
-        user_found = ps.fetch(umail, nil)
-      end
+      user_found = ppdestore table_mail_to_id, umail
       unless user_found.nil?
         user_found = User::get( user_found )
       else
@@ -60,23 +56,30 @@ class User
         ## l'enregistre dans la table de correspondance si on
         ## l'a trouvé
         ##
-        PStore::new(pstore).transaction do |ps|
-          user_ids = ps.roots.reject{|e| e == :last_id}
-          user_ids.each do |user_id|
-            if ps[user_id][:mail] == umail
-              user_found = User::get(user_id)
-              break
-            end
+        PPStore::new(pstore).each_root(except: :last_id) do |user_id|
+          if ps[user_id][:mail] == umail
+            user_found = User::get(user_id)
+            break
           end
         end
+        # PPStore::new(pstore).transaction do |ps|
+        #   user_ids = ps.roots.reject{|e| e == :last_id}
+        #   user_ids.each do |user_id|
+        #     if ps[user_id][:mail] == umail
+        #       user_found = User::get(user_id)
+        #       break
+        #     end
+        #   end
+        # end
         unless user_found.nil?
           ##
-          ## Il faut l'enregistre dans la table de correspondance
+          ## Il faut l'enregistrer dans la table de correspondance
           ##
-          PStore::new(table_mail_to_id).transaction do |ps|
-            ps[user_found.id]   = user_found.mail
-            ps[user_found.mail] = user_found.id
-          end
+          duser = {
+            user_found.mail => user_found.id,
+            user_found.id   => user_found.mail
+          }
+          ppstore table_mail_to_id, duser
           debug "Donnée ajoutée à la table de correspondance mail<->id (#{user_found.id}&lt;->#{user_found.mail})"
         end
       end
@@ -90,7 +93,7 @@ class User
     # ou nil
     #
     def get_uid_from_ip rip
-      PStore::new(app.pstore_ip_to_uid).transaction { |ps| ps.fetch rip, nil }
+      ppdestore app.pstore_ip_to_uid, rip
     end
     
     ##
@@ -109,7 +112,6 @@ class User
       debug "app.session['follower_mail'] : #{app.session['follower_mail'].inspect}"
       
       if app.session['user_id'].to_s != ""
-        debug "-> User identifié"
         ##
         ## Ce n'est pas la première connexion de cette
         ## session
@@ -130,26 +132,23 @@ class User
         u.uid = app.session['reader_uid']
         u.instance_variable_set('@is_identified', true)
       elsif app.session['follower_mail'].to_s != ""
-        debug "-> Follower reconnu"
         u.uid = app.session['reader_uid']
       else
         u = User::new
         User::current = u
         if app.session['session_id'].to_s != ""
-          debug "-> Rechargement simple reader"
           ##
           ## Ce n'est pas la première connexion de cette
           ## session
           ##
           u.uid = app.session['reader_uid']
-          debug "= UID récupéré en session : #{u.uid.inspect}"
+          debug "= UID en session : #{u.uid.inspect}"
           if u.uid.nil?
             # Problème… encore et toujours… marre…
             u.define_uid
             debug "= UID redéfini (-> #{u.uid} / en session : #{app.session['reader_uid']})"
           end
         else
-          debug "-> Toute première connexion"
           ##
           ## C'est la toute première connexion de cette
           ## session
@@ -213,13 +212,10 @@ class User
       @all ||= begin
         h = {all: {}}
         GRADES.keys.each do |gid| h.merge! gid => {} end
-        PStore::new(pstore).transaction do |ps|
-          user_ids = ps.roots.reject{|e| e == :last_id}
-          user_ids.each do |user_id|
-            u = User::get(user_id)
-            h[:all].merge! user_id => u
-            h[ps[user_id][:grade]].merge! user_id => u
-          end
+        PPStore::new(pstore).each_root(except: :last_id) do |ps, user_id|
+          u = User::get user_id
+          h[:all].merge! user_id => u
+          h[ps[user_id][:grade]].merge! user_id => u
         end
         h
       end

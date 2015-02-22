@@ -52,7 +52,7 @@ class App
       end
       
       def save_new_sujet
-        PStore::new(app.pstore_new_sujets).transaction do |ps|
+        PPStore::new(app.pstore_new_sujets).transaction do |ps|
           id = ps.fetch(:last_id, 0) + 1
           ps[:last_id] = id
           ps[id] = data_new_sujet
@@ -94,11 +94,8 @@ class App
       # Retourne une liste UL des sujets déjà enregistrés
       #
       def liste_sujets_saved
-        titres = PStore::new(app.pstore_new_sujets).transaction do |ps|
-          ps.roots.collect do |root|
-            next if root == :last_id
-            ps[root][:titre]
-          end
+        titres = PPStore::new(app.pstore_new_sujets).each_root(except: :last_id) do |ps, root|
+          ps[root][:titre]
         end
         titres.collect do |titre|
           next if titre.nil? # :last_id

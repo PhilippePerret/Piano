@@ -19,7 +19,7 @@ class User
   #
   def store_reader hdata
     return nil unless trustable?
-    PStore::new(app.pstore_readers).transaction do |ps|
+    PPStore::new(app.pstore_readers).transaction do |ps|
       if ps.fetch(uid, nil) == nil
         ps[uid] = default_data.merge(uid: uid)
         debug "= Les données reader ont dû être recréés dans le pstore reader…"
@@ -39,7 +39,7 @@ class User
     return nil unless trustable?
     uniq_key = hkey.class == Hash ? nil : hkey
     hkey = {hkey => nil} unless uniq_key.nil?
-    PStore::new(app.pstore_readers).transaction do |ps|
+    PPStore::new(app.pstore_readers).transaction do |ps|
       if ps.fetch(uid, nil) == nil
         ps[uid] = default_data.merge(uid: uid)
         debug "= Les données reader ont dû être recréés dans le pstore reader…"
@@ -58,9 +58,7 @@ class User
   #
   def data_reader
     return nil unless trustable?
-    @data_reader ||= begin
-      PStore::new(app.pstore_readers).transaction { |ps| ps.fetch uid, nil }
-    end
+    @data_reader ||= ppdestore( app.pstore_readers, uid )
   end
     
   ##
@@ -79,7 +77,7 @@ class User
     ## Définir un nouvel UID de lecteur
     ##
     new_uid = nil
-    PStore::new(app.pstore_readers).transaction do |ps|
+    PPStore::new(app.pstore_readers).transaction do |ps|
       if new_uid.nil?
         new_uid = ps.fetch(:last_uid, 0) + 1 
         ps[:last_uid] = new_uid
@@ -122,9 +120,7 @@ class User
   #
   def get_uid_via_pointeur_ip
     return nil unless trustable?
-    PStore::new(app.pstore_ip_to_uid).transaction do |ps|
-      ps.fetch( remote_ip, nil)
-    end
+    ppdestore app.pstore_ip_to_uid, remote_ip
   end
   
   ##
@@ -136,10 +132,8 @@ class User
   #
   def create_pointeur_ip
     return nil unless trustable?
-    PStore::new(app.pstore_ip_to_uid).transaction do |ps|
-      ps[remote_ip] = uid
-      debug "Nouveau pointeur #{remote_ip} (remote_ip) -> #{uid} (uid)"
-    end
+    ppstore app.pstore_ip_to_uid, remote_ip => uid
+    debug "Nouveau pointeur #{remote_ip} (remote_ip) -> #{uid} (uid)"
   end
  
   ##
@@ -182,7 +176,7 @@ class User
     ## Pour une nouvelle session, il faut la définir dans les données
     ## du lecteur.
     ##
-    PStore::new(app.pstore_readers).transaction do |ps| 
+    PPStore::new(app.pstore_readers).transaction do |ps| 
       ps[uid][:session_id] = new_session_id
       debug "= Enregistrement de la session-id dans les données du lecteur (#{new_session_id})"
     end
@@ -191,7 +185,7 @@ class User
     ## Ajout du pointeur de session-id et destruction de l'ancien
     ## s'il existait.
     ##
-    PStore::new(app.pstore_ip_to_uid).transaction do |ps|
+    PPStore::new(app.pstore_ip_to_uid).transaction do |ps|
       ps[new_session_id] = uid
       ps.delete(old_session_id) unless old_session_id.nil?
       debug "= Actualisation du pointeur de session-id"
@@ -215,7 +209,7 @@ class User
     ##
     ## Destruction dans la table des followers
     ##
-    PStore::new(app.pstore_followers).transaction do |ps|
+    PPStore::new(app.pstore_followers).transaction do |ps|
       unless ps.fetch(mail, :unfound) == :unfound
         ps.delete mail
         debug "= Suppression de table des followers OK"

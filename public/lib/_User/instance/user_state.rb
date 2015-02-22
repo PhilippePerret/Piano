@@ -29,11 +29,7 @@ class User
   #
   def membre?
     return false if false == @is_trustable || id.nil?
-    @is_membre ||= begin
-      PStore::new(self.class.pstore).transaction do |ps|
-        ps.fetch(id, nil) != nil
-      end
-    end
+    @is_membre ||= ( ppdestore( self.class.pstore, id ) != nil )
   end
   
   ##
@@ -48,9 +44,7 @@ class User
         # Cf. N0002
         @is_follower = destore(:user_type) == :follower
       else
-        PStore::new(app.pstore_followers).transaction do |ps|
-          @is_follower = ps.roots.include? mail
-        end        
+        @is_follower = ppdestore(app.pstore_followers, mail) != nil
       end
     end
     @is_follower

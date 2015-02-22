@@ -34,9 +34,7 @@ class User
   # lui donner un @uid, à partir du moment où il est
   # "trustable".
   #
-  def define_uid
-    debug "-> define_uid"
-    
+  def define_uid    
     ##
     ## Barrière untrustable user
     ##

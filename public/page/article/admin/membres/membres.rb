@@ -32,7 +32,7 @@ class User
     ## Retrait de la liste des followers (if any)
     ##
     if follower?
-      PStore::new(app.pstore_followers).transaction { |ps| ps.delete mail }
+      ppstore_remove app.pstore_followers, mail
       debug "User supprimé comme follower."
     end
     

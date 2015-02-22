@@ -262,11 +262,8 @@ class App
         @followers ||= begin
           download_pstore_if_needed
           h = {}
-          PStore::new(pstore_followers).transaction do |ps|
-            keys = ps.roots.reject{|e| e == :last_id}
-            keys.each do |key|
-              h.merge! key => ps[key]
-            end
+          PPStore::new(pstore_followers).each_root do |ps, key|
+            h.merge! key => ps[key]
           end
           h
         end
@@ -279,9 +276,7 @@ class App
       # Retourne NIL si le follower n'existe pas
       #
       def follower umail
-        PStore::new(pstore_followers).transaction do |ps|
-          ps.fetch(umail, nil)
-        end
+        ppdestore pstore_followers, umail
       end
       
       ##

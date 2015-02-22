@@ -20,7 +20,7 @@ class App
     #
     def comments options = nil
       @comments ||= begin
-        PStore::new(self.class.pstore_comments).transaction do |ps|
+        PPStore::new(self.class.pstore_comments).transaction do |ps|
           lescomments = ps.fetch(id, nil)
           if lescomments.nil?
             ps[id] = []
@@ -75,7 +75,7 @@ class App
     #
     def add_comments data_com
       data_com = data_com.merge(i: comments.count)
-      PStore::new(self.class.pstore_comments).transaction do |ps|
+      PPStore::new(self.class.pstore_comments).transaction do |ps|
         ps[id] << data_com
       end
     end

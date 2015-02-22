@@ -27,9 +27,33 @@ class Score
     # images qui n'existe pas (se produit en cas d'erreur)
     #
     def check_scores
-      new_id = nil
-      PStore::new(pstore).transaction do |ps|
-        # TODO
+      ##
+      ## On récupère toutes les images
+      ##
+      h = {}
+      PPStore::new(pstore).each_root(except: :last_id) do |ps, root|
+        next unless root.class == String
+        h.merge! root => ps[root]
+      end
+      ##
+      ## On regarde celles qui n'existe plus
+      ##
+      h.dup.each do |score_src, score_data|
+        res = `curl -h "#{score_src}"`
+        debug "\n*** #{score_src}\nCURL: #{res}"
+      end
+      ##
+      ## On détruit celles qui restent
+      ##
+      ## Note pour le moment, on ne fait rien, jusqu'à ce que
+      ## ce soit bon
+      ##
+      PPStore::new(pstore).transaction do |ps|
+        h.each do |score_src, score_data|
+          debug "Il FAUDRAIT détruire l'image ##{score_data[:id]} #{score_src}"
+          # ps.delete score_src
+          # ps.delete score_data[:id]
+        end
       end
     end
     

@@ -12,7 +12,17 @@ describe "PPStore #{relative_path __FILE__}" do
   def path_busy_file
     @path_busy_file ||= File.join('.', 'data', 'pstore', 'test.pstore-busy')
   end
+  def remove_pstore_test
+    File.unlink path_pstore_test if File.exists? path_pstore_test
+  end
+  def path_pstore_test
+    @path_pstore_test ||= File.join('.', 'data', 'pstore', 'test.pstore')
+  end
   
+  before :all do
+    remove_busy_file
+    remove_pstore_test
+  end
   
   let(:pps) { @ppstore } # NE PAS UTILISER ppstore QUI EST UNE FONCTION
   
@@ -146,6 +156,106 @@ describe "PPStore #{relative_path __FILE__}" do
         expect(File).to_not be_exist path_busy_file
       end
     end
+    
+    #transaction
+    describe "#transaction" do
+      it 'répond' do
+        expect(pps).to respond_to :transaction
+      end
+      context 'avec un pstore non occupé' do
+        it 'permet une transaction dans le pstore' do
+          @value = "Mon dernier ID à #{Time.now}"
+          pps.transaction do |ps|
+            ps[:last_id] = @value
+          end
+          res = ppdestore('data/pstore/test', :last_id)
+          expect(res).to eq(@value)
+        end
+      end
+      context 'avec un pstore occupé' do
+        it 'permet une transaction correcte' do
+          Thread::new {
+            ppstore 'data/pstore/test', {data: "Valeur IN thread"}, 2
+          }
+          sleep 0.2
+          pps.transaction do |ps|
+            ps[:data] = "Valeur HORS thread"
+          end
+          res = ppdestore('data/pstore/test', :data)
+          expect(res).to eq("Valeur HORS thread")
+        end
+        it 'permet une transaction qui prend en compte le changement de deux autres thread' do
+          th1 = Thread::new {
+            ppstore 'data/pstore/test', {data: "Valeur IN thread 1"}, 1
+          }
+          sleep 0.1
+          th2 = Thread::new {
+            ppstore 'data/pstore/test', {data: "Valeur IN thread 2"}, 1
+          }
+          sleep 0.4
+          expect(th1).to be_alive
+          expect(th2).to be_alive
+          @value = "Valeur HORS THREADS"
+          ppstore 'data/pstore/test', {data: @value}, 2
+          res = ppdestore 'data/pstore/test', :data
+          expect(th1).to_not be_alive
+          sleep 0.3 while th2.alive? # attendre la fin
+          expect(res).to eq(@value)
+        end
+      end
+    end
+    
+    #each_root
+    describe "#each_root" do
+      it 'répond' do
+        expect(pps).to respond_to :each_root
+      end
+      context 'sans thread utilisant le pstore' do
+        before :all do
+          remove_pstore_test
+          @ppstore.set un: "un", deux: "deux", trois: "trois"
+        end
+        context 'sans argument' do
+          it 'passe en revue toute les clés' do
+            liste = nil
+            pps.each_root do |ps, root|
+              liste ||= []
+              liste << ps[root]
+            end
+            expect(liste).to eq(["un", "deux", "trois"])
+          end
+          it 'peut faire une opération sur toutes les clés' do
+            pps.each_root do |ps, root|
+              ps[root] = ps[root] + " plus"
+            end
+            valeurs = pps.each_root { |ps, root| ps[root] }
+            expect(valeurs).to eq(["un plus", "deux plus", "trois plus"])
+          end
+          it 'retourne le résultat de la boucle' do
+            res = pps.each_root do |ps, root|
+              ps[root]
+            end
+            expect(res).to eq(["un plus", "deux plus", "trois plus"])
+          end
+        end
+        
+        context 'avec un argument filtre' do
+          it 'ne traite que les clés voulues' do
+            res = []
+            pps.each_root(:except => :deux) do |ps, root|
+              res << ps[root]
+            end
+            expect(res).to eq(["un plus", "trois plus"])
+          end
+          it 'retourne le bon résultat de la boucle' do
+            res = pps.each_root(:except => :un) do |ps, root|
+              ps[root]
+            end
+            expect(res).to eq(["deux plus", "trois plus"])
+          end
+        end
+      end
+    end
   end
   
   
@@ -217,11 +327,11 @@ describe "PPStore #{relative_path __FILE__}" do
       @value = "La valeur HORS thread à #{Time.now}"
       ppstore 'data/pstore/test', data: @value
       Thread::new {
-        sleep 0.2
+        sleep 0.1
         @value_in = "Valeur IN thread à #{Time.now}"
         ppstore 'data/pstore/test', {data: @value_in}, 2
       }
-      sleep 0.2
+      sleep 0.3
       res = ppdestore 'data/pstore/test', :data
       expect(res).to_not eq(@value)
       expect(res).to start_with "Valeur IN thread"

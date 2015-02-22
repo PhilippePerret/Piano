@@ -117,9 +117,7 @@ class User
   def data
     @data ||= begin
       if @id.to_s != ""
-        PStore::new(User::pstore).transaction do |ps|
-          ps.fetch(@id, nil)
-        end
+        ppdestore User::pstore, @id
       else
         {
           id:           nil,

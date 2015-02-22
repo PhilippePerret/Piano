@@ -8,6 +8,22 @@ require 'cgi'
 require 'pstore'
 require 'erb'
 
+class PStore
+  alias :original_init :initialize
+  def initialize path
+    begin
+      raise
+    rescue Exception => e
+      bt = e.backtrace[1]
+      unless bt.index("PPStore.rb")
+        debug "\n\nWARNING : PStore #{path} appelé\ndepuis #{e.backtrace[1]}"
+        debug "---> Il faut utiliser les méthodes PPStore\n\n"
+      end
+    end
+    original_init path
+  end
+end
+
 require './public/lib/_config'
 
 def require_folder fpath

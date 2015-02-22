@@ -68,10 +68,8 @@ class App
       def articles
         @articles ||= begin
           h = {}
-          PStore::new(pstore).transaction do |ps|
-            keys = ps.roots.dup
-            keys.delete(:last_id)
-            keys.each { |key| h.merge! key => new(key) }
+          PPStore::new(pstore).each_root(except: :last_id) do |ps, key|
+            h.merge! key => new(key)
           end
           h
         end

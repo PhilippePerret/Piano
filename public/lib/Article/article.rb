@@ -34,6 +34,7 @@ class App
     @article ||= begin
       art = param('article')
       art = param('a') if art.to_s == ""
+      art = "main/home" if art == ""
       App::Article::new(art)
     end
   end
@@ -110,8 +111,10 @@ class App
     #
     def initialize anypath
       case anypath
-      when Fixnum   then @id = anypath
-      else @path_init = anypath
+      when Fixnum 
+        @id = anypath
+      else 
+        @path_init = anypath
       end
     end
   
@@ -121,7 +124,7 @@ class App
     def define_idpath
       unless @id.nil? # ne pas utiliser id
         # => Article instancié par son ID
-        PStore::new(App::Article::pstore_idpath_to_id).transaction { |ps| ps[id] }
+        ppdestore self.class.pstore_idpath_to_id, id
       else
         # => Article instancié par son path
         rp = path_init.to_s.sub(/\.erb$/,'')
