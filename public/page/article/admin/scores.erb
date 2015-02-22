@@ -1,9 +1,25 @@
 <h2>Production d'image de partition</h2>
 <% 
+unless cu.admin?
+  redirect_to :login, 'admin/scores'
+  exit
+end
+%>
+<% 
 ##
 ## Pour produire des images de partition simples depuis l'administration
 ##
 %>
+
+<% if offline? %>
+<p>
+Il est trop dangereux de faire des partitions en OFFLINE (conflit si un visiteur est en train de composer un commentaire) et il est aussi simple de les faire ONLINE puisqu'on doit de toute façon appeler des scripts sur serveur Icare.
+</p>
+<p>
+<a href="<%= App::FULL_URL %>?a=admin/scores">Rejoindre la section administration online</a>
+</p>
+
+<% else %>
 
 <% 
 ##
@@ -27,3 +43,7 @@ end
 ##
 %>
 <%= view('article/admin/scores/listing.erb') %>
+
+<% 
+end # si online?
+%>

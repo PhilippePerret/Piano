@@ -13,7 +13,11 @@ Code à utiliser pour créer une redirection&nbsp;:
 
 La méthode renvoie vers la table des matières du blog de Tilleul.
 
-*Note&nbsp;: `raise RedirectError` est à utiliser si cette redirection est appelée depuis une vue ERB.*
+*Note&nbsp;: `raise RedirectError` est à utiliser si cette redirection est appelée depuis une vue ERB. Mais on peut aussi utiliser tout simplement&nbsp;:*
+    
+    redirect_to :login
+    exit
+
 
 ####Redirection simple vers un article par shortcut
 
