@@ -88,7 +88,6 @@ class App
   attr_accessor :use_links_a
   def link_to titre, relpath_art = nil, options = nil
     options ||= {}
-    options.merge!(form: true) unless options.has_key?(:form)
     if titre.class == Symbol
       # => Un lien par raccourci
       dshortcut = App::Article::SHORTCUTS[titre]
@@ -100,60 +99,46 @@ class App
       relpath_art = dshortcut[:relpath]
     end
     
+    # relpath_art = "main/home" if relpath_art.nil?
+    
     for_mail        = options.delete(:mail)
     with_full_urls  = options.delete(:full_url) || use_full_urls || for_mail
-    as_form         = options.delete(:form) == true
-    as_form = false if for_mail
     next_article    = options.delete(:next_article) || options.delete(:na)
     target          = options.delete(:target) || '_self'
+
+    is_tdm      = relpath_art.end_with? '/'
+    relpath_art = relpath_art[0..-2] if is_tdm
+    prefix      = is_tdm ? 'tdm-' : ''
+    article_tir = relpath_art.gsub(/\//, '-')
     
+    ##
+    ## Classe du lien
+    ##
     class_css = ['alink']
     class_css << options.delete(:class) if options.has_key? :class
     class_css = class_css.join(' ')
     
-    # L'URL à utiliser
-    full_url = with_full_urls ? App::FULL_URL : ""
+    ##
+    ## L'URL à utiliser (exacte ou relative)
+    ##
+    full_url = with_full_urls ? "#{App::FULL_URL}/" : ""
     
-    if as_form && use_links_a.nil?
-      #
-      # => Retourne un lien sous forme de formulaire
-      #
-      
-      ##
-      ## Champs hidden supplémentaires (if any)
-      ##
-      other_hiddens = options.collect { |k, v| v.in_hidden(name: k) }.join('')
-      
-      ##
-      ## Construction du formulaire final
-      ##
-      "<form class='#{class_css}' target='#{target}' action='index.rb' method='POST' onclick='this.submit()'>"+
-        (next_article.nil? ? "" : next_article.in_hidden(name:'na')) +
-        other_hiddens + 
-        relpath_art.in_hidden(name: 'article') +
-        titre.in_span +
-        "</form>"
-    else
-      #
-      # => Retourne un lien <a>
-      #
-      
-      ##
-      ## Query-string
-      ##
-      qs = {a: relpath_art}
-      ## Article suivant (si opération)
-      qs.merge!( na: next_article) unless next_article.nil?
-      ## Autres données
-      qs.merge!(options) unless options.empty?
-      ## Construction finale
-      qs = qs.collect{ |k, v| "#{k}=#{CGI::escape v}" }.join('&')
-      
-      ##
-      ## Le lien retourné
-      ##
-      "<a href=\"#{full_url}?#{qs}\" target='#{target}' class='#{class_css}'>#{titre}</a>"
-    end
+    ##
+    ## Query-string
+    ##
+    ## Ce sont toutes les clés qui restent dans +options+
+    ##
+    qs = {}
+    qs.merge!( na: next_article) unless next_article.nil?
+    qs.merge!(options) unless options.empty?
+    qs = qs.collect{ |k, v| "#{k}=#{CGI::escape v}" }.join('&')
+    qs = "?#{qs}" unless qs == ""
+    
+    
+    href = "#{full_url}#{prefix}#{article_tir}#{qs}"
+    
+    return titre.in_a(href: href, target: target, class: class_css)
+    
   end
   
   ##

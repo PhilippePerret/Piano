@@ -1,4 +1,4 @@
-<h2>Rester informé</h2>
+<h2>Suivre le <%= short_name %></h2>
 
 <% 
 if param(:operation) == 'add_to_mailing_list'
@@ -18,7 +18,7 @@ end
   <%= link_to(:articles_en_projet).in_div(class: 'right') %>
   <fieldset id="fs_identite">
     <legend>Votre identité</legend>
-    <form id='form_mailing_list' action="index.rb" method="POST" accept-charset="utf-8">
+    <form id='form_mailing_list' action="" method="POST" accept-charset="utf-8">
       <%= "add_to_mailing_list".in_hidden(name: 'operation') %>
       <%= "main/rester_informed".in_hidden(name: 'article') %>
       <div class='row'>

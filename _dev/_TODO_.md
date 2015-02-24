@@ -1,3 +1,16 @@
+[MENU]
+  > Liste des derniers articles (il faudrait automatiser)
+  
+[CRON]
+  - Faire apparaitre l'état avant/après (nombre d'ips en plus, de followers, etc.)
+  - Voir ce qu'il faut faire quand le nombre de reader est différent du nombre d'IPs, peut-être qu'il faut essayer de trouver l'information manquante.
+
+* [SECTION TRAVAIL]
+  Une section où un simple follower — mais aussi les membres — peut trouver du "travail du jour", dans sa "tonalité du jour".
+  > Il définit un niveau (trois niveaux qui utilisent trois niveaux de difficulté au niveau des tonalités)
+  > On lui propose des exercices du jour (II V I), avec chaque fois des réponses cachées, en partition si possible.
+  
+
 * Un dossier son où sont automatiquement téléchargé les fichiers mp3 quand on en trouve. Noter qu'ils doivent être téléchargés sur Icare, par sur Piano (donc ssh propre)
 
 * [SCORE]
@@ -10,8 +23,6 @@
     - `mod{<ton>}` pour marquer une modulation dans <ton>
     - `emp{<ton>}` pour marquer un emprunt tonal à <ton>
     
-[CRON]
-  - Voir ce qu'il faut faire quand le nombre de reader est différent du nombre d'IPs, peut-être qu'il faut essayer de trouver l'information manquante.
 
 * Image pour le prélude Cm de Bach étudié avec Isabelle
 <img src='http://icare.alwaysdata.net/img/cp_score/bach/preludeCm-01.png' />

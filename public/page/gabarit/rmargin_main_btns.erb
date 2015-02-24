@@ -5,19 +5,33 @@
 ##
 %>
 <%
+def derniers_articles
+  [
+    ["Méprise concernant les intervalles", 'technique/essentiels/intervalles'],
+    ["Acoustique ou numérique&nbsp;?", 'theme/ni_pour_ni_contre/acoustique_numerique'],
+    ["Des exercices ou pas&nbsp;?", 'theme/ni_pour_ni_contre/exercices_ou_pas']
+  ]
+end
 arr_menus = [
   ['Accueil', "main/home"],
-  ['Rester inform&eacute;', "main/rester_informed"],
+  ['Suivre le Cercle', "main/rester_informed"],
   :separator,
-  ['Ni pour ni contre,<br />bien au contraire', "theme/ni_pour_ni_contre/"],
-  ['Tout &agrave; fait contre', "theme/contre/"],
-  ['Le Travail du piano', "technique/travail_piano/"],
-  ['Éléments de théorie', 'theorie/'],
-  ['Des essentiels', "technique/essentiels/"],
+  {titre: "Derniers articles", content: derniers_articles},
   :separator,
-  ['Membres du cercle', "main/membres"],
-  ['Postuler au cerle', "main/postuler"],
-  :separator
+  {
+    titre: "Rubriques", 
+    content: [
+      ['Essentiels', "technique/essentiels/"],
+      ['Éléments de théorie', 'theorie/'],
+      ['Le Travail du piano', "technique/travail_piano/"],
+      ['Ni pour ni contre bien au contraire', "theme/ni_pour_ni_contre/"],
+      ['Tout à fait contre', "theme/contre/"]
+    ]},
+  :separator,
+  {titre: "Le Cercle", content: [
+    ['Membres du cercle', "main/membres"],
+    ['Postuler au cercle', "main/postuler"]
+  ]}
 ]
 
 ##
@@ -37,17 +51,20 @@ if App::offline? || cu.admin?
   ]
 end
 arr_menus.each do |dlink|
-  
-  if dlink == :separator
+  debug "dlink : #{dlink.inspect}"
+  code = case dlink
+  when Array
+    link_to dlink[0], dlink[1]
+  when Symbol
+     case dlink
+     when :separator
+       '<hr />'
+     end
+   when Hash
+     # Menus dynamique avec titre
+     "<div class='titre'>#{dlink[:titre]}</div>" + 
+     dlink[:content].collect { |dl| link_to dl[0], dl[1] }.join('')
+   end
 %>
-  <hr />
-  <% 
-    else 
-      titre, path = dlink
-  %>
-    <form class='navlink' action="index.rb" method="POST" charset="utf-8" onclick="this.submit()">
-      <input type="hidden" name="article" value="<%= path %>">
-      <div class='titre'><%= titre %></div>
-    </form>
-  <% end %>
+  <%= code %>
 <% end %>

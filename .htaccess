@@ -5,9 +5,18 @@ Options -Indexes
 DirectoryIndex index.rb
 
 Options +FollowSymlinks
-# RewriteEngine on
+RewriteEngine On
 
 
 # Permet de préserver le fonctionnement des css, images, etc.
 # Le "!-f" signifie que l'existence du fichier est vérifiée
 RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI} !-f
+
+
+RewriteRule ^tdm-([a-z_0-9]+)-([a-z_0-9]+)$ ?a=$1/$2/_tdm_ [QSA,L]
+
+RewriteRule ^tdm-([a-z_0-9]+)$ ?a=$1/_tdm_ [QSA,L]
+
+RewriteRule ^([a-z_0-9]+)-([a-z_0-9]+)$ ?a=$1/$2 [QSA,L]
+
+RewriteRule ^([a-z_0-9]+)-([a-z_0-9]+)-([a-z_0-9]+)$ ?a=$1/$2/$3 [QSA,L]

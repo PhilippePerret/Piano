@@ -15,7 +15,7 @@ if param(:operation).to_s != ""
 end
 %>
 
-<form id="form_cron" action="index.rb" method="POST" accept-charset="utf-8">
+<form id="form_cron" action="" method="POST" accept-charset="utf-8">
   <%= "admin/cron".in_hidden(name: 'a') %>
   <%= "run_cron".in_hidden(name: 'operation') %>
   <%= 

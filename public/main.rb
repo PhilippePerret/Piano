@@ -6,7 +6,8 @@ begin
   require './public/lib/required'
   debug "[LV-1] !!! -> main.rb" if LEVEL_DEBUG > 0
 
-
+  debug "Article id-path : #{param('a')}"
+  
   ##
   ## On détruit la dernière session
   ##

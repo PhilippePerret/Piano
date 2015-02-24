@@ -15,7 +15,7 @@ titre_form = from_administration ? "Édition sujet" : "Formulaire de soumission 
 %>
 <fieldset id="formulaire_de_soumission_dun_nouveau_sujet" style="display:<%= visib_form %>;">
   <legend><%= titre_form %></legend>
-  <form id="form_submit_subject" action="index.rb" method="POST" accept-charset="utf-8">
+  <form id="form_submit_subject" action="" method="POST" accept-charset="utf-8">
     <% 
     article_path = from_administration ? 'admin/sujets_soumis' : 'user/submit_sujet' %>
     <%= article_path.in_hidden(name: 'a') %>

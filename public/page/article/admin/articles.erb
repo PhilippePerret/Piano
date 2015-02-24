@@ -33,7 +33,7 @@ fichier = Fichier::new App::Article::pstore
 %>
 <fieldset id="filtrage_articles">
   <legend>Filtrage articles</legend>
-  <form action="index.rb" method="POST" accept-charset="utf-8">
+  <form action="" method="POST" accept-charset="utf-8">
     <%= "admin/articles".in_hidden(name: 'article') %>
     <%= "Tous les articles".in_checkbox(name: 'tous') %>
     <%= "États indéfinis".in_checkbox(name: 'indefinis') %>
