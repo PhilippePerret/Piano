@@ -98,6 +98,7 @@ class App
   # +attrs+ Les attributs à ajouter à la balise img
   #
   def image relpath, args = nil
+    args ||= {}
     c = ""
     c << File.join('.', 'public', 'page', 'img', relpath).in_image( args )
     if args.has_key? :mp3

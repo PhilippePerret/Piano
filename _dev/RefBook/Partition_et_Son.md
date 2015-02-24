@@ -25,6 +25,16 @@ Un des plus (+) les plus importants du site est le recours dans les explications
 
 Ce code produit une image de la partition, avec le mot "Écouter" placé à côté pour lancer le son associé.
 
+Note&nbsp;: Le `path/to/son` est à considérer depuis `sound/cp/` sur l'atelier Icare. Le plus simple, si une page doit utiliser plusieurs son du dossier, de définir&nbsp;:
+
+    <% rep_son = "path/to/folder" %>
+
+… puis d'utiliser dans la donnée `:mp3`&nbsp;:
+
+    <%= image(.... mp3: "#{rep_son}/son")
+
+*Noter que l'extension “.mp3” n'est pas nécessaire*.
+
 <a name='inserer_mot_declenchant_une_image'></a>
 ###Mot du texte de l'article déclenchant le son d'une image
 
@@ -92,18 +102,15 @@ Ensuite, créer un fichier son, par exemple avec Reason, le créer dans le dossi
 * Choisir le piano naturel
 * Écrire les notes (ou les jouer)
 * Exporter la portion voulue en fichier AIFF
-* Ouvrir le fichier AIFF dans iTune
-* Choisir de faire un MP3 avec le menu contextuel
-* Demander l'affichage dans le finder
-* Déplacer le fichier de iTune vers le dossier principal de création du son
-
+* Utiliser le script AIFF_to_MP3 pour le transformer en MP3
 * Télécharger avec Cyberduck le fichier MP3 dans le dossier `sound/cp/` sur mon hébergeur AlwaysData pour ICARE (Piano est trop petit pour le moment).
 * Créer une balise dans l'article en ajoutant simplement `:mp3 => <affixe fichier mp3>` en second argument de méthode `image`. Tout le reste se fait tout seul.
   
 Exemple de code&nbsp;:
 
-    <%= image('path/to/image/partition02.png', center: true, mp3: 'partition02') %>
-    
+    <%= image('path/to/image/partition02.png', center: true, mp3: 'path/to/partition02') %>
+
+Pour définir le path, cf. [Bouton pour lancer le son](#partition_avec_bouton_pour_lancer_le_son).
 
 <a name='gestion_dans_pstore_scores'></a>
 ##Gestion du pstore des scores

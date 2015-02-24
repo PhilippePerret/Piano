@@ -51,7 +51,6 @@ if App::offline? || cu.admin?
   ]
 end
 arr_menus.each do |dlink|
-  debug "dlink : #{dlink.inspect}"
   code = case dlink
   when Array
     link_to dlink[0], dlink[1]
