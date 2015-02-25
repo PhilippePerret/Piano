@@ -1,4 +1,3 @@
-* Alerte javascript
 [COMMENTS]
   Clavier pour entrer les notes à la souris
   > Le "do du milieu" en vert
