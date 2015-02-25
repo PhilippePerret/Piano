@@ -1,5 +1,25 @@
+* Alerte javascript
+[COMMENTS]
+  Clavier pour entrer les notes à la souris
+  > Le "do du milieu" en vert
+  > Le clavier peut se déplacer pour changer d'octave
+  > Un CB pour entrer les accords
+  > Un menu pour la durée
+  > Un formulaire caché d'options pour indiquer le type de jeu, etc.
+  > Partie aide pour ce clavier
+[Quiz]
+  > Mettre en place des petits quiz à la fin des articles
+    "Les doubles-dièses et doubles-bémols compliquent toujours l'écriture mais on est obligé des les utiliser"
+      > "OUI" => fause
+      > "NON" => true
+      > Réponse : "Non, comme nous l'avons vu dans l'article (<ancre>) l'utilisation de ces signes simplifie souvent l'écriture"
+      > Nombre de points
+      
 [MENU]
   > Liste des derniers articles (il faudrait automatiser)
+
+[ORGANISATION SÉANCE TRAVAIL]
+  > jouer les exercices tirés des morceaux avant/après les morceaux
   
 [CRON]
   - Faire apparaitre l'état avant/après (nombre d'ips en plus, de followers, etc.)

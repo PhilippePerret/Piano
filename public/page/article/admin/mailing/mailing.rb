@@ -244,6 +244,7 @@ class App
       def show_followers
         raise "Inaccessible en ONLINE" if online?
         followers.collect do |id, duser|
+          debug "[show_followers] id:#{id.inspect} : duser:#{duser.inspect}"
           next if @all_mails.has_key? duser[:mail]
           htime = Time.at(duser[:created_at]).strftime("%d %m %Y - %H:%M")
           cbid = "cb-#{id}-follower"
@@ -263,6 +264,7 @@ class App
           download_pstore_if_needed
           h = {}
           PPStore::new(pstore_followers).each_root do |ps, key|
+            next if key == :last_id
             h.merge! key => ps[key]
           end
           h
@@ -301,7 +303,7 @@ Bonjour <%= pseudo %>,
 
 J'ai le plaisir de vous annoncer la publication d'un nouvel article&nbsp;:
 
-<%= link_to_article(#{art.id}) %>
+<%= link_to_article(#{art.id}) %>.
 
 Bonne lecture à vous&nbsp;!
 

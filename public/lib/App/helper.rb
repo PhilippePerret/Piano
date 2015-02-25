@@ -131,7 +131,9 @@ class App
     qs = {}
     qs.merge!( na: next_article) unless next_article.nil?
     qs.merge!(options) unless options.empty?
-    qs = qs.collect{ |k, v| "#{k}=#{CGI::escape v}" }.join('&')
+    qs = qs.collect do |k, v| 
+      "#{k}=#{CGI::escape v}" rescue nil # cas d'une variable oubliée
+    end.reject{ |e| e.nil? }.join('&')
     qs = "?#{qs}" unless qs == ""
     
     

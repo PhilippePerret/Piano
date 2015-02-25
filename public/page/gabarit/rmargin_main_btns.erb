@@ -4,14 +4,20 @@
 ## Boutons principaux de la marge droite
 ##
 %>
+
 <%
-def derniers_articles
-  [
-    ["Méprise concernant les intervalles", 'technique/essentiels/intervalles'],
-    ["Acoustique ou numérique&nbsp;?", 'theme/ni_pour_ni_contre/acoustique_numerique'],
-    ["Des exercices ou pas&nbsp;?", 'theme/ni_pour_ni_contre/exercices_ou_pas']
-  ]
-end
+##
+## Chargement des menus des derniers articles
+## 
+## Ce fichier définit la méthode 'derniers_articles' utilisée
+## ci-dessous.
+##
+require './public/_hot_data_/last_articles'
+
+
+##
+## Définition des menus
+##
 arr_menus = [
   ['Accueil', "main/home"],
   ['Suivre le Cercle', "main/rester_informed"],

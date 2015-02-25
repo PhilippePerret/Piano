@@ -26,9 +26,13 @@ class App
           ## On ré-initialise ses votes pour pouvoir voter
           ## vraiment pour l'article.
           ##
-          new_data.merge! votes: 0
+          new_data.merge! votes: nil
         end
-        App::Article::new(article_id).set(new_data)
+        
+        if article_id == 0
+          return error "Une erreur s'est produite dans change_etat_article : article_id = 0, c'est impossible."
+        end
+        App::Article::new(article_id).set( new_data )
         mess = "Article #{article_id} mis à l'état #{new_etat}."
         mess << " Les votes de l'article ont été réinitialisés." if article_complete
         flash mess

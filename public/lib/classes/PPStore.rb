@@ -96,6 +96,9 @@ class PPStore
   # +sleep_time+ sert juste pour les tests
   #
   def set hdata, sleep_time = nil
+    unless hdata.class == Hash
+      raise "PPStore::set (un Hash est attendu - fourni : #{hdata.inspect}:#{hdata.class})"
+    end
     sleep 0.1 while busy?
     set_busy
     resultat = true

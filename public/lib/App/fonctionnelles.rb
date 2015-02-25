@@ -27,7 +27,7 @@ class App
   # Définit le temps de dernière… opération de clé +key+
   #
   def set_last_time key, time = nil
-    ppstore pstore_last_times, (time ||= Time.now.to_i)
+    ppstore pstore_last_times, key => (time ||= Time.now.to_i)
   end
   
   ##

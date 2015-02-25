@@ -14,7 +14,10 @@ class App
     #
     def set hdata
       hdata.merge! :updated_at => Time.now.to_i
-      ppstore self.class.pstore, hdata
+      PPStore::new(self.class.pstore).transaction do |ps|
+        hdata.each { |prop, val| ps[id][prop] = val }
+      end
+      # ppstore self.class.pstore, id => hdata
       hdata.each { |k, v| self.instance_variable_set("@#{k}", v) }
     end
     
