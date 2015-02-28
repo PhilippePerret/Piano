@@ -14,11 +14,10 @@
       > Réponse : "Non, comme nous l'avons vu dans l'article (<ancre>) l'utilisation de ces signes simplifie souvent l'écriture"
       > Nombre de points
       
-[MENU]
-  > Liste des derniers articles (il faudrait automatiser)
 
 [ORGANISATION SÉANCE TRAVAIL]
   > jouer les exercices tirés des morceaux avant/après les morceaux
+  > en descendant / en montant
   
 [CRON]
   - Faire apparaitre l'état avant/après (nombre d'ips en plus, de followers, etc.)

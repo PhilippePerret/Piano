@@ -59,7 +59,10 @@ class App
       app.add_css path_css  if File.exist? path_css
       app.add_js  path_js   if File.exist? path_js
       add_all_in_folder     if File.exist? folder_article
-      ERB.new(File.read(path).force_encoding('UTF-8')).result(bindee || app.bind)
+      erb = ERB.new(File.read(path).force_encoding('UTF-8'))
+      # pour pouvoir utiliser __FILE__ dans la vue
+      erb.filename = File.expand_path path 
+      erb.result(bindee || app.bind)
     end
     def path_js
       @path_js ||= File.expand_path( File.join(dirname, "#{affixe}_mini.js") )

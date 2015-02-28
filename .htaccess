@@ -13,6 +13,8 @@ RewriteEngine On
 RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI} !-f
 
 
+RewriteRule ^tdm-([a-z_0-9]+)-([a-z_0-9]+)-([a-z_0-9]+)$ ?a=$1/$2/$3/_tdm_ [QSA,L]
+
 RewriteRule ^tdm-([a-z_0-9]+)-([a-z_0-9]+)$ ?a=$1/$2/_tdm_ [QSA,L]
 
 RewriteRule ^tdm-([a-z_0-9]+)$ ?a=$1/_tdm_ [QSA,L]
@@ -20,3 +22,5 @@ RewriteRule ^tdm-([a-z_0-9]+)$ ?a=$1/_tdm_ [QSA,L]
 RewriteRule ^([a-z_0-9]+)-([a-z_0-9]+)$ ?a=$1/$2 [QSA,L]
 
 RewriteRule ^([a-z_0-9]+)-([a-z_0-9]+)-([a-z_0-9]+)$ ?a=$1/$2/$3 [QSA,L]
+
+RewriteRule ^([a-z_0-9]+)-([a-z_0-9]+)-([a-z_0-9]+)-([a-z_0-9]+)$ ?a=$1/$2/$3/$4 [QSA,L]

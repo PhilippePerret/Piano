@@ -1,0 +1,15 @@
+<% 
+##
+## Table des matières pour l'aide sur les commentaires
+##
+%>
+<%
+tdms = []
+##
+## Les menus online et offline
+##
+tdms += [
+  ["Conception d'une séance de travail", 'dayly_work']
+]
+%>
+<%= App::Article::tdm_with( tdms ) %>

@@ -1,0 +1,35 @@
+<% 
+##
+## Affichage de la séance (et bouton pour l'enregistrer)
+##
+##
+## Le dossier contenant des ressources (éléments de vues, etc.)
+##
+dosres = DaylyWork::folder_ressources
+
+def vue_seance name
+  view File.join(DaylyWork::folder_ressources, "#{name}.erb")
+end
+%>
+
+<fieldset id="seance_du_jour">
+  <legend>Séance du jour</legend>
+  
+  
+<p>
+TONALITÉ : <strong><%= seance.tune %> (<%= seance.tune_fr %>)</strong>
+<%= vue_seance 'tonalite' %>
+</p>
+
+<% 
+##
+## Formulaire pour consigner la séance.
+##
+%>
+<form id="form_save_seance" action="" method="POST" accept-charset="utf-8">
+  <%= seance.tune.in_hidden(name: 'seance_tune') %>
+
+  <%= "Revenir à la définition".in_a(href: "userc-dayly_work").in_div(class: 'fleft')%>
+  <%= "Consigner cette séance".in_submit.in_div(class: 'right')%>
+</form>
+</fieldset>

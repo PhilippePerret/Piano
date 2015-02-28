@@ -78,6 +78,8 @@ class App
         "Accueil du site"
       elsif name == "_tdm_.erb"
         "Table des matières (#{idpath})"
+      elsif code.match(/<h3>(.*?)<\/h3>/)
+        code.match(/<h3>(.*?)<\/h3>/).to_a[1].to_s.strip
       elsif code.match(/<h2>(.*?)<\/h2>/)
         code.match(/<h2>(.*?)<\/h2>/).to_a[1].to_s.strip
       elsif code.index('article.body_content')

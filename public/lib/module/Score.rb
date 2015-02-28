@@ -338,6 +338,7 @@ class Score
     #
     def check_values_or_raise_for op
       @img_affixe = param(:img_affixe).to_s.strip
+      @img_affixe = File.basename(@img_affixe, File.extname(@img_affixe))
       raise ScoreError, "Il faut fournir l'affixe de l'image" if @img_affixe == ""
       @img_folder = param(:img_folder).to_s.strip
       raise ScoreError, "L'image se trouve forcément dans un dossier, jamais en racine." if @img_folder == ""

@@ -1,0 +1,36 @@
+<% 
+##
+## Section pour définir son travail du jour
+##
+def vue nom
+  view "article/userc/dayly_work/#{nom}.erb"
+end
+%>
+
+<% 
+DaylyWork::exec_operation unless param(:operation).to_s == ""
+%>
+
+<%= 
+##
+## Aperçu de la section
+##
+vue 'overview' %>
+
+<% if cu.follower? || cu.membre? || cu.admin? %>
+  <% 
+  ##
+  ## Quand follower ou membre
+  ##
+  %>
+  <% if DaylyWork::current.nil? %>
+    <%= vue 'form_work' %>
+  <% else %>
+    <%= vue 'seance' %>
+  <% end %>
+
+<% 
+else # Si l'utilisation n'est pas un follower
+%>
+  <%= vue 'no_follower' %>
+<% end %>

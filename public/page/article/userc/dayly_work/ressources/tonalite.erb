@@ -1,0 +1,34 @@
+<% 
+##
+## Élément de vue affichant les informations sur la tonalité
+## du jour
+##
+%>
+<% if cu.admin? %>
+  <%= link_textmate __FILE__, "[edit partial]".in_div(class: 'small fright') %>
+<% end %>
+<section id="seance_tonalite">
+
+<div>
+Essayez de retrouver&nbsp;:
+<ul>
+  <li>Les notes de la <strong>gamme</strong> de <%= seance.tune %> (<%= seance.tune_fr %>)&nbsp;;</li>
+  <li>L'enchainement <strong><%= seance.tune_enchainement_type %></strong> propre à cette tonalité.</li>
+</ul>
+<div>
+  Puis <%= "démasquez la solution cachée".in_a(onclick: "$('div#seance_tonalite_jour').toggle()") %> pour vérifier.
+</div>
+</div>
+<div id="seance_tonalite_jour" style="display:none">
+  <div class='bold'>Gamme de la tonalité de <%= seance.tune_fr %></div>
+  <%= seance.tune_gamme.in_div(class: 'center') %>
+  <div class='bold'>Enchainement type <%= seance.tune_enchainement_type %> en <%= seance.tune_fr %></div>
+  <%= seance.tune_enchainement_type_img.in_div(class: 'center') %>
+  <div class='small'>
+    Travaillez cet enchainement dans plusieurs renversements en évitant les quintes consécutives. Vous pouvez également travailler vos arpèges sur cet enchainement, ou les exercices tirés de vos morceaux du moment.
+    <% if cu.admin? %>
+     <span class='warning'>[TODO: Mettre des aides illustrants ce genre de travail (ce message n'apparait que pour l'administrateur)]</span>
+    <% end %>
+  </div>
+</div>
+</section>

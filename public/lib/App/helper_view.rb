@@ -110,6 +110,16 @@ class App
   end
   
   ##
+  #
+  # @return une balise image du site Icare
+  #
+  def image_icare relpath, args = nil
+    args ||= {}
+    args.merge! src: "http://#{url_folder_image}/#{relpath}"
+    "".in_img( args )
+  end
+  
+  ##
   # @return un lien permettant de jouer le fichier audio
   # d'affixe +audio_affixe+ en replaçant le mot +rejouer_name+ à
   # la fin du jeu
@@ -161,6 +171,14 @@ class App
   # 
   def url_folder_sounds
     @url_folder_sounds ||= "www.atelier-icare.net/sound/cp"
+  end
+  
+  ##
+  #
+  # Emplacement des fichiers PNG sur icare
+  #
+  def url_folder_image
+    @url_folder_image ||= "www.atelier-icare.net/img/cp_score"
   end
   
   ##

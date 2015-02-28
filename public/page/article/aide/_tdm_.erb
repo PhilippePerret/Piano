@@ -1,0 +1,15 @@
+<% 
+##
+## Table des matières pour l'aide
+##
+%>
+<%
+tdms = []
+##
+## Les menus online et offline
+##
+tdms += [
+  ["Aide commentaires", 'comments/']
+]
+%>
+<%= App::Article::tdm_with( tdms ) %>

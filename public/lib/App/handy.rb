@@ -19,6 +19,11 @@ def link_to_article path_or_id, options = nil
   app.link_to_article path_or_id, options
 end
 
+def link_aide titre, idpath_or_id, options = nil
+  app.link_to titre, idpath_or_id, options
+end
+alias :lien_aide :link_aide
+
 def offline?; app.offline?  end
 def online?;  app.online?   end
 

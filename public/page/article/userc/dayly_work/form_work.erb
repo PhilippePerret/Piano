@@ -1,0 +1,37 @@
+<% 
+##
+## Fomrulaire pour demander la conception du travail
+##
+%>
+
+<% 
+##
+## Méthodes pour concevoir le formulaire
+##
+def menu_niveau
+  [
+    ["debutant", "Débutant (3 #/b max)"],
+    ["moyen", "Moyen (5 #/b max)"],
+    ["expert", "Expert"]
+  ].in_select(name: 'user_niveau', id: 'user_niveau')
+  
+end
+%>
+
+
+<form id='form_work' action="" method="POST" accept-charset="utf-8">
+  <% 
+  ##
+  ## Champs hidden
+  ##
+  %>
+  <%= "userc/dayly_work".in_hidden(name: 'a') %>
+  <%= "confectionner_seance".in_hidden(name: 'operation') %>
+  
+  
+  <%= menu_niveau %>
+
+  <div class='right'>
+    <%= "Confectionner ma séance".in_submit(class: 'btn') %>
+  </div>
+</form>

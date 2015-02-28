@@ -4,11 +4,30 @@
 * [Insérer un autre article dans l'article courant](#inserer_article_in_article)
 * [Insérer des images](#inserer_images)
 * [Insérer une ancre](#inserer_balise_aname)
-* [Insérer un lien vers une ancre](#link_to_ancre)
 * [Bouton pour lancer une opération (NON "o")](#bouton_to_run_operation)
-* [Lien vers la page suivante](#lien_to_page_suivante)
+* **Types de liens**
+  * [Insérer un lien vers une ancre](#link_to_ancre)
+  * [Lien vers la page suivante](#lien_to_page_suivante)
+  * [Lien vers un autre article](#lien_vers_un_autre_article)
+  * [Lien vers l'aide](#lien_vers_aide)
 
 
+<a name='lien_vers_un_autre_article'></a>
+##Lien vers un autre article
+
+    link_to_article <id | idpath>[, <{options>}]
+
+
+<a name='lien_vers_aide'></a>
+##Lien vers l'aide
+
+    link_aide "<titre>", <id | idpath>[, <{options}>]
+
+    alias : lien_aide
+
+`id` correspond à l'identifiant de l'article (puisque les articles d'aide sont des articles comme les autres).
+
+Les `<{options}>` sont les mêmes que pour la méthode générale `link_to`.
 
 <a name='inserer_article_in_article'></a>
 ##Insérer un article dans l'article courant
