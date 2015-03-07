@@ -115,7 +115,7 @@ class App
     #
     def link_to_ancre_noter_article
       return "" unless cu.trustable?
-      "Noter l'article".in_a(href: "#coter_article")
+      "Noter".in_a(href: "#coter_article")
     end
     
     ##
@@ -134,7 +134,7 @@ class App
     #
     def link_to_ancre_comments
       return "" unless has_comments_valided?
-      "Lire les commentaires (#{comments(valided: true).count})".in_a(href: "#lire_comments")
+      "Commentaires (#{comments(valided: true).count})".in_a(href: "#lire_comments")
     end
     
     

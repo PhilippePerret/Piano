@@ -97,10 +97,74 @@ class App
   #
   # +attrs+ Les attributs à ajouter à la balise img
   #
+  # Cf. RefBook > Article_redaction.md
+  #
   def image relpath, args = nil
     args ||= {}
+    
+    ##
+    ## Le path de l'image
+    ## 
+    ## Soit en local, soit sur Icare
+    ##
+    path_image = if args.delete(:icare)
+      "http://#{url_folder_image}/#{relpath}"
+    else
+      File.join('.', 'public', 'page', 'img', relpath)
+    end
+    
+    ##
+    ## L'image doit-elle être cliquable ?
+    ## Si oui, il faut la réduire pour qu'elle tienne dans un cadre et
+    ## pouvoir cliquer pour l'aggrandir
+    ##
+    centree   = args.delete(:center)
+    openable  = args.delete(:openable)
+    offset    = args.delete(:offset)
+    size      = args.delete(:size)
+    positionning  = args.delete(:positionning)
+    positionning = false if online?
+    
+    
+    ##
+    ## L'image doit-elle être affichée partiellement ?
+    ## Cf. le mode d'emploi
+    ##
+    if offset
+      div_style = []
+      if size
+        div_style << "width:#{size[0]}px"
+        div_style << "height:#{size[1]}px"
+      end
+      div_style << 'position:relative'
+      if positionning
+        div_style << "border:4px solid;overflow:visible"
+      else
+        div_style << "overflow:hidden"
+      end
+      if centree
+        div_style << "display:inline-block"
+      end
+      args.merge!(style: "position:absolute;top:-#{offset[0]}px;left:-#{offset[1]}px;z-index:-1")
+      limage = path_image.in_image( args )
+      limage = limage.in_div( style: div_style.join(';') )
+    else
+      ##
+      ## Aucun offset
+      ##
+      limage = path_image.in_image( args )
+    end
+    
+    if openable
+      limage = ("Cliquez sur l'image pour l'aggrandir/la réduire".in_div(class: 'tiny center italic red') + limage).in_div(class: 'openable_image', onclick: "$.proxy(UI,'toggle_image',this)()") 
+    end
+    
+    if centree
+      limage = limage.in_div( class: 'center' )
+    end
+    
     c = ""
-    c << File.join('.', 'public', 'page', 'img', relpath).in_image( args )
+    c << limage
     if args.has_key? :mp3
       c << link_play( path: args.delete(:mp3), balise_audio: true, no_controls: args.delete(:no_controls) )
       c.in_div(class: 'imgmp3')
@@ -115,8 +179,10 @@ class App
   #
   def image_icare relpath, args = nil
     args ||= {}
-    args.merge! src: "http://#{url_folder_image}/#{relpath}"
-    "".in_img( args )
+    args.merge! :icare => true
+    image relpath, args
+    # args.merge! src: "http://#{url_folder_image}/#{relpath}"
+    # "".in_img( args )
   end
   
   ##

@@ -1,0 +1,22 @@
+<h2>Analyse du Prélude en DO mineur BWV 999 de Bach</h2>
+<% 
+require './public/page/article/pratiques/analyse_bach_bwv999/required'
+
+article.next = path_next_article
+
+%>
+
+<% if param(:pan).to_s != "" %>
+  <%= vue param(:pan) %>
+<% else %>
+<p class='italic'>
+Cette section présente un travail interactif d'analyse musicale exécutée par Isabelle et Phil (Phil-Icare) sur le Prélude en DO mineur BWV 999 de Jean-Sébastien Bach.
+</p>
+
+<ul style="list-style:none;">
+  <li><%= link_to_vue "Comment profiter pleinement de ce travail pratique&nbsp;?", "000" %> </li>
+  <li><%= link_to_vue "Partition complète", "001" %></li>
+  <li><%= link_to_vue "Analyse harmoniques des mesures 1 à 22 par Isabelle", "002" %></li>
+  <li><%= link_to_vue "Retours de Phil sur les mesures 1 à 22", "003" %></li>
+</ul>
+<% end %>

@@ -1,3 +1,8 @@
+* Dans analyse avec Isabelle, faire une note en disant que le but de la lecture c'est de suivre soi-même le même cheminement qu'Isabelle pour profiter pleinement de la démarche.
+
+* Ajouter les vidéos sur Gammes et Accords
+  -> vers une note pour dire qu'il faut les consulter pour suivre l'initiation à l'analyse musicale.
+
 [COMMENTS]
   Clavier pour entrer les notes à la souris
   > Le "do du milieu" en vert

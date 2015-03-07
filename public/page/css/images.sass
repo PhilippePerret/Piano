@@ -8,3 +8,25 @@ div.imgmp3
 		position: 			absolute
 		right: 					0
 		top: 						calc(50%)
+		
+		
+// Pour une image "cliquable" qui doit tenir sur la
+// page.
+div.openable_image
+	width:				95%
+	text-align:		center
+	cursor:				pointer
+	background-color:		white
+	img
+		width:				100%
+
+	&.opened
+		width: 							auto
+		padding:						1em
+		background-color:		white
+		border:							1px solid
+		z-index:						100
+		
+		img
+			width: auto
+			z-index:					1000
