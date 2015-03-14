@@ -17,5 +17,7 @@ Tout est fait en OFFLINE.
   * Uploader les données des articles
 * Rejoindre la section administration Mailing-list
   * Faire une annonce aux followers grâce au formulaire préformaté&nbsp;;
+* Ajouter l'article à la LISTE DES DERNIERS ARTICLES dans le fichier :
+    `./public/_hot_data_/last_articles.rb`
 
 Note&nbsp;: L'upload sur le site de l'article sera faite automatiquement lors de l'envoi de l'annonce de publication.

@@ -27,10 +27,10 @@ class App
       def get fooid
         @instances ||= {}
         unless @instances.has_key? fooid
-          art = App::Article::new fooid
+          lart = App::Article::new fooid
           @instances.merge!(
-            art.id      => art,
-            art.idpath  => art
+            lart.id      => lart,
+            lart.idpath  => lart
           )
         end
         @instances[fooid]
@@ -48,6 +48,8 @@ class App
           listarts = listarts.sort_by{ |k,v| v.get(:votes) || 0 }.reverse
         end
         listarts.each do |art_id, art|
+          debug "art_id: #{art_id.inspect}"
+          debug "art.fullpath: #{art.fullpath.inspect}"
           ok = true
           filtre.each do |prop, value|
             if art.get(prop) != value

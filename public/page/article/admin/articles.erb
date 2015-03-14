@@ -88,6 +88,11 @@ fichier = Fichier::new App::Article::pstore
     <%= art.as_li %>
     <% unless File.exist? art.fullpath %>
       <%= "L’article ci-dessus est introuvable (#{art.idpath})"%>
+      <% 
+        debug "### Article introuvable (fichier) : #{art.data.inspect}" 
+        debug "### Full path recherchée : #{art.fullpath}"
+        debug "### Avec : relpath=#{art.relpath} - name=#{art.name} / folder=#{art.folder}"
+        %>
     <% end %>
     <%# @all_data.merge! art.id => art.data %>
   <% end %>

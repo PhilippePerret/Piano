@@ -1,3 +1,11 @@
+* Mettre en place le traitement de l'analyse de Bach
+  > Trouver un système où je ne sois pas obligé de remettre le titre chaque fois
+  > Trouver un système pour gérer automatiquement l'article suivant lorsque ça fonctionne par nombre (-> documentation)
+
+* # Voir dans l'administration des articles pourquoi le path enregistré n'est pas toujours le bon. Parfois c'est un fichier requis par l'article (comme le module ruby) qui est enregistré, et marqué introuvable.
+
+* # Voir pourquoi les articles de l'analyse du prélude ne sont pas enregistrés alors que je les ai tous visités (trop court peut-être ?)
+  
 * Dans analyse avec Isabelle, faire une note en disant que le but de la lecture c'est de suivre soi-même le même cheminement qu'Isabelle pour profiter pleinement de la démarche.
 
 * Ajouter les vidéos sur Gammes et Accords

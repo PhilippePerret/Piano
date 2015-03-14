@@ -144,19 +144,19 @@ class App
     # Pour un article du dossier 'main', on retourne l'article lui-même
     # Sinon, on retourne le fichier _body_.erb qui doit charger l'article.
     #
-    def base;     folder == "main" ? "#{relpath}" : "#{folder}/_body_.erb" end
+    def base; folder == "main" ? "#{relpath}" : "#{folder}/_body_.erb" end
     
     ##
     #
     # Chemin relatif à l'article
     #
-    def relpath;    @relpath ||= "#{idpath}.erb" end
+    def relpath; @relpath ||= "#{idpath}.erb" end
     
     ##
     #
     # Nom du fichier de l'article
     #
-    def name;     @name ||= File.basename(relpath) end
+    def name; @name ||= File.basename(relpath) end
     
     ##
     #
