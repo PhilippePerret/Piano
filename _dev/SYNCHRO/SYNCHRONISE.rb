@@ -14,7 +14,7 @@ NOTE
       2.  Elle procède à l'actualisation véritable
 =end
 
-SIMPLE_CHECK = true # mettre à faux pour procéder à la synchronisation
+SIMPLE_CHECK = false # mettre à faux pour procéder à la synchronisation
 
 ##
 ## Par prudence, on peut d'abord ne rien faire avec les fichiers

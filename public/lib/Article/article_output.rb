@@ -27,10 +27,12 @@ class App
     #
     #
     def body_content titre, options = nil
+      options ||= {}
       c = ""
       c << infos_admin_article if offline?
       c << app.link_to_tdm unless tdm?
       c << titre.in_h1
+      c << options[:sous_titre].in_h2 if options.has_key?(:sous_titre)
       c << view
       c << direct_link
       unless tdm? || en_projet?

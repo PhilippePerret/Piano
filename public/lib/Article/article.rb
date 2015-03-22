@@ -98,7 +98,12 @@ class App
     ## Le définir dans la vue à l'aide de :
     ## article.next = {path:, title:} ou 
     ## article.next = path (le bouton sera "Suivant ->")
-    attr_accessor :next
+    ##
+    ## Noter que naturellement, si un article est un nombre,
+    ## le `next' correspondra au path de l'article incrémenté de 1
+    ## s'il existe.
+    ##
+    attr_writer :next
     
     ##
     #
@@ -160,9 +165,34 @@ class App
     
     ##
     #
+    # Affixe du fichier de l'article
+    #
+    def affixe; @affixe ||= name[0..-5] end
+    
+    ##
+    #
     # Nom du dossier de l'article
     #
     def folder;   @folder ||= File.dirname(relpath) end
+    
+    ##
+    #
+    # Article suivant
+    #
+    # Défini explicitement ou naturellement si c'est un nom
+    #
+    def next
+      @next ||= begin
+        if affixe.numeric?
+          num_next  = (affixe.to_i + 1).to_s.rjust(3,'0')
+          path_next = File.join(app.folder_article, folder, "#{num_next}.erb")
+          debug "path_next : #{path_next}"
+          File.exist?( path_next ) ? "#{folder}/#{num_next}" : nil
+        else
+          nil
+        end
+      end
+    end
     
     ##
     #

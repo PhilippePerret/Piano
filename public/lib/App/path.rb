@@ -83,7 +83,12 @@ class App
   def folder_library
     @folder_library ||= File.join(folder_public, 'lib', 'library')
   end
-  # Sub
+  
+  def folder_article
+    @folder_article ||= File.join(folder_page, 'article')
+  end
+  alias :folder_articles :folder_article
+  
   def folder_page
     @folder_page ||= File.join(folder_public, 'page')
   end

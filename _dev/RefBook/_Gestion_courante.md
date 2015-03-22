@@ -11,7 +11,8 @@ Tout est fait en OFFLINE.
 
 * Vérifier que la table des matières du dossier de l'article ne contienne plus le `true` pour cet article, indiquant qu'il est en projet&nbsp;;
   * Uploader cette TdM le cas échéant&nbsp;;
-* Rejoindre l'administration des articles
+* Rejoindre l'administration des articles OFFLINE
+  * Rappatrier le pstore articles.pstore online
   * Relever l'ID dans l'administration des articles&nbsp;;
   * Marquer l'article achevé
   * Uploader les données des articles
