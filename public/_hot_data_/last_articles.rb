@@ -7,7 +7,7 @@
 def derniers_articles
   [
     ["Mozart, Sonate K.545 - 1<sup>er</sup> mvt", 'blog/philicare/cfp/34'],
-    ["Travaux pratiques : analyse Prélude de Bach", 'pratiques/analyse_bach_bwv999/000'],
+    ["Travaux pratiques : Analyse Prélude de Bach", 'pratiques/analyse_bach_bwv999/'],
     ["Haydn, Final de Sonate", 'blog/philicare/cfp/33'],
     ["Le mystère des double-dièses et double-bémols", 'theorie/alterations_doubles'],
     ["Méprise concernant les intervalles", 'technique/essentiels/intervalles'],

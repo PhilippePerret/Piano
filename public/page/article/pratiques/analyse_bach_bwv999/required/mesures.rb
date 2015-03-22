@@ -5,6 +5,7 @@ Définition des mesures
 
 =end
 
+
 ##
 ## Positions (offsets) dans l'image générales
 ##
@@ -12,7 +13,54 @@ Définition des mesures
 ## la portion de l'image à prendre.
 ##
 def image_mesure mes_x, positionning = false
-  offset = case mes_x
+  
+  ##
+  ## Est-ce un intervalle de mesure (p.e. '1_7')
+  ## ou une mesure seule ?
+  ##
+  ## Notes :
+  ##    size    = [largeur, hauteur]
+  ##    offset  = [top, left]
+  ##
+  if mes_x.to_s.index('_')
+    mes_x, mes_y = mes_x.split('_')
+    top_x, left_x = offsets_mesure mes_x.to_i
+    top_y, left_y = offsets_mesure mes_y.to_i
+    if top_x != top_y
+      offset  = [top_x, 0]
+      haut = top_x
+      bas  = top_y + 140
+      size    = [780, bas - haut]
+    else
+      offset  = [top_x, left_x]
+      size    = [left_y - left_x + 300, 140]
+    end
+    legend  = "Mesures #{mes_x} à #{mes_y}"
+  else
+    offset  = offsets_mesure mes_x
+    size    = sizes_mesure mes_x
+    legend  = "Mesure #{mes_x}"
+  end
+  
+  legend.in_div(class:'mes') + image_partielle( offset, size, positionning )
+end
+
+##
+# Retourne la taille de l'image pour la mesure +mes+
+#
+def sizes_mesure mes
+  case mes
+  when 1 then [300, 140]
+  else
+    [300, 140]
+  end
+end
+##
+#
+# Retourne l'offset (top, left) de la mesure de numéro +mes+
+#
+def offsets_mesure mes
+  case mes
   when 1 then [110, 80] # top, left
   when 2 then [110, 310]
   when 3 then [110, 520]
@@ -58,10 +106,4 @@ def image_mesure mes_x, positionning = false
   when 43 then [2649, 660]
   else [110, 310]
   end
-  size = case mes_x
-  when 1 then [300, 140]
-  else
-    [300, 140]
-  end
-  "Mesure #{mes_x}".in_div(class:'mes') + image_partielle( offset, size, positionning )
 end

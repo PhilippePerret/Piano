@@ -50,10 +50,6 @@ Pour insérer des images dans le texte, utiliser la syntaxe suivante&nbsp;:
 
 Le `path_relatif` est défini depuis le dossier des images `./public/page/img/` (ou depuis `/img/cp_score` sur l'atelier Icare si `:icare` est true dans les options).
 
-Noter qu'on peut aussi utiliser pour une image sur Icare&nbsp;:
-
-    <%= image_icare( <path/rel/to/image.png>[, <{options}>] ) %>
-
 Les `options` sont un hash qui peut contenir&nbsp;:
 
     legend:     La légende de l'image
@@ -68,6 +64,7 @@ Les `options` sont un hash qui peut contenir&nbsp;:
                 de l'image.
     icare:      Si TRUE (false par défaut) l'image est chargée depuis l'atelier
                 Icare à partir du dossier img/cp_score/
+                Voir aussi la méthode-raccourci 'image_icare' ci-dessous.
     
     = Pour positionner seulement une partie de l'image =
     
@@ -77,6 +74,11 @@ Les `options` sont un hash qui peut contenir&nbsp;:
                     entière est affichée et un cadre entoure ce qui sera vu.
                     On peut alors jouer sur les propriétés left/top de l'image pour
                     saisir la portion voulue. Cf. ci-dessous.
+
+Noter qu'on peut aussi utiliser pour une image sur Icare&nbsp;:
+
+    <%= image_icare( <path/rel/to/image.png>[, <{options}>] ) %>
+
 
 <a name='afficher_une_portion_seulement_de_limage'></a>
 ###Afficher une portion de l'image
