@@ -151,7 +151,8 @@ class App
   def link_to_article pathorid, options = nil
     art = App::Article::get pathorid
     pathorid = art.idpath
-    link_to art.titre, art.idpath, options
+    titre = options[:titre] || art.titre
+    link_to titre, art.idpath, options
   end
   
   ##
