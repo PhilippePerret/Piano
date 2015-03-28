@@ -116,7 +116,7 @@ class App
     #
     def initialize anypath
       case anypath
-      when Fixnum 
+      when Fixnum
         @id = anypath
       else 
         @path_init = anypath
@@ -129,7 +129,8 @@ class App
     def define_idpath
       unless @id.nil? # ne pas utiliser id
         # => Article instancié par son ID
-        ppdestore self.class.pstore_idpath_to_id, id
+        ip = ppdestore self.class.pstore_idpath_to_id, id
+        ip
       else
         # => Article instancié par son path
         rp = path_init.to_s.sub(/\.erb$/,'')
@@ -186,7 +187,6 @@ class App
         if affixe.numeric?
           num_next  = (affixe.to_i + 1).to_s.rjust(3,'0')
           path_next = File.join(app.folder_article, folder, "#{num_next}.erb")
-          debug "path_next : #{path_next}"
           File.exist?( path_next ) ? "#{folder}/#{num_next}" : nil
         else
           nil

@@ -149,6 +149,7 @@ class App
   # ID ou son idpath dans +pathorid+
   #
   def link_to_article pathorid, options = nil
+    options ||= {}
     art = App::Article::get pathorid
     pathorid = art.idpath
     titre = options[:titre] || art.titre
