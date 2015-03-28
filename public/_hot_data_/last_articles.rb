@@ -6,6 +6,7 @@
 #
 def derniers_articles
   [
+    ["Mozart, Sonate K.545 - 2<sup>e</sup> mvt", 'blog/philicare/cfp/35'],
     ["Travaux pratiques : FIN DE l'Analyse du Prélude de Bach BWV 999", 'pratiques/analyse_bach_bwv999/'],
     ["Mozart, Sonate K.545 - 1<sup>er</sup> mvt", 'blog/philicare/cfp/34'],
     ["Haydn, Final de Sonate", 'blog/philicare/cfp/33'],
